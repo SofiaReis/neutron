@@ -9,8 +9,11 @@ estado_inicial([[1,1,1,1,1],
 inicio:-
         apresentacao,
         estado_inicial(Tab),
+        neutrao_inicial(N),
         visualiza_estado(Tab),
-        jogo(Tab).
+        jogo(Tab,N).
+
+neutrao_inicial([2,2]).
 
 apresentacao:-
         write('NEUTRON EM PROLOG'), nl, nl.
@@ -22,11 +25,16 @@ visualiza_estado(Tab):-
         print_tab(1, Tab),
         nl,!.
 
-jogo(Tab):-
+jogo(Tab,[NX,NY]):-
         ler_jogada_soldado(Xi, Yi, Xf, Yf),
         atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2),
         visualiza_estado(Tab_f2),
-        jogo(Tab_f2). 
+        ler_jogada_neutrao(NXf,NYf),
+        atualiza_jogada(Tab_f2, NX, NY, NXf, NYf, Tab_f3),
+        visualiza_estado(Tab_f3),
+        !,
+        (verifica_fim(NXf);
+        jogo(Tab_f3,[NXf,NYf])). 
 
 colunas(5) :- write(5), !.
 
@@ -76,7 +84,20 @@ ler_jogada_soldado(Xi, Yi, Xf, Yf):-
         Xf is X2 - 48,
         Yf is Y2 - 48.
 
-% falta verifica jogada
+ler_jogada_neutrao(NXf,NYf):-
+        write('Inserir coordenada X final da peça do neutrão a mover'),
+        nl,
+        get_code(X),
+        get_char(_),
+        write('Inserir coordenada Y final da peça do neutrão a mover'),
+        nl,
+        get_code(Y),
+        get_char(_),
+        NXf is X - 48,
+        NYf is Y - 48.
+        
+
+% falta verifica validade da jogada
 atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2):-
         busca_elemento(Tab, Xi, Yi, E),
         muda_elemento(Tab, Xf, Yf, E, Tab_f),
@@ -108,8 +129,8 @@ muda_linha([Tab|Tail], Yf, E, [Tab|Tail_f]):-
         Y is Yf - 1,
         muda_linha(Tail, Y, E, Tail_f).
 
-verifica_final(Tab):-
-        
+verifica_fim(Nx):-
+        (Nx == 0, write('Jogador Preto Ganhou!') ; Nx == 4, write('Jogador Branco Ganhou!')).
 
         
         
