@@ -1,4 +1,4 @@
-
+% NEUTRON GAME
 
 estado_inicial([[1,1,1,1,1],
                 [0,0,0,0,0],
@@ -9,7 +9,8 @@ estado_inicial([[1,1,1,1,1],
 inicio:-
         apresentacao,
         estado_inicial(Tab),
-        visualiza_estado(Tab).
+        visualiza_estado(Tab),
+        jogo(Tab).
 
 apresentacao:-
         write('NEUTRON EM PROLOG'), nl, nl.
@@ -21,6 +22,12 @@ visualiza_estado(Tab):-
         print_tab(1, Tab),
         nl,!.
 
+jogo(Tab):-
+        ler_jogada_soldado(Xi, Yi, Xf, Yf),
+        atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2),
+        visualiza_estado(Tab_f2),
+        jogo(Tab_f2). 
+
 colunas(5) :- write(5), !.
 
 colunas(X) :- 
@@ -29,16 +36,16 @@ colunas(X) :-
         X2 is X+1,
         colunas(X2).
 
-escreve(0):-write('   ').
-escreve(1):-write(' P ').
-escreve(2):-write(' B ').
-escreve(3):-write(' N ').
+escreve(0):-write('| |').
+escreve(1):-write('|'),put_code(9679),write('|').
+escreve(2):-write('|'),put_code(9676),write('|').
+escreve(3):-write('|'),put_code(9678),write('|').
 
 print_tab(_,[]).
 print_tab(N,[Linha|Resto]):-
         write(N),
         print_linha(Linha),
-        write('  '), nl,
+        write('----------------'), nl,
         N2 is N+1,
         print_tab(N2, Resto).
 
@@ -47,5 +54,62 @@ print_linha([Elemento|Resto]):-
         escreve(Elemento),
         print_linha(Resto).
 
+ler_jogada_soldado(Xi, Yi, Xf, Yf):-
+        write('Inserir coordenada X inicial da peça do soldado a mover'),
+        nl,
+        get_code(X1),
+        get_char(_),
+        write('Inserir coordenada Y inicial da peça do soldado a mover'),
+        nl,
+        get_code(Y1),
+        get_char(_),
+        write('Inserir coordenada X final da peça do soldado a mover'),
+        nl,
+        get_code(X2),
+        get_char(_),
+        write('Inserir coordenada Y final da peça do soldado a mover'),
+        nl,
+        get_code(Y2),
+        get_char(_),
+        Xi is X1 - 48,
+        Yi is Y1 - 48,
+        Xf is X2 - 48,
+        Yf is Y2 - 48.
 
-                                       
+% falta verifica jogada
+atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2):-
+        busca_elemento(Tab, Xi, Yi, E),
+        muda_elemento(Tab, Xf, Yf, E, Tab_f),
+        muda_elemento(Tab_f, Xi, Yi, 0, Tab_f2).
+
+busca_elemento([Tab|_], 0, Yi, E):-
+        busca_linha(Tab, Yi, E).
+
+busca_elemento([_|Tab], Xi, Yi, E):-
+        X is Xi - 1,
+        busca_elemento(Tab, X, Yi, E).
+
+busca_linha([Tab|_], 0, Tab).
+
+busca_linha([_|Tab], Yi, E):-
+        Y is Yi - 1,
+        busca_linha(Tab, Y, E).
+
+muda_elemento([Tab|Tail], 0, Yf, E, [Tab_f|Tail]):-
+        muda_linha(Tab, Yf, E, Tab_f).
+
+muda_elemento([Tab|Tail], Xf, Yf, E, [Tab|Tab_f]):-
+        X is Xf - 1,
+        muda_elemento(Tail, X, Yf, E, Tab_f).
+
+muda_linha([_|Tail], 0, E, [E|Tail]).
+
+muda_linha([Tab|Tail], Yf, E, [Tab|Tail_f]):-
+        Y is Yf - 1,
+        muda_linha(Tail, Y, E, Tail_f).
+
+verifica_final(Tab):-
+        
+
+        
+        
