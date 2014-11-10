@@ -11,7 +11,7 @@ inicio:-
         estado_inicial(Tab),
         neutrao_inicial(N),
         visualiza_estado(Tab),
-        jogo(Tab,N).
+        jogo(Tab,N,1).
 
 neutrao_inicial([2,2]).
 
@@ -21,27 +21,50 @@ apresentacao:-
 visualiza_estado(Tab):-
         nl,
         write('  '),
-        colunas(1), nl,nl,
-        print_tab(1, Tab),
+        colunas(0), nl,
+        print_tab(0, Tab),
         nl,!.
 
-jogo(Tab,[NX,NY]):-
-        ler_jogada_soldado(Xi, Yi, Xf, Yf),
+jogada_soldado(Tab,Xi, Yi, Xf, Yf, J):-
+        (
+           ler_jogada_soldado(Xi, Yi, Xf, Yf),
+           valida_jogada(Tab, Xi, Yi, Xf, Yf,J);
+           write('Jogada Invalida!\n'),
+           jogada_soldado(Tab,Xi, Yi, Xf, Yf,J)
+        ).
+
+jogada_neutrao(Tab,NXi, NYi, NXf, NYf):- 
+        (
+        ler_jogada_neutrao(NXf,NYf),
+        valida_jogada(Tab, NXi, NYi, NXf, NYf,3);
+         write('Jogada Invalida!\n'),
+         jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
+        ).
+        
+
+jogo(Tab,[NX,NY],J):-
+        jogada_soldado(Tab,Xi, Yi, Xf, Yf,J),
         atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2),
         visualiza_estado(Tab_f2),
-        ler_jogada_neutrao(NXf,NYf),
+        jogada_neutrao(Tab_f2,NX, NY, NXf, NYf),
         atualiza_jogada(Tab_f2, NX, NY, NXf, NYf, Tab_f3),
         visualiza_estado(Tab_f3),
         !,
-        (verifica_fim(NXf);
-        jogo(Tab_f3,[NXf,NYf])). 
+        (
+           verifica_fim(NXf);
+           (
+              J is 1,
+              jogo(Tab_f3,[NXf,NYf],2);
+              jogo(Tab_f3,[NXf,NYf],1)
+           )
+        ). 
 
-colunas(5) :- write(5), !.
+colunas(4) :- write(4), !, nl, write(' ---------------').
 
 colunas(X) :- 
         write(X),
         write('  '),
-        X2 is X+1,
+        X2 is X + 1,
         colunas(X2).
 
 escreve(0):-write('| |').
@@ -53,7 +76,7 @@ print_tab(_,[]).
 print_tab(N,[Linha|Resto]):-
         write(N),
         print_linha(Linha),
-        write('----------------'), nl,
+        write(' ---------------'), nl,
         N2 is N+1,
         print_tab(N2, Resto).
 
@@ -79,6 +102,7 @@ ler_jogada_soldado(Xi, Yi, Xf, Yf):-
         nl,
         get_code(Y2),
         get_char(_),
+        % 48 código tecla zero
         Xi is X1 - 48,
         Yi is Y1 - 48,
         Xf is X2 - 48,
@@ -132,5 +156,75 @@ muda_linha([Tab|Tail], Yf, E, [Tab|Tail_f]):-
 verifica_fim(Nx):-
         (Nx == 0, write('Jogador Preto Ganhou!') ; Nx == 4, write('Jogador Branco Ganhou!')).
 
-        
+valida_jogada(Tab, Xi, Yi, Xf, Yf,N):-
+        busca_elemento(Tab, Xi, Yi, N),
+        (Xf = Xi,
+         (
+            Yf > Yi,
+            M is 2;
+            M is 6
+         );
+         Yf = Yi,
+         (
+            Xf > Xi,
+            M is 4;
+            M is 0
+         );
+         DX is Xf - Xi, 
+         DY is Yf - Yi,
+         Adx is abs(DX),
+         Ady is abs(DY),
+         Adx = Ady,
+         (
+            DX < 0, DY > 0,
+            M is 1;
+            DX > 0, DY > 0,
+            M is 3;
+            DX > 0, DY < 0,
+            M is 5;
+            DX < 0, DY < 0,
+            M is 7
+         )
+        ),
+        verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N),
+        !,
+        write('\nValores '),write(Xm),nl,write(Ym),nl,nl,
+        Xm = Xf,
+        Ym = Yf.
+
+
+
+verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N):-
+       busca_elemento(Tab, Xi, Yi, N),
+       (
+          M = 0,
+          X1 is Xi - 1,
+          Y1 is Yi;
+          M = 1,
+          X1 is Xi - 1,
+          Y1 is Yi + 1;         
+          M = 2,
+          X1 is Xi,
+          Y1 is Yi + 1;         
+          M = 3,
+          X1 is Xi + 1,
+          Y1 is Yi + 1;         
+          M = 4,
+          X1 is Xi + 1,
+          Y1 is Yi;         
+          M = 5,
+          X1 is Xi + 1,
+          Y1 is Yi - 1;         
+          M = 6,
+          X1 is Xi,
+          Y1 is Yi - 1;         
+          M = 7,
+          X1 is Xi - 1,
+          Y1 is Yi - 1
+       ),
+       (
+          verifica_maximo(Tab, X1, Y1, Xm, Ym, M,0);
+          Xm is Xi,
+          Ym is Yi
+       ).
         
