@@ -11,7 +11,7 @@ inicio:-
         estado_inicial(Tab),
         neutrao_inicial(N),
         visualiza_estado(Tab),
-        jogo(Tab,N,1).
+        primeira_jogada(Tab,N,1).
 
 neutrao_inicial([2,2]).
 
@@ -41,21 +41,41 @@ jogada_neutrao(Tab,NXi, NYi, NXf, NYf):-
          jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
         ).
         
-
-jogo(Tab,[NX,NY],J):-
+primeira_jogada(Tab,[NX,NY],J):-
         jogada_soldado(Tab,Xi, Yi, Xf, Yf,J),
         atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2),
         visualiza_estado(Tab_f2),
-        jogada_neutrao(Tab_f2,NX, NY, NXf, NYf),
-        atualiza_jogada(Tab_f2, NX, NY, NXf, NYf, Tab_f3),
-        visualiza_estado(Tab_f3),
         !,
         (
-           verifica_fim(NXf);
+           verifica_fim(NX,NY,Tab_f2,J)
+        ;
            (
-              J is 1,
-              jogo(Tab_f3,[NXf,NYf],2);
-              jogo(Tab_f3,[NXf,NYf],1)
+                 J is 1,
+                 jogo(Tab_f2,[NX,NY],2);
+                 jogo(Tab_f2,[NX,NY],1)
+              
+           )
+        ). 
+
+jogo(Tab,[NX,NY],J):-
+           jogada_neutrao(Tab,NX, NY, NXf, NYf),
+           atualiza_jogada(Tab, NX, NY, NXf, NYf, Tab_f2),
+        visualiza_estado(Tab_f2),
+        !,
+        (
+           verifica_fim(NXf, NYf,Tab_f2,J)
+        ;
+        jogada_soldado(Tab_f2,Xi, Yi, Xf, Yf,J),
+        atualiza_jogada(Tab_f2, Xi, Yi, Xf, Yf, Tab_f3),
+           visualiza_estado(Tab_f3),
+           !,
+           (
+              verifica_fim(NXf,NYf,Tab_f3,J);
+              (
+                 J is 1,
+                 jogo(Tab_f3,[NXf,NYf],2);
+                 jogo(Tab_f3,[NXf,NYf],1)
+              )
            )
         ). 
 
@@ -153,10 +173,24 @@ muda_linha([Tab|Tail], Yf, E, [Tab|Tail_f]):-
         Y is Yf - 1,
         muda_linha(Tail, Y, E, Tail_f).
 
-verifica_fim(Nx):-
-        (Nx == 0, write('Jogador Preto Ganhou!') ; Nx == 4, write('Jogador Branco Ganhou!')).
+verifica_fim(Nx,Ny,Tab,J):-
+        (
+           (
+              Nx == 0;
+              J == 2,
+              verifica_encurralado(Tab, Nx, Ny),
+              write('cenas')
+           ), write('Jogador Preto Ganhou!') 
+        ; 
+            (
+              Nx == 4;
+              J == 1,
+              verifica_encurralado(Tab, Nx, Ny),
+              write('cenas')
+           ), write('Jogador Branco Ganhou!')
+        ).
 
-valida_jogada(Tab, Xi, Yi, Xf, Yf,N):-
+valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
         busca_elemento(Tab, Xi, Yi, N),
         (Xf = Xi,
          (
@@ -188,13 +222,11 @@ valida_jogada(Tab, Xi, Yi, Xf, Yf,N):-
         ),
         verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N),
         !,
-        write('\nValores '),write(Xm),nl,write(Ym),nl,nl,
+        %write('\nValores '),write(Xm),nl,write(Ym),nl,nl,
         Xm = Xf,
         Ym = Yf.
 
-
-
-verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N):-
+verifica_maximo(Tab, Xi, Yi, Xm, Ym, M, N):-
        busca_elemento(Tab, Xi, Yi, N),
        (
           M = 0,
@@ -221,10 +253,45 @@ verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N):-
           M = 7,
           X1 is Xi - 1,
           Y1 is Yi - 1
-       ),
+       )
+       ,
        (
-          verifica_maximo(Tab, X1, Y1, Xm, Ym, M,0);
+          verifica_maximo(Tab, X1, Y1, Xm, Ym, M, 0);
           Xm is Xi,
           Ym is Yi
        ).
+        
+verifica_encurralado(Tab, NX, NY):-
+        verifica_maximo(Tab, NX, NY, X0, Y0, 0, 3),
+        !,
+        NX == X0,
+        NY == Y0,
+        verifica_maximo(Tab, NX, NY, X1, Y1, 1, 3),
+        !,
+        NX == X1,
+        NY == Y1,
+        verifica_maximo(Tab, NX, NY, X2, Y2, 2, 3),
+        !,
+        NX == X2,
+        NY == Y2,
+        verifica_maximo(Tab, NX, NY, X3, Y3, 3, 3),
+        !,
+        NX == X3,
+        NY == Y3,
+        verifica_maximo(Tab, NX, NY, X4, Y4, 4, 3),
+        !,
+        NX == X4,
+        NY == Y4,
+        verifica_maximo(Tab, NX, NY, X5, Y5, 5, 3),
+        !,
+        NX == X5,
+        NY == Y5,
+        verifica_maximo(Tab, NX, NY ,X6, Y6, 6, 3),
+        !,
+        NX == X6,
+        NY == Y6,
+        verifica_maximo(Tab, NX, NY, X7, Y7, 7, 3),
+        !,
+        NX == X7,
+        NY == Y7.
         
