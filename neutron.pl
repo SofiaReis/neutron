@@ -1,7 +1,23 @@
-% NEUTRON GAME
+% ***************************************************************************
+% *                                                                         *
+% *                             Neutron                                     *
+% *                                                                         *
+% ***************************************************************************
+%                                                                           *
+% Realizado por:                                                            *
+%               Maria Marques  - ei12104@fe.up.pt                           *
+%                              &                                            *
+%                        Sofia Reis - ei12041@fe.up.pt              MIEIC14 *
+% ***************************************************************************
 
+% ***************************************************************************
+% *                              Bibliotecas                                *                      
+% ***************************************************************************
 :-use_module(library(random)).
 
+% ***************************************************************************
+% *                            Implementação                                *                      
+% ***************************************************************************
 estado_inicial([[1,1,1,1,1],
                 [0,0,0,0,0],
                 [0,0,3,0,0],
@@ -208,14 +224,14 @@ verifica_fim(Nx,Ny,Tab,J):-
               J == 2,
               verifica_encurralado(Tab, Nx, Ny),
               write('cenas')
-           ), write('Jogador Preto Ganhou!') 
+           ), write('Jogador Preto Ganhou!'), print_fim_de_jogo 
         ; 
             (
               Nx == 4;
               J == 1,
               verifica_encurralado(Tab, Nx, Ny),
               write('cenas')
-           ), write('Jogador Branco Ganhou!')
+           ), write('Jogador Branco Ganhou!'), print_fim_de_jogo
         ).
 
 valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
@@ -342,3 +358,12 @@ jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P):-
         ;
         jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P) 
          ).
+
+
+print_fim_de_jogo:-
+        write('\n   __ _                 _          _                   '), nl,     
+        write('  / _(_)_ __ ____    __| | ___    (_) ___   __ _  ___  '), nl,
+        write(' | |_| |  _   _  |  / _  |/ _ |   | |  _  || _  || _   '), nl,
+        write(' |  _| | | | | | | | (_| |  __/   | | (_) | (_| | (_) |'), nl,
+        write(' |_| |_|_| |_| |_|  ___,_||___|  _/ | ___/  __, | ___/ '), nl,
+        write('                                |__/       |___/       ').
