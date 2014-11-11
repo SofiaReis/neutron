@@ -13,7 +13,7 @@ inicio:-
         visualiza_estado(Tab),
         primeira_jogada(Tab,N,1).
 
-neutrao_inicial([2,2]).
+neutrao_inicial([1,4]).
 
 apresentacao:-
         write('NEUTRON EM PROLOG'), nl, nl.
@@ -36,6 +36,7 @@ jogada_soldado(Tab,Xi, Yi, Xf, Yf, J):-
 jogada_neutrao(Tab,NXi, NYi, NXf, NYf):- 
         (
         ler_jogada_neutrao(NXf,NYf),
+        write('\nLeu Jogada'),
         valida_jogada(Tab, NXi, NYi, NXf, NYf,3);
          write('Jogada Invalida!\n'),
          jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
@@ -192,33 +193,34 @@ verifica_fim(Nx,Ny,Tab,J):-
 
 valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
         busca_elemento(Tab, Xi, Yi, N),
-        (Xf = Xi,
-         (
-            Yf > Yi,
-            M is 2;
-            M is 6
-         );
-         Yf = Yi,
-         (
-            Xf > Xi,
-            M is 4;
-            M is 0
-         );
-         DX is Xf - Xi, 
-         DY is Yf - Yi,
-         Adx is abs(DX),
-         Ady is abs(DY),
-         Adx = Ady,
-         (
-            DX < 0, DY > 0,
-            M is 1;
-            DX > 0, DY > 0,
-            M is 3;
-            DX > 0, DY < 0,
-            M is 5;
-            DX < 0, DY < 0,
-            M is 7
-         )
+        (
+           Xf = Xi,
+           (
+              Yf > Yi,
+              M is 2;
+              M is 6
+           );
+           Yf = Yi,
+           (
+              Xf > Xi,
+              M is 4;
+              M is 0
+           );
+           DX is Xf - Xi, 
+           DY is Yf - Yi,
+           Adx is abs(DX),
+           Ady is abs(DY),
+           Adx = Ady,
+           (
+              DX < 0, DY > 0,
+              M is 1;
+              DX > 0, DY > 0,
+              M is 3;
+              DX > 0, DY < 0,
+              M is 5;
+              DX < 0, DY < 0,
+              M is 7
+           )
         ),
         verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N),
         !,
@@ -253,8 +255,7 @@ verifica_maximo(Tab, Xi, Yi, Xm, Ym, M, N):-
           M = 7,
           X1 is Xi - 1,
           Y1 is Yi - 1
-       )
-       ,
+       ),
        (
           verifica_maximo(Tab, X1, Y1, Xm, Ym, M, 0);
           Xm is Xi,
