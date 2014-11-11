@@ -1,5 +1,7 @@
 % NEUTRON GAME
 
+:-use_module(library(random)).
+
 estado_inicial([[1,1,1,1,1],
                 [0,0,0,0,0],
                 [0,0,3,0,0],
@@ -8,12 +10,25 @@ estado_inicial([[1,1,1,1,1],
 
 inicio:-
         apresentacao,
+        menu_inicio(J1, J2),
         estado_inicial(Tab),
         neutrao_inicial(N),
         visualiza_estado(Tab),
-        primeira_jogada(Tab,N,1).
+        primeira_jogada(Tab, N, 1, J1, J2).
 
-neutrao_inicial([1,4]).
+neutrao_inicial([2,2]).
+
+menu_inicio(J1i, J2i):-
+        write('Tipo de Jogador 1 (0 humano, 1 computador): '),
+        nl,
+        get_code(J1),
+        get_char(_),
+        write('Tipo de Jogador 2 (0 humano, 1 computador):'),
+        nl,
+        get_code(J2),
+        get_char(_),
+        J1i is J1 - 48,
+        J2i is J2 - 48.
 
 apresentacao:-
         write('NEUTRON EM PROLOG'), nl, nl.
@@ -36,14 +51,18 @@ jogada_soldado(Tab,Xi, Yi, Xf, Yf, J):-
 jogada_neutrao(Tab,NXi, NYi, NXf, NYf):- 
         (
         ler_jogada_neutrao(NXf,NYf),
-        write('\nLeu Jogada'),
+        write('\nLeu Jogada\n'),
         valida_jogada(Tab, NXi, NYi, NXf, NYf,3);
          write('Jogada Invalida!\n'),
          jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
         ).
         
-primeira_jogada(Tab,[NX,NY],J):-
-        jogada_soldado(Tab,Xi, Yi, Xf, Yf,J),
+primeira_jogada(Tab, [NX,NY], J, J1, J2):-
+        (J1 = 0,
+        jogada_soldado(Tab,Xi, Yi, Xf, Yf, J)
+        ;
+        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, J)
+         ),
         atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2),
         visualiza_estado(Tab_f2),
         !,
@@ -52,30 +71,38 @@ primeira_jogada(Tab,[NX,NY],J):-
         ;
            (
                  J is 1,
-                 jogo(Tab_f2,[NX,NY],2);
-                 jogo(Tab_f2,[NX,NY],1)
+                 jogo(Tab_f2,[NX,NY], 2, J2, J1);
+                 jogo(Tab_f2,[NX,NY], 1, J2, J1)
               
            )
         ). 
 
-jogo(Tab,[NX,NY],J):-
-           jogada_neutrao(Tab,NX, NY, NXf, NYf),
-           atualiza_jogada(Tab, NX, NY, NXf, NYf, Tab_f2),
+jogo(Tab,[NX,NY], J, J1, J2):-
+        (
+           J1 = 0,
+           jogada_neutrao(Tab,NX, NY, NXf, NYf)
+        ;
+           jogada_aleatoria(Tab, NX, NY, NXf, NYf, 3)
+        ),
+        atualiza_jogada(Tab, NX, NY, NXf, NYf, Tab_f2),
         visualiza_estado(Tab_f2),
         !,
         (
-           verifica_fim(NXf, NYf,Tab_f2,J)
+           verifica_fim(NXf, NYf, Tab_f2, J)
         ;
-        jogada_soldado(Tab_f2,Xi, Yi, Xf, Yf,J),
-        atualiza_jogada(Tab_f2, Xi, Yi, Xf, Yf, Tab_f3),
+           (J1 = 0,
+            jogada_soldado(Tab_f2, Xi, Yi, Xf, Yf, J)
+           ;
+            jogada_aleatoria(Tab_f2, Xi, Yi, Xf, Yf, J)),
+           atualiza_jogada(Tab_f2, Xi, Yi, Xf, Yf, Tab_f3),
            visualiza_estado(Tab_f3),
            !,
            (
-              verifica_fim(NXf,NYf,Tab_f3,J);
+              verifica_fim(NXf, NYf, Tab_f3, J);
               (
                  J is 1,
-                 jogo(Tab_f3,[NXf,NYf],2);
-                 jogo(Tab_f3,[NXf,NYf],1)
+                 jogo(Tab_f3, [NXf,NYf], 2, J2, J1);
+                 jogo(Tab_f3, [NXf,NYf], 1, J2, J1)
               )
            )
         ). 
@@ -192,6 +219,9 @@ verifica_fim(Nx,Ny,Tab,J):-
         ).
 
 valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
+        (Xi =\= Xf;
+        Yi =\= Yf),
+        
         busca_elemento(Tab, Xi, Yi, N),
         (
            Xf = Xi,
@@ -295,4 +325,20 @@ verifica_encurralado(Tab, NX, NY):-
         !,
         NX == X7,
         NY == Y7.
-        
+
+encontra_peca(Tab, P, X, Y):-
+       (
+          random(0, 5, X),
+          random(0, 5, Y),
+          busca_elemento(Tab, X, Y, P);
+          encontra_peca(Tab, P, X, Y)
+        ).
+
+jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P):-
+        ((P=3;encontra_peca(Tab, P, Xi, Yi)),
+        random(0, 8, M),
+        verifica_maximo(Tab, Xi, Yi, Xf, Yf, M, P),
+        valida_jogada(Tab, Xi, Yi, Xf, Yf, P)
+        ;
+        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P) 
+         ).
