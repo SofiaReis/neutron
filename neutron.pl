@@ -47,7 +47,19 @@ menu_inicio(J1i, J2i):-
         J2i is J2 - 48.
 
 apresentacao:-
-        write('NEUTRON EM PROLOG'), nl, nl.
+        write('------------------NEUTRON------------------'), nl,
+        write('-   Jogo desenvolvido na cadeira de PLOG  -'), nl,
+        write('-                                         -'), nl,
+        write('- Objetivo:                               -'), nl,
+        write('-    Colocar o Neutrão numa das posições  -'), nl,
+        write('-    iniciais dos seus soldados.          -'), nl,
+        write('-                                         -'), nl,
+        write('- 2 Jogadores->                           -'), nl,
+        write('-    - Peças pretas                       -'), nl,
+        write('-    - Peças brancas                      -'), nl,
+        write('-                                         -'), nl,
+        write('- Escolha o tipo de jogadores:            -'), nl,
+        nl.
 
 visualiza_estado(Tab):-
         nl,
@@ -59,24 +71,26 @@ visualiza_estado(Tab):-
 jogada_soldado(Tab,Xi, Yi, Xf, Yf, J):-
         (
            ler_jogada_soldado(Xi, Yi, Xf, Yf),
-           valida_jogada(Tab, Xi, Yi, Xf, Yf,J);
-           write('Jogada Invalida!\n'),
+           valida_jogada(Tab, Xi, Yi, Xf, Yf,J)
+        ;
+           write('Jogada Inválida!\n'),
            jogada_soldado(Tab,Xi, Yi, Xf, Yf,J)
         ).
 
-jogada_neutrao(Tab,NXi, NYi, NXf, NYf):- 
+jogada_neutrao(Tab,NXi, NYi, NXf, NYf):-
         (
-        ler_jogada_neutrao(NXf,NYf),
-        write('\nLeu Jogada\n'),
-        valida_jogada(Tab, NXi, NYi, NXf, NYf,3);
-         write('Jogada Invalida!\n'),
-         jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
+           ler_jogada_neutrao(NXf, NYf),
+           write('\nLeu Jogada\n'),
+           valida_jogada(Tab, NXi, NYi, NXf, NYf,3)
+        ;
+           write('Jogada Inválida!\n'),
+           jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
         ).
         
 primeira_jogada(Tab, [NX,NY], J, J1, J2):-
         (
            J1 = 0,
-           jogada_soldado(Tab,Xi, Yi, Xf, Yf, J)
+           jogada_soldado(Tab, Xi, Yi, Xf, Yf, J)
         ;
            jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, J)
          ),
@@ -88,8 +102,8 @@ primeira_jogada(Tab, [NX,NY], J, J1, J2):-
         ;
            (
                  J is 1,
-                 jogo(Tab_f2,[NX,NY], 2, J2, J1);
-                 jogo(Tab_f2,[NX,NY], 1, J2, J1)
+                 jogo(Tab_f2, [NX,NY], 2, J2, J1);
+                 jogo(Tab_f2, [NX,NY], 1, J2, J1)
               
            )
         ). 
@@ -97,7 +111,7 @@ primeira_jogada(Tab, [NX,NY], J, J1, J2):-
 jogo(Tab,[NX,NY], J, J1, J2):-
         (
            J1 = 0,
-           jogada_neutrao(Tab,NX, NY, NXf, NYf)
+           jogada_neutrao(Tab, NX, NY, NXf, NYf)
         ;
            jogada_aleatoria(Tab, NX, NY, NXf, NYf, 3)
         ),
@@ -107,10 +121,11 @@ jogo(Tab,[NX,NY], J, J1, J2):-
         (
            verifica_fim(NXf, NYf, Tab_f2, J)
         ;
-           (J1 = 0,
-            jogada_soldado(Tab_f2, Xi, Yi, Xf, Yf, J)
+           (
+              J1 = 0,
+              jogada_soldado(Tab_f2, Xi, Yi, Xf, Yf, J)
            ;
-            jogada_aleatoria(Tab_f2, Xi, Yi, Xf, Yf, J)),
+              jogada_aleatoria(Tab_f2, Xi, Yi, Xf, Yf, J)),
            atualiza_jogada(Tab_f2, Xi, Yi, Xf, Yf, Tab_f3),
            visualiza_estado(Tab_f3),
            !,
@@ -174,19 +189,17 @@ ler_jogada_soldado(Xi, Yi, Xf, Yf):-
         Yf is Y2 - 48.
 
 ler_jogada_neutrao(NXf,NYf):-
-        write('Inserir coordenada X final da peça do neutrão a mover'),
+        write('Inserir coordenada X final da peça neutrão, a mover'),
         nl,
         get_code(X),
         get_char(_),
-        write('Inserir coordenada Y final da peça do neutrão a mover'),
+        write('Inserir coordenada Y final da peça neutrão, a mover'),
         nl,
         get_code(Y),
         get_char(_),
         NXf is X - 48,
         NYf is Y - 48.
-        
 
-% falta verifica validade da jogada
 atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2):-
         busca_elemento(Tab, Xi, Yi, E),
         muda_elemento(Tab, Xf, Yf, E, Tab_f),
@@ -248,13 +261,15 @@ valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
               Yf > Yi,
               M is 2;
               M is 6
-           );
+           )
+        ;
            Yf = Yi,
            (
               Xf > Xi,
               M is 4;
               M is 0
-           );
+           )
+        ;
            DX is Xf - Xi, 
            DY is Yf - Yi,
            Adx is abs(DX),
@@ -349,7 +364,8 @@ encontra_peca(Tab, P, X, Y):-
        (
           random(0, 5, X),
           random(0, 5, Y),
-          busca_elemento(Tab, X, Y, P);
+          busca_elemento(Tab, X, Y, P)
+       ;
           encontra_peca(Tab, P, X, Y)
         ).
 
@@ -370,7 +386,6 @@ jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P):-
 %jogada_inteligente_neutron(Tab, Xi, Yi, Xf, Yf, J):-
 %        
 %        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, 3),
-        
 %        .
         
 print_fim_de_jogo:-
