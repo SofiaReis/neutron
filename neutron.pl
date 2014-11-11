@@ -74,16 +74,17 @@ jogada_neutrao(Tab,NXi, NYi, NXf, NYf):-
         ).
         
 primeira_jogada(Tab, [NX,NY], J, J1, J2):-
-        (J1 = 0,
-        jogada_soldado(Tab,Xi, Yi, Xf, Yf, J)
+        (
+           J1 = 0,
+           jogada_soldado(Tab,Xi, Yi, Xf, Yf, J)
         ;
-        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, J)
+           jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, J)
          ),
         atualiza_jogada(Tab, Xi, Yi, Xf, Yf, Tab_f2),
         visualiza_estado(Tab_f2),
         !,
         (
-           verifica_fim(NX,NY,Tab_f2,J)
+           verifica_fim(NX, NY, Tab_f2, J)
         ;
            (
                  J is 1,
@@ -224,14 +225,16 @@ verifica_fim(Nx,Ny,Tab,J):-
               J == 2,
               verifica_encurralado(Tab, Nx, Ny),
               write('cenas')
-           ), write('Jogador Preto Ganhou!'), print_fim_de_jogo 
+           ), write('------------------Jogador Preto Ganhou!---------------'), 
+              print_fim_de_jogo
         ; 
             (
               Nx == 4;
               J == 1,
               verifica_encurralado(Tab, Nx, Ny),
               write('cenas')
-           ), write('Jogador Branco Ganhou!'), print_fim_de_jogo
+           ), write('------------------Jogador Branco Ganhou!---------------'), 
+              print_fim_de_jogo
         ).
 
 valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
@@ -351,15 +354,25 @@ encontra_peca(Tab, P, X, Y):-
         ).
 
 jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P):-
-        ((P=3;encontra_peca(Tab, P, Xi, Yi)),
-        random(0, 8, M),
-        verifica_maximo(Tab, Xi, Yi, Xf, Yf, M, P),
-        valida_jogada(Tab, Xi, Yi, Xf, Yf, P)
+        (
+           (
+              P = 3
+           ;
+              encontra_peca(Tab, P, Xi, Yi)
+           ),
+           random(0, 8, M),
+           verifica_maximo(Tab, Xi, Yi, Xf, Yf, M, P),
+           valida_jogada(Tab, Xi, Yi, Xf, Yf, P)
         ;
-        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P) 
+           jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P) 
          ).
 
-
+%jogada_inteligente_neutron(Tab, Xi, Yi, Xf, Yf, J):-
+%        
+%        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, 3),
+        
+%        .
+        
 print_fim_de_jogo:-
         write('\n   __ _                 _          _                   '), nl,     
         write('  / _(_)_ __ ____    __| | ___    (_) ___   __ _  ___  '), nl,
