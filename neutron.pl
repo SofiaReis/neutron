@@ -35,11 +35,11 @@ inicio:-
 neutrao_inicial([2,2]).
 
 menu_inicio(J1i, J2i):-
-        write('Tipo de Jogador 1 (0 humano, 1 computador): '),
+        write('Tipo de Jogador 1 (0 humano, 1 computador RANDOM, 2 computador INTELIGENTE): '),
         nl,
         get_code(J1),
         get_char(_),
-        write('Tipo de Jogador 2 (0 humano, 1 computador):'),
+        write('Tipo de Jogador 2 (0 humano, 1 computador RANDOM, 2 computador INTELIGENTE):'),
         nl,
         get_code(J2),
         get_char(_),
@@ -113,7 +113,10 @@ jogo(Tab,[NX,NY], J, J1, J2):-
            J1 = 0,
            jogada_neutrao(Tab, NX, NY, NXf, NYf)
         ;
+           J1 = 1,
            jogada_aleatoria(Tab, NX, NY, NXf, NYf, 3)
+        ;
+           jogada_inteligente_neutron(Tab, NX, NY, NXf, NYf, J)
         ),
         atualiza_jogada(Tab, NX, NY, NXf, NYf, Tab_f2),
         visualiza_estado(Tab_f2),
@@ -383,11 +386,51 @@ jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P):-
            jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, P) 
          ).
 
-%jogada_inteligente_neutron(Tab, Xi, Yi, Xf, Yf, J):-
-%        
-%        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, 3),
-%        .
+jogadas_possiveis(_,_,_,8,_,[]).
+jogadas_possiveis(Tab, Xi, Yi, M,N, [[Xm,Ym]|T]):-
+        verifica_maximo(Tab, Xi, Yi, Xm, Ym, M, N),
+        valida_jogada(Tab, Xi, Yi, Xm, Ym, N),
+        M1 is M +1,
+        jogadas_possiveis(Tab, Xi, Yi, M1,N, T).
+jogadas_possiveis(Tab, Xi, Yi, M,N, T):-
+        M1 is M +1,
+        jogadas_possiveis(Tab, Xi, Yi, M1,N, T).
+
+melhor_jogada([],_,_,_):-
+        !,false.
+melhor_jogada([[X,Y]|_],X,X,Y).
+melhor_jogada([_|T],X,Xf,Yf):-
+        melhor_jogada(T,X,Xf,Yf).
         
+elimina_jogadas([],_,[]).
+elimina_jogadas([[X,_]|T],X,TR):-
+        elimina_jogadas(T,X,TR).
+elimina_jogadas([[X,Y]|T],X1,[[X,Y]|TR]):-
+        elimina_jogadas(T,X1,TR).
+
+
+
+jogada_inteligente_neutron(Tab, Xi, Yi, Xf, Yf, J):-
+        jogadas_possiveis(Tab, Xi, Yi, 0, 3, R),
+        (
+           (
+              J = 1,
+              melhor_jogada(R, 0, Xf, Yf)
+           ;
+              melhor_jogada(R, 4, Xf, Yf)
+           )
+        ;
+           (
+              J = 1,
+              elimina_jogadas(R, 4, RR)
+           ;
+              elimina_jogadas(R, 0, RR)
+           ),
+        random_select([Xf,Yf], RR, _)
+        ;
+        jogada_aleatoria(Tab, Xi, Yi, Xf, Yf, 3)
+        ).
+
 print_fim_de_jogo:-
         write('\n   __ _                 _          _                   '), nl,     
         write('  / _(_)_ __ ____    __| | ___    (_) ___   __ _  ___  '), nl,
