@@ -1,0 +1,4 @@
+Abrir sictus e por na consola:
+ensure_loaded(['/Users/Fifaaaz/Neutron/server.pl']).
+e depois
+server.
