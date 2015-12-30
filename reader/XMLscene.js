@@ -9,6 +9,16 @@ function convertDegtoRad(deg){
 
 function XMLscene() {
     CGFscene.call(this);
+
+    this.curTime = 0;
+
+    this.p1Diff = "H";
+    this.p1Diff = "H";
+
+    this.dificulties = ["H", "M", "E"];
+    this.processing = true;
+
+    this.board = [];
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -37,7 +47,6 @@ XMLscene.prototype.init = function (application) {
     this.a_texture=null;
 
    	this.axis=new CGFaxis(this);
-
 	this.setUpdatePeriod(1000/60);
 };
 
@@ -52,6 +61,20 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
     this.setShininess(10.0);
 };
+
+XMLscene.prototype.resetTab = function()
+{
+	this.processing = true;
+	this.board = null;
+	this.board = new Tab(this);
+
+	var scene = this;
+	this.initTab(function(matrix){
+		scene.board.init(matrix);
+	});
+
+	console.log(this.board.pieces);
+}
 
 /**
  * processLights
@@ -285,8 +308,11 @@ XMLscene.prototype.onGraphLoaded = function ()
 	//Lights
 	this.processLights();
 
+
 	//Leaves
 	this.processLeaves();
+
+	this.resetTab();
 
 	//Textures
 	this.processTextures();
@@ -296,12 +322,15 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	//Animations
 	this.processAnimations();
+	
 
 	//Nodes
 	for(node in this.graph.nodesInfo)
 	{
 		var tmatrix = mat4.create();
+		console.log(this.graph.nodesInfo[node].id);
 		for(trans in this.graph.nodesInfo[node].transformations){
+
 			if(this.graph.nodesInfo[node].transformations[trans].type == "translation"){
 				mat4.translate(tmatrix, tmatrix, 
 					[this.graph.nodesInfo[node].transformations[trans].x, 
@@ -331,7 +360,6 @@ XMLscene.prototype.onGraphLoaded = function ()
 		}
 		this.graph.nodesInfo[node].matrix = tmatrix;
 	}
-	this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 };
 
 /**
@@ -355,7 +383,12 @@ XMLscene.prototype.checkIfLeaf = function (id){
  */	
 XMLscene.prototype.processGraph = function(node){
 
+	//console.log("NODE:"+ node.id);
+
 	this.pushMatrix();
+
+	
+	//console.log("NODE:"+ node.id);
 
 	var material = node.material;
 	var texture = node.texture;
@@ -363,7 +396,7 @@ XMLscene.prototype.processGraph = function(node){
 	var animCounter = animation.length;
 	var nodeID = node.id;
 	
-	
+
 	if(texture != "null" ) {
 		if(material != "null"){
 			this.a_material=material;
@@ -385,6 +418,7 @@ XMLscene.prototype.processGraph = function(node){
 		this.materials[material].apply();
 	}
 
+
 	this.multMatrix(node.matrix);
 	
 	if(this.animations[nodeID] != undefined && animation.length > 0){
@@ -395,39 +429,6 @@ XMLscene.prototype.processGraph = function(node){
 			this.animations[nodeID][0].current = true;
 		if(this.animations[nodeID][node.index].finished && node.index < (animCounter-1))
 		{
-			
-			/*if(node.index > 0){
-				console.log(this.animations[nodeID][node.index-1].id);
-			console.log(this.animations[nodeID][node.index].id);
-			if(this.animations[nodeID][node.index].id == 1
-					&& this.animations[nodeID][node.index-1].id == 1){
-					this.animations[nodeID][node.index].tranX = this.animations[nodeID][node.index-1].tranX;
-					this.animations[nodeID][node.index].tranY = this.animations[nodeID][node.index-1].tranY;
-					this.animations[nodeID][node.index].tranZ = this.animations[nodeID][node.index-1].tranZ;
-				}
-				else if(this.animations[nodeID][node.index].id == 1
-					&& this.animations[nodeID][node.index-1].id == 2)
-				{
-					this.animations[nodeID][node.index].tranX = this.animations[nodeID][node.index-1].center[0];
-					this.animations[nodeID][node.index].tranY = this.animations[nodeID][node.index-1].center[1];
-					this.animations[nodeID][node.index].tranZ = this.animations[nodeID][node.index-1].center[2];
-				}
-				else if(this.animations[nodeID][node.index].id == 2
-					&& this.animations[nodeID][node.index-1].id == 1)
-				{
-					console.log("ENTRO AQUI");
-					this.animations[nodeID][node.index].center[0] = this.animations[nodeID][node.index-1].tranX;
-					this.animations[nodeID][node.index].center[1] = this.animations[nodeID][node.index-1].tranY;
-					this.animations[nodeID][node.index].center[2] = this.animations[nodeID][node.index-1].tranZ;
-				}
-				else if(this.animations[nodeID][node.index].id == 2
-					&& this.animations[nodeID][node.index-1].id == 2){
-					this.animations[nodeID][node.index].center[0] = this.animations[nodeID][node.index-1].center[0];
-					this.animations[nodeID][node.index].center[1] = this.animations[nodeID][node.index-1].center[1];
-					this.animations[nodeID][node.index].center[2] = this.animations[nodeID][node.index-1].center[2];
-				}
-			}*/
-
 			node.index+=1;
 			this.animations[nodeID][node.index].current = true;
 		}
@@ -439,21 +440,28 @@ XMLscene.prototype.processGraph = function(node){
 				this.multMatrix(animationMatrix);
 		}	
 	}
+
 }
+
+	
 	for(var i in node.descendants){
-		
 		if(this.checkIfLeaf(node.descendants[i])){
+			//console.log("NODE:" + node.id);
+			//console.log("DESCENDANT:" + node.descendants[i]);
+
 			if(this.a_texture==undefined){
 				this.draw(this.leaves[node.descendants[i]],1,1);
 			}
 			else{
 			this.draw(this.leaves[node.descendants[i]], this.textures[this.a_texture].amp.s, this.textures[this.a_texture].amp.t);
-		}
+			}
 
 		}
 		else this.processGraph(this.graph.nodesInfo[node.descendants[i]]);
 	}
+
 	this.popMatrix();
+
 }
 
 /**
@@ -488,6 +496,7 @@ XMLscene.prototype.draw = function(leaf,s,t){
 		break;
 
 		case "patch":
+		
 			leaf.display();
 		break;
 
@@ -535,7 +544,7 @@ XMLscene.prototype.display = function () {
     this.applyViewMatrix();
     this.setDefaultAppearance();
 	
-	if (this.graph.loadedOk)
+	if(this.graph.loadedOk)
 	{
 	
 		if(this.axis.length != 0) this.axis.display();
@@ -555,6 +564,8 @@ XMLscene.prototype.display = function () {
 		}
 
 		this.processInitialsTransformations();
+
+		//console.log(this.graph.nodesInfo[this.graph.root_id]);
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 	};	
 };
@@ -576,4 +587,21 @@ XMLscene.prototype.update = function(curtime){
 
 		}
 	}
+}
+
+
+/*****
+* TP3 - initialize Board
+****/
+
+XMLscene.prototype.initTab = function(request, reqObj)
+{
+	getRequest("initTab", function(data){
+		var board = listToMatrix(data.target.response);
+		console.log(board);
+		if(typeof request === "function")
+		{
+			request.apply(reqObj,[board]);
+		}
+	},true);
 }

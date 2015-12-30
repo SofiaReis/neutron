@@ -2,6 +2,8 @@
 :-use_module(library(lists)).
 :-use_module(library(codesio)).
 
+:- include('neutron.pl').
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                                        Server                                                   %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,6 +109,15 @@ parse_input(handshake, handshake).
 parse_input(test(C,N), Res) :- test(C,Res,N).
 parse_input(quit, goodbye).
 
+parse_input(initTab, Tab):- estado_inicial(Tab).
+
+parse_input(valida_jogada(Tab,Xi,Yi,Xf,Yf,N),1):-
+        valida_jogada(Tab,Xi,Yi,Xf,Yf,N),!.
+parse_input(valida_jogada(Tab,Xi,Yi,Xf,Yf,N),0).
+
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).
+
+
+
 	

@@ -24,6 +24,9 @@ serialInclude(['../lib/CGF.js',
     'Animation.js',
     'CircularAnimation.js',
     'LinearAnimation.js',
+    'requests.js',
+    'Tab.js',
+
 
 main=function()
 {
@@ -38,7 +41,7 @@ main=function()
 
     myInterface.setActiveCamera(myScene.camera);
 	
-	var filename=getUrlVars()['file'] || "tp1.lsx";
+	var filename=getUrlVars()['file'] || "galaxy.lsx";
 
 	var myGraph = new MySceneGraph(filename, myScene);
 

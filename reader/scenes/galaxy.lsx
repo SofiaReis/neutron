@@ -1,0 +1,307 @@
+<SCENE>
+
+
+<INITIALS>
+    <frustum near="1" far="1000"/>                      <!-- frustum planes-->
+    <translation x="0" y="0" z="0" />               <!-- initial translate -->
+    <rotation axis="x" angle="0" />                  <!-- initial rotation 3 -->
+    <rotation axis="y" angle="0" />                  <!-- initial rotation 2 -->
+    <rotation axis="z" angle="0" />                  <!-- initial rotation 1 -->
+    <scale sx="1" sy="1" sz="1" />                  <!-- initial scaling -->
+    <reference length="1" />                          <!-- axis length; "0" means no axis-->
+</INITIALS>
+ 
+ 
+<ILLUMINATION>
+    <ambient r="0.5" g="0.5" b="0.5" a="1.0" />            <!-- global ambient -->
+    <background r="0.0" g="0.0" b="0.0" a="0.9" />         <!-- background color -->
+</ILLUMINATION>
+
+<LIGHTS>
+    <LIGHT id="luz_1">                                    <!-- light identifier -->
+        <enable value= "1" />                         <!-- enable/disable -->
+        <position x="4.0" y="25.0" z="10.0" w="1.0" />       <!-- light position -->
+        <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+        <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+        <specular r="1.0" g="1.0" b="1.0" a="0.5" />
+    </LIGHT>
+ 
+    <LIGHT id="luz_2">                              <!-- light identifier -->
+        <enable value= "0" />                         <!-- enable/disable -->
+        <position x="0.75" y="20" z="10.5" w="1.0" />       <!-- light position -->
+        <ambient r="1" g="1" b="1" a="1.0" />        <!-- ambient component -->
+        <diffuse r="1" g="1" b="1" a="1.0" />        <!-- diffuse component -->
+        <specular r="1" g="1" b="1" a="1.0" />       <!-- specular component -->
+    </LIGHT>
+
+</LIGHTS>
+
+<ANIMATIONS>
+        <ANIMATION id="line1" span="10" type="linear">
+            <controlpoint xx="1" yy="1" zz="1"/>            
+            <controlpoint xx="3" yy="1" zz="2"/>    
+            <controlpoint xx="2" yy="1" zz="2"/>                    
+            <controlpoint xx="5" yy="1" zz="5"/>            
+        </ANIMATION>
+
+        <ANIMATION id="circle1" span="30" type="circular" center="10 10 10" radius="0" startang="0" rotang="1440"/>
+
+        <ANIMATION id="circle2" span="10" type="circular" center="10 10 10" radius="5" startang="40" rotang="10"/>
+        
+</ANIMATIONS>
+
+<TEXTURES>
+    <TEXTURE id="tabuleiro_galaxy">
+        <file path="textures/tabuleiro_galaxy.jpg" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>
+
+    <!--<TEXTURE id="skyy">
+        <file path="textures/ceu.jpg" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>-->
+
+    <TEXTURE id="pattern_peca_black">
+        <file path="textures/pattern_peca_black.jpg" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>
+
+    <TEXTURE id="pattern_peca_white">
+        <file path="textures/pattern_peca_white.jpg" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>
+
+    <TEXTURE id="pattern_peca_neutron">
+        <file path="textures/pattern_peca_neutron2.jpg" />
+        <amplif_factor s="1" t="1" />
+    </TEXTURE>
+
+    <TEXTURE id="galaxy">
+        <file path="textures/galaxy.jpg" />
+        <amplif_factor s="0.1" t="0.1" />
+    </TEXTURE>
+</TEXTURES>
+ 
+ 
+<MATERIALS>
+    <MATERIAL id="brilhante">
+    <shininess value="30" />
+        <specular r="1.0" g="1.0" b="1.0" a="1.0" />        <!-- specular reflection -->
+        <diffuse r="0.95" g="0.95" b="0.95" a="0.6" />      <!-- diffuse reflection -->
+        <ambient r="0.95" g="0.95" b="0.95" a="0.2" />      <!-- ambient reflection -->
+        <emission r="0.0" g="0.0" b="0.0" a="0.0" />        <!-- emission component -->
+     </MATERIAL>
+ 
+     <MATERIAL id="opaco">
+        <shininess value="10.0" />
+        <specular r="0.0" g="0.0" b="0.0" a="0.1" />        <!-- specular reflection -->
+        <diffuse r="0.6" g="0.6" b="0.6" a="0.6" />         <!-- diffuse reflection -->
+        <ambient r="0.0" g="0.0" b="0.0" a="0.2" />         <!-- ambient reflection -->
+        <emission r="0.0" g="0.0" b="0.0" a="0.0" />        <!-- emission component -->
+     </MATERIAL>
+
+      <MATERIAL id="default">
+        <shininess value="20" />
+        <specular r="0.1" g="0.1" b="0.1" a="0.8" />        <!-- specular reflection -->
+        <diffuse r="0.78" g="0.6" b="0.35" a="0.8" />       <!-- diffuse reflection -->
+        <ambient r="0.78" g="0.6" b="0.35" a="0.2" />       <!-- ambient reflection -->
+        <emission r="0.0" g="0.0" b="0.0" a="0.0" />        <!-- emission component -->
+     </MATERIAL>
+</MATERIALS>
+
+
+<LEAVES>
+    <LEAF id="rect" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
+    <LEAF id="cyl" type="cylinder" args="1.0 1.0 1.0 30.0 30.0" />
+    <LEAF id="sph" type="sphere" args="1 16 16" />
+    <LEAF id="plan" type="plane" parts="20"/>
+
+    <LEAF id="peca" type="patch" order="3" partsU="50" partsV="50">
+        <controlpoint x="-0.6" y="-0.65" z="0" />
+        <controlpoint x="-0.95" y="-0.300" z="0" />
+        <controlpoint x="-0.95" y="0.300" z="0" />
+        <controlpoint x="-0.6" y="0.650" z="0" />
+        <controlpoint x="-0.200" y="-0.95" z="0" />
+        <controlpoint x="-0.95" y="-0.600" z="1.45" />
+        <controlpoint x="-0.95" y="0.600" z="1.45" />
+        <controlpoint x="-0.200" y="0.950" z="0" />
+        <controlpoint x="0.200" y="-0.95" z="0" />
+        <controlpoint x="0.95" y="-0.600" z="1.45" />
+        <controlpoint x="0.95" y="0.600" z="1.45" />
+        <controlpoint x="0.200" y="0.950" z="0" />
+        <controlpoint x="0.6" y="-0.65" z="0" />
+        <controlpoint x="0.95" y="-0.300" z="0" />
+        <controlpoint x="0.95" y="0.300" z="0" />
+        <controlpoint x="0.6" y="0.650" z="0" />
+    </LEAF>
+
+    <LEAF id="sky" type="patch" order="3" partsU="50" partsV="50">
+        <controlpoint x="-0.700" y="0.650" z="-0.250" />
+        <controlpoint x="-1.000" y="0.400" z="-0.250" />
+        <controlpoint x="-1.000" y="-0.400" z="-0.250" />
+        <controlpoint x="-0.700" y="-0.650" z="-0.250" />
+        <controlpoint x="-0.400" y="1.000" z="-0.250" />
+        <controlpoint x="-0.800" y="1.000" z="1.150" />
+        <controlpoint x="-0.800" y="-1.000" z="1.150" />
+        <controlpoint x="-0.400" y="-1.000" z="-0.250" />
+        <controlpoint x="0.400"  y="1.000" z="-0.250" />
+        <controlpoint x="0.800"  y="1.000" z="1.150" />
+        <controlpoint x="0.800"  y="-1.000" z="1.150" />
+        <controlpoint x="0.400"  y="-1.000" z="-0.250" />
+        <controlpoint x="0.700"  y="0.650" z="-0.250" />
+        <controlpoint x="1.000"  y="0.400" z="-0.250" />
+        <controlpoint x="1.000"  y="-0.400" z="-0.250" />
+        <controlpoint x="0.700"  y="-0.650" z="-0.250" />
+    </LEAF>
+
+</LEAVES>
+
+
+<NODES>
+ 
+    <ROOT id="cena" />
+
+    <NODE id="terr">
+        <MATERIAL id="brilhante" />
+        <TEXTURE id="tabuleiro_galaxy" />
+        
+        <TRANSLATION x="0" y="0" z="0" />
+       <!-- <ROTATION axis="x" angle="-90" />-->
+        <SCALE sx="2.5" sy="2.5" sz="2.5" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="plan" />            
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="peça_neutron">
+        <MATERIAL id="brilhante" />
+        <TEXTURE id="pattern_peca_neutron" />
+
+       <!-- <TRANSLATION x="0" y="-0.05" z="0" />-->
+        <ROTATION axis="y" angle="90" />
+        <SCALE sx="0.30" sy="0.30" sz="0.30" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="peça_top" /> 
+            <DESCENDANT id="peça_bottom" />        
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="empty_space">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+       <!-- <TRANSLATION x="0" y="-0.05" z="0" />-->
+        <SCALE sx="0.30" sy="0.30" sz="0.30" />
+
+        <DESCENDANTS>
+        </DESCENDANTS>
+
+       
+    </NODE>
+
+    <NODE id="peça_white">
+        <MATERIAL id="brilhante" />
+        <TEXTURE id="pattern_peca_white" />
+
+        <!--<TRANSLATION x="2" y="-0.05" z="2" />-->
+        <SCALE sx="0.30" sy="0.30" sz="0.30" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="peça_top" /> 
+            <DESCENDANT id="peça_bottom" />        
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="peça_black">
+        <MATERIAL id="brilhante" />
+        <TEXTURE id="pattern_peca_black" />
+
+        <!--<TRANSLATION x="-2" y="-0.05" z="0" />-->
+        <SCALE sx="0.30" sy="0.30" sz="0.30" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="peça_top" /> 
+            <DESCENDANT id="peça_bottom" />        
+        </DESCENDANTS>
+    </NODE>
+    
+    <NODE id="peça_top">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <TRANSLATION x="0" y="1" z="0" />
+        <ROTATION axis="x" angle="-90" />
+        <SCALE sx="1" sy="1" sz="1" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="peca" />            
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="peça_bottom">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <TRANSLATION x="0" y="1" z="0" />
+        <ROTATION axis="x" angle="90" />
+        <SCALE sx="1" sy="1" sz="1" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="peca" />            
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="dome">
+        <MATERIAL id="brilhante" />
+        <TEXTURE id="galaxy" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="ceu" /> 
+            <DESCENDANT id="ceu_bt" />        
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="ceu">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <TRANSLATION x="0" y="7.5" z="0" />
+        <ROTATION axis="x" angle="-90" />
+        <SCALE sx="15" sy="15" sz="15" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="sky" />        
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="ceu_bt">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <TRANSLATION x="0" y="0" z="0" />
+        <ROTATION axis="x" angle="90" />
+        <SCALE sx="15" sy="15" sz="15" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="sky" />        
+        </DESCENDANTS>
+    </NODE>
+
+
+    <NODE id="cena">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="dome" />
+            <DESCENDANT id="peça_white" />
+            <DESCENDANT id="peça_neutron" />
+            <DESCENDANT id="peça_black" />
+            <DESCENDANT id="terr" />
+             <DESCENDANT id="empty_space" />
+        </DESCENDANTS>
+    </NODE>
+</NODES>
+
+</SCENE>

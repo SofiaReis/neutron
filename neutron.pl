@@ -51,12 +51,12 @@ apresentacao:-
         write('-   Jogo desenvolvido na cadeira de PLOG  -'), nl,
         write('-                                         -'), nl,
         write('- Objetivo:                               -'), nl,
-        write('-    Colocar o Neutrão numa das posições  -'), nl,
+        write('-    Colocar o Neutro numa das posies  -'), nl,
         write('-    iniciais dos seus soldados.          -'), nl,
         write('-                                         -'), nl,
         write('- 2 Jogadores->                           -'), nl,
-        write('-    - Peças pretas                       -'), nl,
-        write('-    - Peças brancas                      -'), nl,
+        write('-    - Peas pretas                       -'), nl,
+        write('-    - Peas brancas                      -'), nl,
         write('-                                         -'), nl,
         write('- Escolha o tipo de jogadores:            -'), nl,
         nl.
@@ -73,7 +73,7 @@ jogada_soldado(Tab,Xi, Yi, Xf, Yf, J):-
            ler_jogada_soldado(Xi, Yi, Xf, Yf),
            valida_jogada(Tab, Xi, Yi, Xf, Yf,J)
         ;
-           write('Jogada Inválida!\n'),
+           write('Jogada Invlida!\n'),
            jogada_soldado(Tab,Xi, Yi, Xf, Yf,J)
         ).
 
@@ -83,7 +83,7 @@ jogada_neutrao(Tab,NXi, NYi, NXf, NYf):-
            write('\nLeu Jogada\n'),
            valida_jogada(Tab, NXi, NYi, NXf, NYf,3)
         ;
-           write('Jogada Inválida!\n'),
+           write('Jogada Invlida!\n'),
            jogada_neutrao(Tab, NXi, NYi, NXf, NYf)
         ).
         
@@ -169,34 +169,34 @@ print_linha([Elemento|Resto]):-
         print_linha(Resto).
 
 ler_jogada_soldado(Xi, Yi, Xf, Yf):-
-        write('Inserir coordenada X inicial da peça do soldado a mover'),
+        write('Inserir coordenada X inicial da pea do soldado a mover'),
         nl,
         get_code(X1),
         get_char(_),
-        write('Inserir coordenada Y inicial da peça do soldado a mover'),
+        write('Inserir coordenada Y inicial da pea do soldado a mover'),
         nl,
         get_code(Y1),
         get_char(_),
-        write('Inserir coordenada X final da peça do soldado a mover'),
+        write('Inserir coordenada X final da pea do soldado a mover'),
         nl,
         get_code(X2),
         get_char(_),
-        write('Inserir coordenada Y final da peça do soldado a mover'),
+        write('Inserir coordenada Y final da pea do soldado a mover'),
         nl,
         get_code(Y2),
         get_char(_),
-        % 48 código tecla zero
+        % 48 cdigo tecla zero
         Xi is X1 - 48,
         Yi is Y1 - 48,
         Xf is X2 - 48,
         Yf is Y2 - 48.
 
 ler_jogada_neutrao(NXf,NYf):-
-        write('Inserir coordenada X final da peça neutrão, a mover'),
+        write('Inserir coordenada X final da pea neutro, a mover'),
         nl,
         get_code(X),
         get_char(_),
-        write('Inserir coordenada Y final da peça neutrão, a mover'),
+        write('Inserir coordenada Y final da pea neutro, a mover'),
         nl,
         get_code(Y),
         get_char(_),
@@ -254,6 +254,7 @@ verifica_fim(Nx,Ny,Tab,J):-
         ).
 
 valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
+        write([Tab, Xi, Yi, Xf, Yf, N]),
         (Xi =\= Xf;
         Yi =\= Yf),
         

@@ -444,6 +444,7 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 	var nodes = nodeList.getElementsByTagName('NODE');
 
 	this.nodesInfo = [];
+	this.pieces = [];
 
 	for(var i = 0; i < nodes.length; i++){
 
@@ -461,10 +462,12 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 		}
 
 		var material = getUniqueElement(nodes[i],'MATERIAL');
+		//console.log(material);
 		
 		if(material.tagName == 'MATERIAL'){
 			this.node['material'] = [];
 			this.node['material'] = this.reader.getString(material, 'id');
+
 		}
 
 		var texture = getUniqueElement(nodes[i], "TEXTURE");
@@ -473,13 +476,20 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 			this.node['texture'] = this.reader.getString(texture, 'id');
 		}
 		var descendants = getUniqueElement(nodes[i], "DESCENDANTS");
-		this.node['descendants'] = [];
-		var desc = descendants.getElementsByTagName('DESCENDANT');
 
-		for(var j = 0; j < desc.length; j++){
-			var id_d = this.reader.getString(desc[j], 'id');
-			this.node['descendants'][j] = id_d;
-		}
+			this.node['descendants'] = [];
+			var desc = descendants.getElementsByTagName('DESCENDANT');
+			console.log(desc);
+			if(desc!= null)
+			{
+				for(var j = 0; j < desc.length; j++){
+				var id_d = this.reader.getString(desc[j], 'id');
+				this.node['descendants'][j] = id_d;
+			}
+			}
+			
+		
+		
 
 		var transformations = nodes[i].getElementsByTagName('*');
 
@@ -518,8 +528,19 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 
 			}
 		}
-		this.nodesInfo[this.node['id']] = this.node;
+		
+		if(id == "peça_neutron" || id == "peça_white" || id == "peça_black" || id =="empty_space"){
+			//console.log("AQUI");
+			this.pieces[id] = this.node;
+		}
+		
+			this.nodesInfo[this.node['id']] = this.node;
+		
+		
 	}
+
+console.log(this.nodesInfo);
+	console.log(this.pieces);
 
 	var root = nodeList.getElementsByTagName('ROOT');
 	this.root_id = root[0].attributes.getNamedItem("id").value;
@@ -548,9 +569,9 @@ MySceneGraph.prototype.onXMLReady=function()
 		return;
 	}	
 
-	this.loadedOk=true;
-	
 	this.scene.onGraphLoaded();
+
+	this.loadedOk=true;
 };
  
 MySceneGraph.prototype.onXMLError=function (message) {
