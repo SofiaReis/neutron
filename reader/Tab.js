@@ -86,8 +86,6 @@ function Tab(scene) {
 
 				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				this.scene.graph.nodesInfo[piece.id] = piece;
- 				//this.scene.registerForPick(i+j+1, this.scene.graph.nodesInfo[piece.id]);
-
  				col.push(piece);
  			}
  			else if(this.tab[i][j] == 3)
@@ -105,9 +103,6 @@ function Tab(scene) {
 
  				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				this.scene.graph.nodesInfo[piece.id] = piece;
- 				//this.scene.registerForPick(i+j+1, this.scene.graph.nodesInfo[piece.id]);
-
-
  				col.push(piece);
  			}
  			else
