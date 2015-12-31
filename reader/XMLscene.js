@@ -517,9 +517,11 @@ XMLscene.prototype.processGraph = function(node){
  */
 XMLscene.prototype.draw = function(nodeID,leaf,s,t){
 
-	this.i++;
-
-	this.registerForPick(this.i, leaf);
+	if(nodeID == "peca"){
+		this.i++;
+		this.registerForPick(this.i, leaf);
+	}
+	
 
 	switch(leaf.type){ 
 		case "rectangle":
