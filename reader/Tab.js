@@ -56,11 +56,7 @@ function Tab(scene) {
  			if(this.tab[i][j] == 1){
  				var piece = cloneObject(this.scene.graph.pieces['peça_white']);
  				piece.id = "peça_white"+i+j;
- 				//console.log(piece);
  				var ind = piece.transformations.length;
-
- 				console.log("X:"+xi);
- 				console.log("Z:"+zi);
  				
  				piece.transformations[ind] = {};
  				piece.transformations[ind].type = "translation";
@@ -70,8 +66,9 @@ function Tab(scene) {
  				piece.transformations.reverse();
  				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				this.scene.graph.nodesInfo[piece.id] = piece;
- 				//console.log(this.scene.graph.nodesInfo);
- 				
+ 				//this.scene.registerForPick(i+j+1, this.scene.graph.nodesInfo[piece.id]);
+ 				//console.log(i+j+1);
+ 				//console.log(this.scene.graph.nodesInfo[piece.id]);
 
  				col.push(piece);
  			}
@@ -80,10 +77,6 @@ function Tab(scene) {
  				var piece = cloneObject(this.scene.graph.pieces['peça_black']);
  				piece.id = "peça_black"+i+j;
  				var ind = piece.transformations.length;
-
- 				console.log("X:"+xi);
- 				console.log("Z:"+zi);
- 				
  				piece.transformations[ind] = {};
  				piece.transformations[ind].type = "translation";
  				piece.transformations[ind].x = xi;
@@ -93,6 +86,7 @@ function Tab(scene) {
 
 				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				this.scene.graph.nodesInfo[piece.id] = piece;
+ 				//this.scene.registerForPick(i+j+1, this.scene.graph.nodesInfo[piece.id]);
 
  				col.push(piece);
  			}
@@ -102,10 +96,6 @@ function Tab(scene) {
  				var piece = cloneObject(this.scene.graph.pieces['peça_neutron']);
  				piece.id = "peça_neutron"+i+j;
  				var ind = piece.transformations.length;
-
- 				console.log("X:"+xi);
- 				console.log("Z:"+zi);
-
  				piece.transformations[ind] = {};
  				piece.transformations[ind].type = "translation";
  				piece.transformations[ind].x = xi;
@@ -115,6 +105,8 @@ function Tab(scene) {
 
  				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				this.scene.graph.nodesInfo[piece.id] = piece;
+ 				//this.scene.registerForPick(i+j+1, this.scene.graph.nodesInfo[piece.id]);
+
 
  				col.push(piece);
  			}
@@ -124,10 +116,6 @@ function Tab(scene) {
  				var piece = cloneObject(this.scene.graph.pieces['empty_space']);
  				piece.id = "empty_space"+i+j;
  				var ind = piece.transformations.length;
-
- 				console.log("X:"+xi);
- 				console.log("Z:"+zi);
-
 				piece.transformations[ind] = {};
  				piece.transformations[ind].type = "translation";
  				piece.transformations[ind].x = xi;
@@ -138,10 +126,6 @@ function Tab(scene) {
  				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				col.push(piece);
  			}
-
- 			
- 			console.log(this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants);
-
  		}
  		
  		zi=3;
@@ -157,14 +141,11 @@ function Tab(scene) {
  			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "empty_space")
  		{
  			var index = this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.indexOf(descendant);
- 			console.log(index);
  			if (index > -1) {
     			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.splice(index, 1);
 			}
  		}
  	}
-
- 	console.log(this.scene.graph.nodesInfo);
  };
 
 

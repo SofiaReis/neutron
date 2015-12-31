@@ -46,6 +46,9 @@ XMLscene.prototype.init = function (application) {
     this.a_material=null;
     this.a_texture=null;
 
+    this.setPickEnabled(true);
+    this.i = 0;
+
    	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(1000/60);
 };
@@ -72,8 +75,6 @@ XMLscene.prototype.resetTab = function()
 	this.initTab(function(matrix){
 		scene.board.init(matrix);
 	});
-
-	console.log(this.board.pieces);
 }
 
 /**
@@ -147,6 +148,52 @@ XMLscene.prototype.processTextures = function(){
 		this.textures[texture].amp.t = this.graph.texturesInfo[texture].amplif_factor.t; 
 	}
 }
+
+/*
+*	Returns array of coord from pick
+*/
+XMLscene.prototype.pickObject = function(pick) {
+
+			var Y = (Math.floor(pick/11))+1;
+			var X = (pick % 11)+1;
+			var coord = new Array(X,Y);
+
+return coord;
+
+}
+
+XMLscene.prototype.getListOfPicking = function (pick){
+
+				var coord = this.pickToCoord(pick);
+				var coordStr = coord.toString();
+					
+				var list = this.getIdPieceLocation(coordStr);
+
+		return list;
+}
+
+XMLscene.prototype.logPicking = function ()
+{
+
+	
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				console.log(obj);
+				if (obj)
+				{
+					var customId = this.pickResults[i][1];				
+					console.log("Picked object: " + obj + ", with pick id " + customId);
+				}
+			}
+			this.pickResults.splice(0,this.pickResults.length);
+		}		
+	}
+}
+
+
+
 
 /**
  * processMaterials
@@ -328,7 +375,6 @@ XMLscene.prototype.onGraphLoaded = function ()
 	for(node in this.graph.nodesInfo)
 	{
 		var tmatrix = mat4.create();
-		console.log(this.graph.nodesInfo[node].id);
 		for(trans in this.graph.nodesInfo[node].transformations){
 
 			if(this.graph.nodesInfo[node].transformations[trans].type == "translation"){
@@ -385,10 +431,9 @@ XMLscene.prototype.processGraph = function(node){
 
 	//console.log("NODE:"+ node.id);
 
-	this.pushMatrix();
+	//console.log(this.board);
 
-	
-	//console.log("NODE:"+ node.id);
+	this.pushMatrix();
 
 	var material = node.material;
 	var texture = node.texture;
@@ -442,18 +487,17 @@ XMLscene.prototype.processGraph = function(node){
 	}
 
 }
-
 	
 	for(var i in node.descendants){
-		if(this.checkIfLeaf(node.descendants[i])){
-			//console.log("NODE:" + node.id);
-			//console.log("DESCENDANT:" + node.descendants[i]);
 
-			if(this.a_texture==undefined){
-				this.draw(this.leaves[node.descendants[i]],1,1);
+		if(this.checkIfLeaf(node.descendants[i])){
+
+			if(this.a_texture==undefined){		
+				this.draw(node.descendants[i],this.leaves[node.descendants[i]],1,1);
 			}
 			else{
-			this.draw(this.leaves[node.descendants[i]], this.textures[this.a_texture].amp.s, this.textures[this.a_texture].amp.t);
+						
+			this.draw(node.descendants[i],this.leaves[node.descendants[i]], this.textures[this.a_texture].amp.s, this.textures[this.a_texture].amp.t);
 			}
 
 		}
@@ -471,10 +515,15 @@ XMLscene.prototype.processGraph = function(node){
  * @param s Amplification factor s
  * @param t Amplification factor t
  */
-XMLscene.prototype.draw = function(leaf,s,t){
+XMLscene.prototype.draw = function(nodeID,leaf,s,t){
+
+	this.i++;
+
+	this.registerForPick(this.i, leaf);
 
 	switch(leaf.type){ 
 		case "rectangle":
+
 			leaf.updateAmpl(s,t);
 			leaf.display();
 		break;
@@ -534,9 +583,16 @@ XMLscene.prototype.processInitialsTransformations = function(){
 * Function that makes the scene display
 */
 XMLscene.prototype.display = function () {
+
+
+	//picking init
+	this.logPicking();
+	this.clearPickRegistration();
    
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+ 
 
 	this.updateProjectionMatrix();
     this.loadIdentity();
@@ -563,9 +619,9 @@ XMLscene.prototype.display = function () {
 			}
 		}
 
-		this.processInitialsTransformations();
+		this.i = 0;
 
-		//console.log(this.graph.nodesInfo[this.graph.root_id]);
+		this.processInitialsTransformations();
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 	};	
 };

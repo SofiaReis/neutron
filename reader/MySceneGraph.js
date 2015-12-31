@@ -443,12 +443,12 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 	var nodeList = getUniqueElement(rootElement, 'NODES');
 	var nodes = nodeList.getElementsByTagName('NODE');
 
-	this.nodesInfo = [];
+	this.nodesInfo = {};
 	this.pieces = [];
 
 	for(var i = 0; i < nodes.length; i++){
 
-		this.node = [];
+		this.node = {};
 		var id = this.reader.getString(nodes[i],"id");
 		this.node['id'] = this.reader.getString(nodes[i],"id");
 		this.node['visited'] = false;
@@ -479,7 +479,6 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 
 			this.node['descendants'] = [];
 			var desc = descendants.getElementsByTagName('DESCENDANT');
-			console.log(desc);
 			if(desc!= null)
 			{
 				for(var j = 0; j < desc.length; j++){
@@ -569,9 +568,11 @@ MySceneGraph.prototype.onXMLReady=function()
 		return;
 	}	
 
+	this.loadedOk=true;
+
 	this.scene.onGraphLoaded();
 
-	this.loadedOk=true;
+	
 };
  
 MySceneGraph.prototype.onXMLError=function (message) {
