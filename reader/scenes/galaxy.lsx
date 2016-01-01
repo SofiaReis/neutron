@@ -398,7 +398,6 @@
                 <DESCENDANT id="peça_white" />
                 <DESCENDANT id="peça_neutron" />
                 <DESCENDANT id="peça_black" />
-                 <DESCENDANT id="empty_space" />
                 <DESCENDANT id="tabuleiro" />
                 <DESCENDANT id="base" />
             </DESCENDANTS>

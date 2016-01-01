@@ -6,11 +6,7 @@ function Tab(scene) {
         
         this.player1 = "Player 1";
         this.player2 = "Player 2";
-
-       // this.base = new CGFtexture(this.scene, );
-
-
-        //Marcadores 
+ 
         this.p1Points = 0;
         this.p2Points = 0;
 
@@ -29,7 +25,7 @@ function Tab(scene) {
         return obj;
     }
  
-    var temp = obj.constructor(); // give temp the original obj's constructor
+    var temp = obj.constructor(); 
     for (var key in obj) {
         temp[key] = cloneObject(obj[key]);
     }
@@ -49,73 +45,22 @@ function Tab(scene) {
  	{
  		xi=xi+1;
  		var col = [];
+ 		var line = [];
 
  		for(var j = 0; j < this.nR; ++j)
  		{
  			zi = zi-1;
  			if(this.tab[i][j] == 1){
- 				var piece = cloneObject(this.scene.graph.pieces['peça_white']);
- 				piece.id = "peça_white"+i+j;
- 				var ind = piece.transformations.length;
- 				
- 				piece.transformations[ind] = {};
- 				piece.transformations[ind].type = "translation";
- 				piece.transformations[ind].x = xi;
- 				piece.transformations[ind].y = 0;
- 				piece.transformations[ind].z = zi;
- 				piece.transformations.reverse();
- 				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
- 				this.scene.graph.nodesInfo[piece.id] = piece;
-
+ 				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_white']));
  				col.push(piece);
  			}
  			else if(this.tab[i][j] == 2){
-
- 				var piece = cloneObject(this.scene.graph.pieces['peça_black']);
- 				piece.id = "peça_black"+i+j;
- 				var ind = piece.transformations.length;
- 				piece.transformations[ind] = {};
- 				piece.transformations[ind].type = "translation";
- 				piece.transformations[ind].x = xi;
- 				piece.transformations[ind].y = 0;
- 				piece.transformations[ind].z = zi;
- 				piece.transformations.reverse();
-
-				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
- 				this.scene.graph.nodesInfo[piece.id] = piece;
+ 				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_black']));
  				col.push(piece);
  			}
  			else if(this.tab[i][j] == 3)
  			{
- 				
- 				var piece = cloneObject(this.scene.graph.pieces['peça_neutron']);
- 				piece.id = "peça_neutron"+i+j;
- 				var ind = piece.transformations.length;
- 				piece.transformations[ind] = {};
- 				piece.transformations[ind].type = "translation";
- 				piece.transformations[ind].x = xi;
- 				piece.transformations[ind].y = 0;
- 				piece.transformations[ind].z = zi;
- 				piece.transformations.reverse();
-
- 				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
- 				this.scene.graph.nodesInfo[piece.id] = piece;
- 				col.push(piece);
- 			}
- 			else
- 			{
- 				
- 				var piece = cloneObject(this.scene.graph.pieces['empty_space']);
- 				piece.id = "empty_space"+i+j;
- 				var ind = piece.transformations.length;
-				piece.transformations[ind] = {};
- 				piece.transformations[ind].type = "translation";
- 				piece.transformations[ind].x = xi;
- 				piece.transformations[ind].y = 0;
- 				piece.transformations[ind].z = zi;
- 				piece.transformations.reverse();
- 				this.scene.graph.nodesInfo[piece.id] = piece;
- 				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
+ 				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_neutron']));
  				col.push(piece);
  			}
  		}
@@ -123,14 +68,18 @@ function Tab(scene) {
  		zi=3;
  		this.pieces.push(col);		
  	}
+ 	this.removeDescendant("peça_white");
+ 	this.removeDescendant("peça_black");
+ 	this.removeDescendant("peça_neutron");
+ };
 
- 	for(var i = 0; i < this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.length-1;i++)
+
+Tab.prototype.removeDescendant = function(type){
+
+	for(var i = 0; i < this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.length;i++)
  	{
  		var descendant = this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i];
- 		if(this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "peça_black" ||
- 			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "peça_white" ||
- 			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "peça_neutron"  ||
- 			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "empty_space" )
+ 		if(this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == type)
  		{
  			var index = this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.indexOf(descendant);
  			if (index > -1) {
@@ -138,6 +87,5 @@ function Tab(scene) {
 			}
  		}
  	}
- };
-
+}
 

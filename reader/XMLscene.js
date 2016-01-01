@@ -14,6 +14,7 @@ function XMLscene() {
     this.processing = true;
 
     this.board = [];
+     this.boardPieces = [];
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -42,7 +43,7 @@ XMLscene.prototype.init = function (application) {
     this.a_texture=null;
 
     this.setPickEnabled(true);
-    this.i = 0;
+    this.i = 1;
 
     this.defaultApp = new CGFappearance(this);
     this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
@@ -168,18 +169,6 @@ XMLscene.prototype.processTextures = function(){
 	}
 }
 
-/*
-*	Returns array of coord from pick
-*/
-XMLscene.prototype.pickObject = function(pick) {
-
-			var Y = (Math.floor(pick/11))+1;
-			var X = (pick % 11)+1;
-			var coord = new Array(X,Y);
-
-return coord;
-
-}
 
 XMLscene.prototype.getListOfPicking = function (pick){
 
@@ -200,15 +189,12 @@ XMLscene.prototype.logPicking = function ()
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
 				console.log(obj);
-				if (obj)
+				if (obj instanceof Piece)
 				{
-					var customId = this.pickResults[i][1];	
-
-					if(isOdd(customId) == true)
-					{
-
-					}			
+					var customId = this.pickResults[i][1];				
 					console.log("Picked object: " + obj + ", with pick id " + customId);
+					obj.height = 2;
+
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -386,6 +372,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 
 	//Leaves
 	this.processLeaves();
+	//console.log(this.graph.nodesInfo);
 
 	this.resetTab();
 
@@ -434,7 +421,9 @@ XMLscene.prototype.onGraphLoaded = function ()
 		}
 		this.graph.nodesInfo[node].matrix = tmatrix;
 	}
-	//console.log(this.graph.nodesInfo);
+
+
+	
 };
 
 /**
@@ -530,16 +519,18 @@ XMLscene.prototype.processGraph = function(node){
 			}
 
 		}
-		else this.processGraph(this.graph.nodesInfo[node.descendants[i]]);
+		else 
+			this.processGraph(this.graph.nodesInfo[node.descendants[i]]);
 	}
 
 	this.popMatrix();
 
 }
 
-XMLscene.prototype.registPiece = function(leaf){
-	this.i++;
-	this.registerForPick(this.i, leaf);
+XMLscene.prototype.registPiece = function(piece){
+	
+	this.registerForPick(this.count, piece);
+	this.count++;
 }
 
 /**
@@ -550,15 +541,6 @@ XMLscene.prototype.registPiece = function(leaf){
  * @param t Amplification factor t
  */
 XMLscene.prototype.draw = function(nodeID,leaf,s,t){
-
-	if(nodeID.indexOf("peça") > -1)
-	{
-		//console.log("REGIST PIECE: "+nodeID);
-		this.registPiece(leaf);
-	} 	
-
-
-	//console.log(nodeID.indexOf("peça"));
 
 	switch(leaf.type){ 
 		case "rectangle":
@@ -656,7 +638,7 @@ XMLscene.prototype.display = function () {
 			}
 		}
 
-		this.i = 0;
+		this.count = 1;
 
 		this.pushMatrix();
 		this.translate(0,1,-3);
@@ -665,6 +647,18 @@ XMLscene.prototype.display = function () {
     	this.popMatrix();
 
 		this.processInitialsTransformations();
+
+		for(var i = 0; i < this.board.pieces.length;i++)
+		{
+			for(var j = 0; j < this.board.pieces[0].length; j++)
+			{
+				if(this.board.pieces[i][j] != undefined)
+				{
+						this.registPiece(this.board.pieces[i][j]);
+						this.board.pieces[i][j].display();		
+				}
+			}
+		}
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 	};	
 };
