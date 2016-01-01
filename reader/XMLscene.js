@@ -53,10 +53,7 @@ XMLscene.prototype.init = function (application) {
     this.textShader=new CGFshader(this.gl, "shaders/font.vert", "shaders/font.frag");
     this.textShader.setUniformsValues({'dims': [16, 16]});
 
-    this.font = new CGFtexture(this, "textures/font2.png");
-    console.log(this.font);
-
-
+    this.font = new CGFtexture(this, "textures/cells.png");
 
     this.timer = new Timer(this,this.font);
 
@@ -662,9 +659,8 @@ XMLscene.prototype.display = function () {
 		this.i = 0;
 
 		this.pushMatrix();
-		this.translate(-0.25,1,-3);
-		 this.rotate(this.convertDegtoRad(90),1,0,0);
-        
+		this.translate(0,1,-3);
+		this.scale(0.5,0.5,0.5);
         this.timer.display();
     	this.popMatrix();
 

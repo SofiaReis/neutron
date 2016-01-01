@@ -12,8 +12,8 @@ function Timer(scene, fontText) {
 	this.timeBeg=null;
 	this.paused=false;
 
-	this.rec = new Rectangle(scene, 0, 0, 0.5, 1);
-	this.rec.updateAmpl(1,1);
+	this.rec = new Plane(scene, 16);
+	//this.rec.updateAmpl(1,1);
 
 	this.appearance = scene.defaultApp;
 	console.log(this.appearance);
@@ -45,63 +45,59 @@ Timer.prototype.display = function () {
 
 Timer.prototype.displayTime = function () {
 	
-		this.scene.pushMatrix();
+		
 		this.scene.setActiveShaderSimple(this.scene.textShader);
 		this.appearance.apply();
 
-		var decM = Math.floor(this.minutes/10);
-		var uniM = this.minutes%10;
+		var decM = 15-Math.floor(this.minutes/10);
+		var uniM = 15-this.minutes%10;
 
-		var decS = Math.floor(this.seconds/10);
-		var uniS = this.seconds%10;
+		var decS = 15-Math.floor(this.seconds/10);
+		var uniS = 15-this.seconds%10;
 
-		//this.scene.translate(0,-0.2,0.25);
-
-		this.scene.activeShader.setUniformsValues({'charCoords': [decM,5]});
+		this.scene.activeShader.setUniformsValues({'charCoords': [decM,3]});
 		this.scene.pushMatrix();
-			this.scene.translate(-2,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
-			//this.rec.display();
-		this.scene.popMatrix();
-
-		this.scene.activeShader.setUniformsValues({'charCoords': [uniM,5]});
-		this.scene.pushMatrix();
-			this.scene.translate(-1,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
-			//this.rec.display();
-		this.scene.popMatrix();
-
-		this.scene.activeShader.setUniformsValues({'charCoords': [10,4]});
-		this.scene.pushMatrix();
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
+			this.scene.translate(-4,0,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
 			this.rec.display();
 		this.scene.popMatrix();
 
-		this.scene.activeShader.setUniformsValues({'charCoords': [decS,5]});
+		this.scene.activeShader.setUniformsValues({'charCoords': [uniM,3]});
 		this.scene.pushMatrix();
-			this.scene.translate(1,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
-			//this.rec.display();
+			this.scene.translate(-2,0,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
-		this.scene.activeShader.setUniformsValues({'charCoords': [uniS,5]});
+		this.scene.activeShader.setUniformsValues({'charCoords': [5,3]});
+		this.scene.pushMatrix();
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [decS,3]});
 		this.scene.pushMatrix();
 			this.scene.translate(2,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
-			//this.rec.display();
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [uniS,3]});
+		this.scene.pushMatrix();
+			this.scene.translate(4,0,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.setActiveShaderSimple(this.scene.defaultShader);
-	this.scene.popMatrix();
+
 };
 
 Timer.prototype.displayPaused = function () {
 	
-	this.scene.pushMatrix();
+
 		this.scene.setActiveShaderSimple(this.scene.textShader);
 		this.appearance.apply();
-
-		this.scene.translate(0,-0.2,0.25);
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [12,4]});
 		this.scene.pushMatrix();
@@ -138,7 +134,7 @@ Timer.prototype.displayPaused = function () {
 		this.scene.popMatrix();
 
 		this.scene.setActiveShaderSimple(this.scene.defaultShader);
-	this.scene.popMatrix();
+	
 };
 
 Timer.prototype.setFont = function (font) {
