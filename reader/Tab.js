@@ -39,6 +39,8 @@ function Tab(scene) {
  	this.nR = this.tab.length;
  	this.nC = this.tab[0].length;
 
+ 	this.plan = new Plane(this.scene, 20);
+
  	var xi = -3;
  	var zi = 3; 	
  	for(var i = 0; i < this.nC; ++i)

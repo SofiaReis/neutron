@@ -27,14 +27,9 @@ Timer.prototype.constructor = Timer;
 
 Timer.prototype.display = function () {
 
-
-
-
 	this.scene.pushMatrix();
 
 		this.scene.rotate(this.scene.convertDegtoRad(90),1,0,0);
-
-		//console.log("Time display!");
 
 		this.appearance.setTexture(this.fontText);
  		if(this.paused) this.displayPaused();

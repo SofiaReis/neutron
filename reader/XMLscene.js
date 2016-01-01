@@ -15,6 +15,7 @@ function XMLscene() {
 
     this.board = [];
      this.boardPieces = [];
+     
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -41,6 +42,8 @@ XMLscene.prototype.init = function (application) {
     this.animations = {};
     this.a_material=null;
     this.a_texture=null;
+
+    this.picked = null;
 
     this.setPickEnabled(true);
     this.i = 1;
@@ -182,19 +185,39 @@ XMLscene.prototype.getListOfPicking = function (pick){
 
 XMLscene.prototype.logPicking = function ()
 {
-
-	
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
-				console.log(obj);
-				if (obj instanceof Piece)
+				var customId = this.pickResults[i][1];	
+				if (obj instanceof Piece && this.picked == null && customId != 6)
+				{
+								
+					console.log("Picked object: " + obj + ", with pick id " + customId);
+					var ind = obj.type.transformations.length;
+					obj.type.transformations[ind] = {};
+					obj.type.transformations[ind].type = "translation";
+					obj.type.transformations[ind].x = 0;
+					obj.type.transformations[ind].y = 2;
+					obj.type.transformations[ind].z = 0;
+
+					this.picked = obj;
+
+					console.log(obj.type.transformations);
+
+				}
+				else if(obj instanceof Piece && this.picked == obj && customId != 6)
+				{
+					var ind = obj.type.transformations.length-1;
+					console.log(ind);
+					console.log(obj.type.transformations);
+					obj.type.transformations[ind].y = 0;
+					this.picked = null;
+				}
+				else if(obj instanceof Piece && customId != 6)
 				{
 					var customId = this.pickResults[i][1];				
 					console.log("Picked object: " + obj + ", with pick id " + customId);
-					obj.height = 2;
-
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -659,6 +682,9 @@ XMLscene.prototype.display = function () {
 				}
 			}
 		}
+
+		this.board.plan.display();
+
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 	};	
 };
