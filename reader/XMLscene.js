@@ -1,19 +1,14 @@
-/**
- * convertDegtoRad
- * Method to convert degrees to radians
- * @param deg angle in degrees
- */
-function convertDegtoRad(deg){
-	return (deg*Math.PI/180.0);
-} 
+ 
 
 function XMLscene() {
     CGFscene.call(this);
 
     this.curTime = 0;
 
-    this.p1Diff = "H";
-    this.p1Diff = "H";
+    this.gameDiff = "H";
+    
+    this.modeP1 = 1;
+    this.modeP2 = 1;
 
     this.dificulties = ["H", "M", "E"];
     this.processing = true;
@@ -49,9 +44,34 @@ XMLscene.prototype.init = function (application) {
     this.setPickEnabled(true);
     this.i = 0;
 
+    this.defaultApp = new CGFappearance(this);
+    this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
+    this.defaultApp.setDiffuse(0.7, 0.7, 0.7, 1);
+    this.defaultApp.setSpecular(0.0, 0.0, 0.0, 1);  
+    this.defaultApp.setShininess(120);
+
+    this.textShader=new CGFshader(this.gl, "shaders/font.vert", "shaders/font.frag");
+    this.textShader.setUniformsValues({'dims': [16, 16]});
+
+    this.font = new CGFtexture(this, "textures/font2.png");
+    console.log(this.font);
+
+
+
+    this.timer = new Timer(this,this.font);
+
    	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(1000/60);
 };
+
+/**
+ * convertDegtoRad
+ * Method to convert degrees to radians
+ * @param deg angle in degrees
+ */
+XMLscene.prototype.convertDegtoRad = function(deg){
+	return (deg*Math.PI/180.0);
+}
 
 XMLscene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), 
@@ -75,6 +95,8 @@ XMLscene.prototype.resetTab = function()
 	this.initTab(function(matrix){
 		scene.board.init(matrix);
 	});
+
+	
 }
 
 /**
@@ -183,7 +205,12 @@ XMLscene.prototype.logPicking = function ()
 				console.log(obj);
 				if (obj)
 				{
-					var customId = this.pickResults[i][1];				
+					var customId = this.pickResults[i][1];	
+
+					if(isOdd(customId) == true)
+					{
+
+					}			
 					console.log("Picked object: " + obj + ", with pick id " + customId);
 				}
 			}
@@ -193,6 +220,8 @@ XMLscene.prototype.logPicking = function ()
 }
 
 
+function isOdd(num) { return num % 2;}
+
 
 
 /**
@@ -200,6 +229,8 @@ XMLscene.prototype.logPicking = function ()
  * Method to process the parsing of Materials
  */
 XMLscene.prototype.processMaterials = function(){
+
+	 
 
 	for(material in this.graph.materialsInfo){
 
@@ -387,14 +418,14 @@ XMLscene.prototype.onGraphLoaded = function ()
 				var angle = this.graph.nodesInfo[node].transformations[trans].angle;
 				var axis = this.graph.nodesInfo[node].transformations[trans].axis;
 				if(axis == "x"){
-							mat4.rotate(tmatrix, tmatrix, convertDegtoRad(angle), [1,0,0]);
+							mat4.rotate(tmatrix, tmatrix, this.convertDegtoRad(angle), [1,0,0]);
 				}
 				else if(axis == "y"){
-							mat4.rotate(tmatrix, tmatrix, convertDegtoRad(angle), [0,1,0]);						
+							mat4.rotate(tmatrix, tmatrix, this.convertDegtoRad(angle), [0,1,0]);						
 
 				}
 				else if(axis == "z"){
-					mat4.rotate(tmatrix, tmatrix, convertDegtoRad(angle), [0,0,1]);	
+					mat4.rotate(tmatrix, tmatrix, this.convertDegtoRad(angle), [0,0,1]);	
 				}				
 			}
 			else if(this.graph.nodesInfo[node].transformations[trans].type == "scale"){
@@ -406,6 +437,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 		}
 		this.graph.nodesInfo[node].matrix = tmatrix;
 	}
+	//console.log(this.graph.nodesInfo);
 };
 
 /**
@@ -493,11 +525,11 @@ XMLscene.prototype.processGraph = function(node){
 		if(this.checkIfLeaf(node.descendants[i])){
 
 			if(this.a_texture==undefined){		
-				this.draw(node.descendants[i],this.leaves[node.descendants[i]],1,1);
+				this.draw(nodeID,this.leaves[node.descendants[i]],1,1);
 			}
 			else{
 						
-			this.draw(node.descendants[i],this.leaves[node.descendants[i]], this.textures[this.a_texture].amp.s, this.textures[this.a_texture].amp.t);
+			this.draw(nodeID,this.leaves[node.descendants[i]], this.textures[this.a_texture].amp.s, this.textures[this.a_texture].amp.t);
 			}
 
 		}
@@ -506,6 +538,11 @@ XMLscene.prototype.processGraph = function(node){
 
 	this.popMatrix();
 
+}
+
+XMLscene.prototype.registPiece = function(leaf){
+	this.i++;
+	this.registerForPick(this.i, leaf);
 }
 
 /**
@@ -517,11 +554,14 @@ XMLscene.prototype.processGraph = function(node){
  */
 XMLscene.prototype.draw = function(nodeID,leaf,s,t){
 
-	if(nodeID == "peca"){
-		this.i++;
-		this.registerForPick(this.i, leaf);
-	}
-	
+	if(nodeID.indexOf("peça") > -1)
+	{
+		//console.log("REGIST PIECE: "+nodeID);
+		this.registPiece(leaf);
+	} 	
+
+
+	//console.log(nodeID.indexOf("peça"));
 
 	switch(leaf.type){ 
 		case "rectangle":
@@ -571,9 +611,9 @@ XMLscene.prototype.processInitialsTransformations = function(){
     	this.graph.initialsInfo.translation.y, 
     	this.graph.initialsInfo.translation.z);
 
-    	this.rotate(convertDegtoRad(this.graph.initialsInfo.rotation['x']), 1,0,0);
-		this.rotate(convertDegtoRad(this.graph.initialsInfo.rotation['y']), 0,1,0);
-		this.rotate(convertDegtoRad(this.graph.initialsInfo.rotation['z']), 0,0,1);
+    	this.rotate(this.convertDegtoRad(this.graph.initialsInfo.rotation['x']), 1,0,0);
+		this.rotate(this.convertDegtoRad(this.graph.initialsInfo.rotation['y']), 0,1,0);
+		this.rotate(this.convertDegtoRad(this.graph.initialsInfo.rotation['z']), 0,0,1);
 	
 		this.scale(this.graph.initialsInfo.scale.sx, 
 		this.graph.initialsInfo.scale.sy, 
@@ -593,8 +633,6 @@ XMLscene.prototype.display = function () {
    
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
- 
 
 	this.updateProjectionMatrix();
     this.loadIdentity();
@@ -623,6 +661,13 @@ XMLscene.prototype.display = function () {
 
 		this.i = 0;
 
+		this.pushMatrix();
+		this.translate(-0.25,1,-3);
+		 this.rotate(this.convertDegtoRad(90),1,0,0);
+        
+        this.timer.display();
+    	this.popMatrix();
+
 		this.processInitialsTransformations();
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 	};	
@@ -634,6 +679,9 @@ XMLscene.prototype.display = function () {
 * @param curtime Program time
 */
 XMLscene.prototype.update = function(curtime){
+
+	if(!this.timer.timeBeg) this.timer.timeBeg = curtime;
+    this.timer.updateTime(curtime);
 
 	for(node in this.animations){
 		
@@ -661,5 +709,20 @@ XMLscene.prototype.initTab = function(request, reqObj)
 		{
 			request.apply(reqObj,[board]);
 		}
+	},true);
+}
+
+XMLscene.prototype.menu_inicio = function(request, reqObj)
+{
+
+	getRequest("menu_inicio("+1+","+1+")",function(data) {
+	
+	var temp = data.target.response;
+	
+	console.log(temp);
+	
+	if (typeof request === "function") {
+              request.apply(reqObj,[temp]);
+        }
 	},true);
 }

@@ -20,7 +20,7 @@
 % ***************************************************************************
 estado_inicial([[1,1,1,1,1],
                 [0,0,0,0,0],
-                [0,0,3,0,0],
+                [3,0,0,0,0],
                 [0,0,0,0,0],
                 [2,2,2,2,2]]).
 
@@ -37,12 +37,10 @@ neutrao_inicial([2,2]).
 menu_inicio(J1i, J2i):-
         write('Tipo de Jogador 1 (0 humano, 1 computador RANDOM, 2 computador INTELIGENTE): '),
         nl,
-        get_code(J1),
-        get_char(_),
         write('Tipo de Jogador 2 (0 humano, 1 computador RANDOM, 2 computador INTELIGENTE):'),
         nl,
-        get_code(J2),
-        get_char(_),
+        write(J1i),
+        write(J2i),
         J1i is J1 - 48,
         J2i is J2 - 48.
 

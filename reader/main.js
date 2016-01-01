@@ -26,6 +26,7 @@ serialInclude(['../lib/CGF.js',
     'LinearAnimation.js',
     'requests.js',
     'Tab.js',
+    'Timer.js',
 
 
 main=function()

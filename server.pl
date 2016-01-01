@@ -110,6 +110,9 @@ parse_input(test(C,N), Res) :- test(C,Res,N).
 parse_input(quit, goodbye).
 
 parse_input(initTab, Tab):- estado_inicial(Tab).
+parse_input(apresentacao):- apresentacao.
+
+parse_input(menu_inicio, J1i, J2i):- menu_inicio(J1i, J2i).
 
 parse_input(valida_jogada(Tab,Xi,Yi,Xf,Yf,N),1):-
         valida_jogada(Tab,Xi,Yi,Xf,Yf,N),!.

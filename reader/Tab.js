@@ -66,9 +66,6 @@ function Tab(scene) {
  				piece.transformations.reverse();
  				this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.push(piece.id);
  				this.scene.graph.nodesInfo[piece.id] = piece;
- 				//this.scene.registerForPick(i+j+1, this.scene.graph.nodesInfo[piece.id]);
- 				//console.log(i+j+1);
- 				//console.log(this.scene.graph.nodesInfo[piece.id]);
 
  				col.push(piece);
  			}
@@ -133,7 +130,7 @@ function Tab(scene) {
  		if(this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "peça_black" ||
  			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "peça_white" ||
  			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "peça_neutron"  ||
- 			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "empty_space")
+ 			this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants[i] == "empty_space" )
  		{
  			var index = this.scene.graph.nodesInfo[this.scene.graph.root_id].descendants.indexOf(descendant);
  			if (index > -1) {
