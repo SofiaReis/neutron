@@ -49,44 +49,42 @@ Timer.prototype.displayTime = function () {
 		this.scene.setActiveShaderSimple(this.scene.textShader);
 		this.appearance.apply();
 
-		var decM = Math.floor(this.minutes/10);
-		var uniM = this.minutes%10;
+		var decM = 15-Math.floor(this.minutes/10);
+		var uniM = 15-this.minutes%10;
 
-		var decS = Math.floor(this.seconds/10);
-		var uniS = this.seconds%10;
+		var decS = 15-Math.floor(this.seconds/10);
+		var uniS = 15-this.seconds%10;
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [decM,3]});
 		this.scene.pushMatrix();
 			this.scene.translate(-4,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
-
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
 			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [uniM,3]});
 		this.scene.pushMatrix();
 			this.scene.translate(-2,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
 			this.rec.display();
 		this.scene.popMatrix();
 
-		this.scene.activeShader.setUniformsValues({'charCoords': [10,3]});
+		this.scene.activeShader.setUniformsValues({'charCoords': [5,3]});
 		this.scene.pushMatrix();
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
 			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [decS,3]});
 		this.scene.pushMatrix();
 			this.scene.translate(2,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
 			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [uniS,3]});
 		this.scene.pushMatrix();
 			this.scene.translate(4,0,0);
-			//this.scene.rotate(this.scene.convertDegtoRad(-90),1,0,0);
 			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
 			this.rec.display();
 		this.scene.popMatrix();
