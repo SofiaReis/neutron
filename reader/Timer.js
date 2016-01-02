@@ -19,7 +19,7 @@ function Timer(scene, fontText) {
 	console.log(this.appearance);
 	this.fontText = fontText;
 
-	console.log("TIMER STARTED!");
+	//console.log("TIMER STARTED!");
 };
 
 Timer.prototype = Object.create(CGFobject.prototype);
@@ -34,7 +34,7 @@ Timer.prototype.display = function () {
 
 		this.scene.rotate(this.scene.convertDegtoRad(90),1,0,0);
 
-		console.log("Time display!");
+		//console.log("Time display!");
 
 		this.appearance.setTexture(this.fontText);
  		if(this.paused) this.displayPaused();

@@ -444,7 +444,7 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 	var nodes = nodeList.getElementsByTagName('NODE');
 
 	this.nodesInfo = {};
-	this.pieces = [];
+	this.pieces = {};
 
 	for(var i = 0; i < nodes.length; i++){
 
@@ -462,7 +462,6 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 		}
 
 		var material = getUniqueElement(nodes[i],'MATERIAL');
-		//console.log(material);
 		
 		if(material.tagName == 'MATERIAL'){
 			this.node['material'] = [];
@@ -485,10 +484,7 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 				var id_d = this.reader.getString(desc[j], 'id');
 				this.node['descendants'][j] = id_d;
 			}
-			}
-			
-		
-		
+		}
 
 		var transformations = nodes[i].getElementsByTagName('*');
 
@@ -528,18 +524,14 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 			}
 		}
 		
-		if(id == "peça_neutron" || id == "peça_white" || id == "peça_black" || id =="empty_space"){
-			//console.log("AQUI");
+		if(id == "peça_neutron" || id == "peça_white" || id == "peça_black"){
 			this.pieces[id] = this.node;
 		}
-		
+		else
+		{
 			this.nodesInfo[this.node['id']] = this.node;
-		
-		
+		}		
 	}
-
-console.log(this.nodesInfo);
-	console.log(this.pieces);
 
 	var root = nodeList.getElementsByTagName('ROOT');
 	this.root_id = root[0].attributes.getNamedItem("id").value;
