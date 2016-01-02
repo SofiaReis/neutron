@@ -9,7 +9,7 @@ function Piece(scene, posX, posY, type) {
 	this.texture = this.type.texture;
 
 	this.xi = posX;
-	this.yi = posY;
+	this.zi = posY;
 	this.height = 0;
 };
 
@@ -53,7 +53,7 @@ Piece.prototype.display = function() {
 
  	this.scene.pushMatrix();
  	
- 	this.scene.translate(this.xi, 0, this.yi);
+ 	this.scene.translate(this.xi, 0, this.zi);
  	this.processTransformations(this.type);
  	this.processTransformations(this.scene.graph.nodesInfo[this.type.descendants[0]]);
  	this.scene.leaves[this.scene.graph.nodesInfo[this.type.descendants[0]].descendants[0]].display();
@@ -61,7 +61,7 @@ Piece.prototype.display = function() {
 
  	
  	this.scene.pushMatrix();
- 	this.scene.translate(this.xi, 0, this.yi);
+ 	this.scene.translate(this.xi, 0, this.zi);
  	this.processTransformations(this.type);
  	this.processTransformations(this.scene.graph.nodesInfo[this.type.descendants[1]]);
  	this.scene.leaves[this.scene.graph.nodesInfo[this.type.descendants[1]].descendants[0]].display();

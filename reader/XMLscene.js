@@ -44,6 +44,7 @@ XMLscene.prototype.init = function (application) {
     this.a_texture=null;
 
     this.picked = null;
+    this.neutronID = 0;
 
     this.setPickEnabled(true);
     this.i = 1;
@@ -75,8 +76,10 @@ XMLscene.prototype.convertDegtoRad = function(deg){
 }
 
 XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), 
-    	vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+    this.camDestine = [15,15,15];
+    this.camMoving = false;
+    this.camTime = 1000;
 };
 
 XMLscene.prototype.setDefaultAppearance = function () {
@@ -173,15 +176,32 @@ XMLscene.prototype.processTextures = function(){
 }
 
 
-XMLscene.prototype.getListOfPicking = function (pick){
+XMLscene.prototype.Topo = function() {
 
-				var coord = this.pickToCoord(pick);
-				var coordStr = coord.toString();
-					
-				var list = this.getIdPieceLocation(coordStr);
+    if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [0,15,0];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
 
-		return list;
-}
+XMLscene.prototype.PlayerBlack = function() {
+
+    if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [15,15,0];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
+
+XMLscene.prototype.PlayerWhite = function() {
+
+    if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [-15,15,0];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
 
 XMLscene.prototype.logPicking = function ()
 {
@@ -190,7 +210,8 @@ XMLscene.prototype.logPicking = function ()
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
 				var customId = this.pickResults[i][1];	
-				if (obj instanceof Piece && this.picked == null && customId != 6)
+				console.log(obj);
+				if (obj instanceof Piece && this.picked == null && customId != 13)
 				{
 								
 					console.log("Picked object: " + obj + ", with pick id " + customId);
@@ -202,19 +223,17 @@ XMLscene.prototype.logPicking = function ()
 					obj.type.transformations[ind].z = 0;
 
 					this.picked = obj;
-
-					console.log(obj.type.transformations);
-
 				}
-				else if(obj instanceof Piece && this.picked == obj && customId != 6)
+				else if(obj instanceof Piece && this.picked == obj && customId != 13)
 				{
 					var ind = obj.type.transformations.length-1;
-					console.log(ind);
-					console.log(obj.type.transformations);
 					obj.type.transformations[ind].y = 0;
 					this.picked = null;
 				}
-				else if(obj instanceof Piece && customId != 6)
+				else if(obj instanceof Cell){
+						console.log("Picked object: " + obj + ", with pick id " + customId);
+				}
+				else if(obj instanceof Piece && customId != 13)
 				{
 					var customId = this.pickResults[i][1];				
 					console.log("Picked object: " + obj + ", with pick id " + customId);
@@ -225,6 +244,13 @@ XMLscene.prototype.logPicking = function ()
 	}
 }
 
+XMLscene.prototype.calcTransition = function() {
+    this.transitionVec = [this.camDestine[0]-this.camOrg[0],
+            this.camDestine[1]-this.camOrg[1],
+            this.camDestine[2]-this.camOrg[2]];
+
+    this.camMoving = true;
+};
 
 function isOdd(num) { return num % 2;}
 
@@ -683,8 +709,6 @@ XMLscene.prototype.display = function () {
 			}
 		}
 
-		this.board.plan.display();
-
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 	};	
 };
@@ -709,6 +733,26 @@ XMLscene.prototype.update = function(curtime){
 
 		}
 	}
+
+	 if(this.camMoving) {
+        if(!this.camTransBeg) this.camTransBeg = curtime;  //BEGINNING
+        else
+        {
+            var time_since_start = curtime - this.camTransBeg;
+            if(time_since_start>=this.camTime) { //END
+                this.camera.setPosition(this.camDestine);
+                this.camTransBeg=null;
+                this.camMoving=false;
+            }
+            else {
+                var time_perc = time_since_start / this.camTime;
+                var new_pos = [this.camOrg[0]+(this.transitionVec[0]*time_perc),
+                this.camOrg[1]+(this.transitionVec[1]*time_perc),
+                this.camOrg[2]+(this.transitionVec[2]*time_perc)];
+                this.camera.setPosition(new_pos);
+            }
+        }
+    }
 }
 
 
@@ -742,3 +786,14 @@ XMLscene.prototype.menu_inicio = function(request, reqObj)
         }
 	},true);
 }
+
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+};

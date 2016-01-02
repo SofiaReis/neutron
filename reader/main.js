@@ -28,7 +28,7 @@ serialInclude(['../lib/CGF.js',
     'Tab.js',
     'Timer.js',
     'Piece.js',
-    'Piece2.js',
+    'Cell.js',
 
 
 main=function()

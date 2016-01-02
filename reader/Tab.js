@@ -39,7 +39,7 @@ function Tab(scene) {
  	this.nR = this.tab.length;
  	this.nC = this.tab[0].length;
 
- 	this.plan = new Plane(this.scene, 20);
+
 
  	var xi = -3;
  	var zi = 3; 	
@@ -47,7 +47,6 @@ function Tab(scene) {
  	{
  		xi=xi+1;
  		var col = [];
- 		var line = [];
 
  		for(var j = 0; j < this.nR; ++j)
  		{
@@ -64,6 +63,11 @@ function Tab(scene) {
  			{
  				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_neutron']));
  				col.push(piece);
+ 			}
+ 			else if(this.tab[i][j] == 0)
+ 			{
+ 				var cell = new Cell(this.scene,xi,zi);
+ 				col.push(cell);
  			}
  		}
  		
