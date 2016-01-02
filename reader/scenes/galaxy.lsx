@@ -159,7 +159,7 @@
             <controlpoint x="0.700"  y="-0.650" z="-0.250" />
         </LEAF>
 
-        <LEAF id="tab" type="terrain" texture="tabuleiro_galaxy.jpg" heightmap="galaxy_map.jpg"/>
+        <LEAF id="tab" type="terrain" texture="galaxy_cell.jpg" heightmap="highmap_cell.jpg"/>
 
     </LEAVES>
 
@@ -168,12 +168,12 @@
 
         <ROOT id="cena" />
 
-        <NODE id="tabuleiro">
+        <NODE id="cell">
             <MATERIAL id="brilhante" />
+            <TEXTURE id="null" />
 
-            <TRANSLATION x="0" y="0" z="0" />
-            <ROTATION axis="y" angle="90" />
-            <SCALE sx="3.25" sy="0.1" sz="3.25" />
+           <!-- <ROTATION axis="y" angle="90" />-->
+            <SCALE sx="0.5" sy="0.1" sz="0.5" />
 
             <DESCENDANTS>
                 <DESCENDANT id="tab" />            
@@ -398,7 +398,7 @@
                 <DESCENDANT id="peça_white" />
                 <DESCENDANT id="peça_neutron" />
                 <DESCENDANT id="peça_black" />
-                <DESCENDANT id="tabuleiro" />
+                <DESCENDANT id="cell" />
                 <DESCENDANT id="base" />
             </DESCENDANTS>
         </NODE>

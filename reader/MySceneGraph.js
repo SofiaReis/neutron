@@ -524,12 +524,14 @@ MySceneGraph.prototype.parseNodes = function(rootElement){
 			}
 		}
 		
-		if(id == "peça_neutron" || id == "peça_white" || id == "peça_black"){
+		if(id == "peça_neutron" || id == "peça_white" || id == "peça_black" || id == "cell"){
 			this.pieces[id] = this.node;
+			//console.log(this.pieces);
 		}
 		else
 		{
 			this.nodesInfo[this.node['id']] = this.node;
+			//console.log(this.nodesInfo);
 		}		
 	}
 

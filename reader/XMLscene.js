@@ -63,7 +63,7 @@ XMLscene.prototype.init = function (application) {
     this.timer = new Timer(this,this.font);
 
    	this.axis=new CGFaxis(this);
-	this.setUpdatePeriod(1000/60);
+	this.setUpdatePeriod(200/60);
 };
 
 /**
@@ -79,7 +79,7 @@ XMLscene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     this.camDestine = [15,15,15];
     this.camMoving = false;
-    this.camTime = 1000;
+    this.camTime = 3000;
 };
 
 XMLscene.prototype.setDefaultAppearance = function () {
@@ -211,32 +211,26 @@ XMLscene.prototype.logPicking = function ()
 				var obj = this.pickResults[i][0];
 				var customId = this.pickResults[i][1];	
 				console.log(obj);
-				if (obj instanceof Piece && this.picked == null && customId != 13)
-				{
-								
+				if (obj instanceof Piece && this.picked == null)
+				{			
 					console.log("Picked object: " + obj + ", with pick id " + customId);
-					var ind = obj.type.transformations.length;
-					obj.type.transformations[ind] = {};
-					obj.type.transformations[ind].type = "translation";
-					obj.type.transformations[ind].x = 0;
-					obj.type.transformations[ind].y = 2;
-					obj.type.transformations[ind].z = 0;
+					var ind = obj.objPiece.transformations.length;
+					obj.objPiece.transformations[ind] = {};
+					obj.objPiece.transformations[ind].type = "translation";
+					obj.objPiece.transformations[ind].x = 0;
+					obj.objPiece.transformations[ind].y = 2;
+					obj.objPiece.transformations[ind].z = 0;
 
 					this.picked = obj;
 				}
-				else if(obj instanceof Piece && this.picked == obj && customId != 13)
+				else if(obj instanceof Piece && this.picked == obj)
 				{
-					var ind = obj.type.transformations.length-1;
-					obj.type.transformations[ind].y = 0;
+					var ind = obj.objPiece.transformations.length-1;
+					obj.objPiece.transformations[ind].y = 0;
 					this.picked = null;
 				}
-				else if(obj instanceof Cell){
+				else if(obj instanceof Cell && this.picked == null){
 						console.log("Picked object: " + obj + ", with pick id " + customId);
-				}
-				else if(obj instanceof Piece && customId != 13)
-				{
-					var customId = this.pickResults[i][1];				
-					console.log("Picked object: " + obj + ", with pick id " + customId);
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -648,6 +642,33 @@ XMLscene.prototype.processInitialsTransformations = function(){
 		this.graph.initialsInfo.scale.sz);
 }
 
+XMLscene.prototype.displayPiecesAndCells = function()
+{
+	var nC = this.board.allTab.length;
+	var nR = this.board.allTab[0].length;
+
+		for(var i = 0; i < nC;i++)
+		{
+			for(var j = 0; j < nR; j++)
+			{
+				
+					if(this.board.allTab[i][j][1].type == 0)
+				{
+					this.registPiece(this.board.allTab[i][j][1]);
+					this.board.allTab[i][j][1].display();
+				}	
+				else
+				{
+					if(this.board.allTab[i][j][0].type != 3) this.registPiece(this.board.allTab[i][j][0]);
+					this.board.allTab[i][j][0].display();
+					this.board.allTab[i][j][1].display();	
+				}	
+				
+				
+			}
+		}
+}
+
 /**
 * display
 * Function that makes the scene display
@@ -697,21 +718,14 @@ XMLscene.prototype.display = function () {
 
 		this.processInitialsTransformations();
 
-		for(var i = 0; i < this.board.pieces.length;i++)
-		{
-			for(var j = 0; j < this.board.pieces[0].length; j++)
-			{
-				if(this.board.pieces[i][j] != undefined)
-				{
-						this.registPiece(this.board.pieces[i][j]);
-						this.board.pieces[i][j].display();		
-				}
-			}
-		}
-
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
+
+		this.displayPiecesAndCells();
+
 	};	
 };
+
+
 
 /**
 * update
