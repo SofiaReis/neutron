@@ -1,4 +1,6 @@
 Abrir sictus e por na consola:
-ensure_loaded(['/Users/Fifaz/Neutron/server.pl']).
+ensure_loaded(['/Users/Fifaz/Neutron1/http2.pl']).
 e depois
 server.
+
+jogada_humano([[1,1,1,1,1],[0,0,0,0,0],[0,0,3,0,0],[0,0,0,0,0],[2,2,2,2,2]],2,2,0,2,2,0,0).

@@ -1,4 +1,4 @@
-function Piece(scene, posX, posY, obj,type) {
+function Piece(scene, posX, posY, i,j,obj,type) {
  	CGFobject.call(this,scene);
 
 	this.scene = scene;
@@ -7,6 +7,9 @@ function Piece(scene, posX, posY, obj,type) {
 
 	this.material = this.objPiece.material;
 	this.texture = this.objPiece.texture;
+
+	this.i = i;
+	this.j = j;
 
 	this.type = type;
 

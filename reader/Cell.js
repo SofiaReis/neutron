@@ -1,7 +1,9 @@
-function Cell(scene,xi,zi,obj,type) {
+function Cell(scene,xi,zi,i,j,obj,type) {
  	CGFobject.call(this,scene);
 
  	this.scene = scene;
+ 	this.i = i;
+ 	this.j = j;
  	this.xi = xi;
  	this.zi = zi;
  	this.objPiece = obj;

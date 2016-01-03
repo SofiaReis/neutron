@@ -6,15 +6,18 @@ function XMLscene() {
     this.curTime = 0;
 
     this.gameDiff = "H";
-    
-    this.modeP1 = 1;
-    this.modeP2 = 1;
+   	
+   	//0 ou 2 
+    this.modeP1 = 0;
+    this.modeP2 = 0;
 
     this.dificulties = ["H", "M", "E"];
     this.processing = true;
 
     this.board = [];
      this.boardPieces = [];
+     this.playerPlaying = 1;
+     this.firstPlay = true;
      
 }
 
@@ -44,10 +47,12 @@ XMLscene.prototype.init = function (application) {
     this.a_texture=null;
 
     this.picked = null;
+    this.pickedDestine = null;
     this.neutronID = 0;
 
     this.setPickEnabled(true);
     this.i = 1;
+    this.neutron = null;
 
     this.defaultApp = new CGFappearance(this);
     this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
@@ -63,7 +68,7 @@ XMLscene.prototype.init = function (application) {
     this.timer = new Timer(this,this.font);
 
    	this.axis=new CGFaxis(this);
-	this.setUpdatePeriod(200/60);
+	this.setUpdatePeriod(50/6);
 };
 
 /**
@@ -101,8 +106,73 @@ XMLscene.prototype.resetTab = function()
 	});
 
 	
+
+	console.log(this.board.tab);
+
+	
 }
 
+
+XMLscene.prototype.initTab = function(request, reqObj)
+{
+	getRequest("initTab", function(data){
+		console.log(data.target.response);
+		var board = listToMatrix(data.target.response);
+		console.log(board);
+		if(typeof request === "function")
+		{
+			request.apply(reqObj,[board]);
+		}
+	},true);
+}
+
+XMLscene.prototype.getJogadas = function(request, reqObj)
+{
+	getRequest("getJogadas("+matrixToList(this.board.tab)+","+this.picked.j+","+this.picked.i+","+this.modeP1+")",function(data) {
+	
+	var temp = JSON.parse(data.target.response);
+	console.log(temp.message);
+	
+	console.log(temp.newBoard);
+
+	
+	if (typeof request === "function") {
+             request.apply(reqObj,[temp]);
+        }
+	},true);
+}
+
+XMLscene.prototype.getValidaty = function(request, reqObj)
+{
+
+	getRequest("playHumano("+matrixToList(this.board.tab)+","+this.neutron.j+","+this.neutron.i+","+this.picked.j+
+		","+this.picked.i+","+this.pickedDestine.j+","+this.pickedDestine.i+","+this.modeP1+")",function(data) {
+	
+	var temp = data.target.response;
+	
+	console.log(temp);
+	
+	if (typeof request === "function") {
+              request.apply(reqObj,[temp]);
+        }
+	},true);
+}
+
+XMLscene.prototype.playNeutron = function(request, reqObj)
+{
+
+	getRequest("playHNeutrao("+matrixToList(this.board.tab)+","+this.picked.i+
+		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.modeP1+")",function(data) {
+	
+	var temp = data.target.response;
+	
+	console.log(temp);
+	
+	if (typeof request === "function") {
+              request.apply(reqObj,[temp]);
+        }
+	},true);
+}
 /**
  * processLights
  * Method to process the parsing of Lights
@@ -203,6 +273,9 @@ XMLscene.prototype.PlayerWhite = function() {
     }
 };
 
+
+
+
 XMLscene.prototype.logPicking = function ()
 {
 	if (this.pickMode == false) {
@@ -222,15 +295,50 @@ XMLscene.prototype.logPicking = function ()
 					obj.objPiece.transformations[ind].z = 0;
 
 					this.picked = obj;
+
+					console.log("x:" + this.picked.j);
+					console.log("y:" + this.picked.i);
+
+						this.getJogadas(function(matrix){
+							console.log(matrix);
+						});
+
+
+				}
+				else if(obj instanceof Piece && obj.type==3)
+				{
+					console.log("Neutron object: " + obj + ", with pick id " + customId);
+					this.picked = obj;
+
 				}
 				else if(obj instanceof Piece && this.picked == obj)
 				{
 					var ind = obj.objPiece.transformations.length-1;
 					obj.objPiece.transformations[ind].y = 0;
 					this.picked = null;
+					this.pickedDestine = null;
 				}
-				else if(obj instanceof Cell && this.picked == null){
-						console.log("Picked object: " + obj + ", with pick id " + customId);
+				else if(obj instanceof Cell && this.picked.type ==3)
+				{
+					console.log("Neutron object: " + obj + ", with pick id " + customId);
+					this.pickedDestine = obj;
+					this.playNeutron(function(matrix){
+							console.log(matrix);
+						});
+					
+
+				}
+				
+				else if(obj instanceof Cell && this.picked != null){
+
+					console.log("Destine object: " + obj + ", with pick id " + customId);
+					this.pickedDestine = obj;
+					console.log("x:" + this.pickedDestine.j);
+					console.log("y:" + this.pickedDestine.i);
+						this.getValidaty(function(matrix){
+						console.log(matrix);
+						});
+						
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -490,10 +598,6 @@ XMLscene.prototype.checkIfLeaf = function (id){
  */	
 XMLscene.prototype.processGraph = function(node){
 
-	//console.log("NODE:"+ node.id);
-
-	//console.log(this.board);
-
 	this.pushMatrix();
 
 	var material = node.material;
@@ -651,17 +755,41 @@ XMLscene.prototype.displayPiecesAndCells = function()
 		{
 			for(var j = 0; j < nR; j++)
 			{
-				
-					if(this.board.allTab[i][j][1].type == 0)
+				if(this.board.allTab[i][j][0].type == 3) this.neutron = this.board.allTab[i][j][0];
+				if(this.board.allTab[i][j][1].type == 0)
 				{
+					//cells livres
 					this.registPiece(this.board.allTab[i][j][1]);
 					this.board.allTab[i][j][1].display();
 				}	
 				else
 				{
-					if(this.board.allTab[i][j][0].type != 3) this.registPiece(this.board.allTab[i][j][0]);
-					this.board.allTab[i][j][0].display();
-					this.board.allTab[i][j][1].display();	
+					//cells não livres
+					if(this.playerPlaying == 1 && this.firstPlay == true &&
+						this.board.allTab[i][j][0].type == 1)
+					{
+						this.registPiece(this.board.allTab[i][j][0]);
+						this.board.allTab[i][j][0].display();
+						this.board.allTab[i][j][1].display();
+					}
+					else if(this.playerPlaying == 1 && this.firstPlay == false && (this.board.allTab[i][j][0].type == 1 || this.board.allTab[i][j][0].type == 3))
+					{
+						this.registPiece(this.board.allTab[i][j][0]);
+						this.board.allTab[i][j][0].display();
+						this.board.allTab[i][j][1].display();
+					}
+					else if(this.playerPlaying == 2 && this.firstPlay == false && (this.board.allTab[i][j][0].type == 2 || this.board.allTab[i][j][0].type == 3))
+					{
+						this.registPiece(this.board.allTab[i][j][0]);
+						this.board.allTab[i][j][0].display();
+						this.board.allTab[i][j][1].display();
+					}else
+					{
+						this.board.allTab[i][j][0].display();
+						this.board.allTab[i][j][1].display();
+					}
+					
+						
 				}	
 				
 				
@@ -774,32 +902,8 @@ XMLscene.prototype.update = function(curtime){
 * TP3 - initialize Board
 ****/
 
-XMLscene.prototype.initTab = function(request, reqObj)
-{
-	getRequest("initTab", function(data){
-		var board = listToMatrix(data.target.response);
-		console.log(board);
-		if(typeof request === "function")
-		{
-			request.apply(reqObj,[board]);
-		}
-	},true);
-}
 
-XMLscene.prototype.menu_inicio = function(request, reqObj)
-{
 
-	getRequest("menu_inicio("+1+","+1+")",function(data) {
-	
-	var temp = data.target.response;
-	
-	console.log(temp);
-	
-	if (typeof request === "function") {
-              request.apply(reqObj,[temp]);
-        }
-	},true);
-}
 
 function arraysEqual(a, b) {
   if (a === b) return true;
