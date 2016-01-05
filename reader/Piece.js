@@ -1,15 +1,17 @@
-function Piece(scene, posX, posY, type) {
+function Piece(scene, posX, posY, obj,type) {
  	CGFobject.call(this,scene);
 
 	this.scene = scene;
 
+	this.objPiece = obj;
+
+	this.material = this.objPiece.material;
+	this.texture = this.objPiece.texture;
+
 	this.type = type;
 
-	this.material = this.type.material;
-	this.texture = this.type.texture;
-
 	this.xi = posX;
-	this.yi = posY;
+	this.zi = posY;
 	this.height = 0;
 };
 
@@ -53,18 +55,18 @@ Piece.prototype.display = function() {
 
  	this.scene.pushMatrix();
  	
- 	this.scene.translate(this.xi, 0, this.yi);
- 	this.processTransformations(this.type);
- 	this.processTransformations(this.scene.graph.nodesInfo[this.type.descendants[0]]);
- 	this.scene.leaves[this.scene.graph.nodesInfo[this.type.descendants[0]].descendants[0]].display();
+ 	this.scene.translate(this.xi, 0, this.zi);
+ 	this.processTransformations(this.objPiece);
+ 	this.processTransformations(this.scene.graph.nodesInfo[this.objPiece.descendants[0]]);
+ 	this.scene.leaves[this.scene.graph.nodesInfo[this.objPiece.descendants[0]].descendants[0]].display();
  	this.scene.popMatrix();
 
  	
  	this.scene.pushMatrix();
- 	this.scene.translate(this.xi, 0, this.yi);
- 	this.processTransformations(this.type);
- 	this.processTransformations(this.scene.graph.nodesInfo[this.type.descendants[1]]);
- 	this.scene.leaves[this.scene.graph.nodesInfo[this.type.descendants[1]].descendants[0]].display();
+ 	this.scene.translate(this.xi, 0, this.zi);
+ 	this.processTransformations(this.objPiece);
+ 	this.processTransformations(this.scene.graph.nodesInfo[this.objPiece.descendants[1]]);
+ 	this.scene.leaves[this.scene.graph.nodesInfo[this.objPiece.descendants[1]].descendants[0]].display();
  	this.scene.popMatrix();
 
  	this.scene.popMatrix();

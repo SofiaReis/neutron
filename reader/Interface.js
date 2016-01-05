@@ -19,6 +19,11 @@ Interface.prototype.init = function(app){
 
 	this.gui = new dat.GUI();
 	this.loaded = 0;
+	this.lightsInterface = this.gui.addFolder("LIGHTS");
+	this.cameras = this.gui.addFolder("CAMERAS");
+	this.cameras.add(this.scene,"Topo");
+	this.cameras.add(this.scene,"PlayerWhite");
+	this.cameras.add(this.scene,"PlayerBlack");
 	return true;
 }
 
@@ -30,13 +35,13 @@ Interface.prototype.update = function(){
 	if(this.loaded == 0 && this.scene.lightsLoad)
 	{
 		this.loaded = 1;
-		var lightsInterface = this.gui.addFolder("LIGHTS");
-		lightsInterface.open();
+		
+		this.lightsInterface.open();
 
 		for(var i in this.scene.lights){
 
 			var nome = "lightEnable" + i;
-			lightsInterface.add(this.scene, nome).name("Light " + i);
+			this.lightsInterface.add(this.scene, nome).name("Light " + i);
 			
 		}
 	}

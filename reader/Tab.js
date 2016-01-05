@@ -11,6 +11,8 @@ function Tab(scene) {
         this.p2Points = 0;
 
         this.pieces = [];
+        this.cells = [];
+        this.allTab = [];
 
         console.log("Tab created!");
 
@@ -39,38 +41,70 @@ function Tab(scene) {
  	this.nR = this.tab.length;
  	this.nC = this.tab[0].length;
 
+ 	var piece = null;
+ 	var cell = null;
  	var xi = -3;
  	var zi = 3; 	
  	for(var i = 0; i < this.nC; ++i)
  	{
  		xi=xi+1;
- 		var col = [];
- 		var line = [];
+ 		var lin = [];
+
 
  		for(var j = 0; j < this.nR; ++j)
  		{
  			zi = zi-1;
+ 			var pos = new Array(2);
  			if(this.tab[i][j] == 1){
- 				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_white']));
- 				col.push(piece);
+ 				piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_white']),1);
+
+ 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),1);
+
+ 				pos[0] = piece;
+ 				pos[1] = cell;
+
+ 				lin.push(pos);
  			}
  			else if(this.tab[i][j] == 2){
- 				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_black']));
- 				col.push(piece);
+ 				piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_black']),2);
+
+ 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),1);
+ 				
+ 				pos[0] = piece;
+ 				pos[1] = cell;
+
+ 				lin.push(pos);
  			}
  			else if(this.tab[i][j] == 3)
  			{
- 				var piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_neutron']));
- 				col.push(piece);
+ 				piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_neutron']),3);
+
+ 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),1);
+ 				
+ 				pos[0] = piece;
+ 				pos[1] = cell;
+
+ 				lin.push(pos);
+ 			}
+ 			else if(this.tab[i][j] == 0)
+ 			{
+ 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),0);
+ 				
+ 				pos[0] = 0;
+ 				pos[1] = cell;
+
+ 				lin.push(pos);
  			}
  		}
  		
- 		zi=3;
- 		this.pieces.push(col);		
+ 		zi=3;	
+ 		this.allTab.push(lin);
  	}
+
  	this.removeDescendant("peça_white");
  	this.removeDescendant("peça_black");
  	this.removeDescendant("peça_neutron");
+ 	this.removeDescendant("cell");
  };
 
 

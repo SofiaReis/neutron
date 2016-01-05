@@ -15,6 +15,7 @@ function XMLscene() {
 
     this.board = [];
      this.boardPieces = [];
+     
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -42,6 +43,9 @@ XMLscene.prototype.init = function (application) {
     this.a_material=null;
     this.a_texture=null;
 
+    this.picked = null;
+    this.neutronID = 0;
+
     this.setPickEnabled(true);
     this.i = 1;
 
@@ -59,7 +63,7 @@ XMLscene.prototype.init = function (application) {
     this.timer = new Timer(this,this.font);
 
    	this.axis=new CGFaxis(this);
-	this.setUpdatePeriod(1000/60);
+	this.setUpdatePeriod(200/60);
 };
 
 /**
@@ -72,8 +76,10 @@ XMLscene.prototype.convertDegtoRad = function(deg){
 }
 
 XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), 
-    	vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+    this.camDestine = [15,15,15];
+    this.camMoving = false;
+    this.camTime = 3000;
 };
 
 XMLscene.prototype.setDefaultAppearance = function () {
@@ -170,31 +176,61 @@ XMLscene.prototype.processTextures = function(){
 }
 
 
-XMLscene.prototype.getListOfPicking = function (pick){
+XMLscene.prototype.Topo = function() {
 
-				var coord = this.pickToCoord(pick);
-				var coordStr = coord.toString();
-					
-				var list = this.getIdPieceLocation(coordStr);
+    if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [0,15,0];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
 
-		return list;
-}
+XMLscene.prototype.PlayerBlack = function() {
+
+    if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [15,15,0];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
+
+XMLscene.prototype.PlayerWhite = function() {
+
+    if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [-15,15,0];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
 
 XMLscene.prototype.logPicking = function ()
 {
-
-	
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
+				var customId = this.pickResults[i][1];	
 				console.log(obj);
-				if (obj instanceof Piece)
-				{
-					var customId = this.pickResults[i][1];				
+				if (obj instanceof Piece && this.picked == null)
+				{			
 					console.log("Picked object: " + obj + ", with pick id " + customId);
-					obj.height = 2;
+					var ind = obj.objPiece.transformations.length;
+					obj.objPiece.transformations[ind] = {};
+					obj.objPiece.transformations[ind].type = "translation";
+					obj.objPiece.transformations[ind].x = 0;
+					obj.objPiece.transformations[ind].y = 2;
+					obj.objPiece.transformations[ind].z = 0;
 
+					this.picked = obj;
+				}
+				else if(obj instanceof Piece && this.picked == obj)
+				{
+					var ind = obj.objPiece.transformations.length-1;
+					obj.objPiece.transformations[ind].y = 0;
+					this.picked = null;
+				}
+				else if(obj instanceof Cell && this.picked == null){
+						console.log("Picked object: " + obj + ", with pick id " + customId);
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -202,6 +238,13 @@ XMLscene.prototype.logPicking = function ()
 	}
 }
 
+XMLscene.prototype.calcTransition = function() {
+    this.transitionVec = [this.camDestine[0]-this.camOrg[0],
+            this.camDestine[1]-this.camOrg[1],
+            this.camDestine[2]-this.camOrg[2]];
+
+    this.camMoving = true;
+};
 
 function isOdd(num) { return num % 2;}
 
@@ -599,6 +642,33 @@ XMLscene.prototype.processInitialsTransformations = function(){
 		this.graph.initialsInfo.scale.sz);
 }
 
+XMLscene.prototype.displayPiecesAndCells = function()
+{
+	var nC = this.board.allTab.length;
+	var nR = this.board.allTab[0].length;
+
+		for(var i = 0; i < nC;i++)
+		{
+			for(var j = 0; j < nR; j++)
+			{
+				
+					if(this.board.allTab[i][j][1].type == 0)
+				{
+					this.registPiece(this.board.allTab[i][j][1]);
+					this.board.allTab[i][j][1].display();
+				}	
+				else
+				{
+					if(this.board.allTab[i][j][0].type != 3) this.registPiece(this.board.allTab[i][j][0]);
+					this.board.allTab[i][j][0].display();
+					this.board.allTab[i][j][1].display();	
+				}	
+				
+				
+			}
+		}
+}
+
 /**
 * display
 * Function that makes the scene display
@@ -648,20 +718,14 @@ XMLscene.prototype.display = function () {
 
 		this.processInitialsTransformations();
 
-		for(var i = 0; i < this.board.pieces.length;i++)
-		{
-			for(var j = 0; j < this.board.pieces[0].length; j++)
-			{
-				if(this.board.pieces[i][j] != undefined)
-				{
-						this.registPiece(this.board.pieces[i][j]);
-						this.board.pieces[i][j].display();		
-				}
-			}
-		}
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
+
+		this.displayPiecesAndCells();
+
 	};	
 };
+
+
 
 /**
 * update
@@ -683,6 +747,26 @@ XMLscene.prototype.update = function(curtime){
 
 		}
 	}
+
+	 if(this.camMoving) {
+        if(!this.camTransBeg) this.camTransBeg = curtime;  //BEGINNING
+        else
+        {
+            var time_since_start = curtime - this.camTransBeg;
+            if(time_since_start>=this.camTime) { //END
+                this.camera.setPosition(this.camDestine);
+                this.camTransBeg=null;
+                this.camMoving=false;
+            }
+            else {
+                var time_perc = time_since_start / this.camTime;
+                var new_pos = [this.camOrg[0]+(this.transitionVec[0]*time_perc),
+                this.camOrg[1]+(this.transitionVec[1]*time_perc),
+                this.camOrg[2]+(this.transitionVec[2]*time_perc)];
+                this.camera.setPosition(new_pos);
+            }
+        }
+    }
 }
 
 
@@ -716,3 +800,14 @@ XMLscene.prototype.menu_inicio = function(request, reqObj)
         }
 	},true);
 }
+
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+};
