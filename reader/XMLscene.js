@@ -14,10 +14,15 @@ function XMLscene() {
     this.dificulties = ["H", "M", "E"];
     this.processing = true;
 
-    this.board = [];
+  
      this.boardPieces = [];
      this.playerPlaying = 1;
-     this.firstPlay = true;
+  
+     this.nextPlay = 0;
+     this.x = 0;
+     this.z = 0;
+
+    // this.LinearAnimation = new LinearAnimation();
      
 }
 
@@ -54,6 +59,11 @@ XMLscene.prototype.init = function (application) {
     this.i = 1;
     this.neutron = null;
 
+    this.nextPlay = 1;
+
+       this.firstPlay = true;
+         this.board = new Tab(this);
+
     this.defaultApp = new CGFappearance(this);
     this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
     this.defaultApp.setDiffuse(0.7, 0.7, 0.7, 1);
@@ -68,7 +78,7 @@ XMLscene.prototype.init = function (application) {
     this.timer = new Timer(this,this.font);
 
    	this.axis=new CGFaxis(this);
-	this.setUpdatePeriod(50/6);
+	this.setUpdatePeriod(1000/60);
 };
 
 /**
@@ -97,19 +107,11 @@ XMLscene.prototype.setDefaultAppearance = function () {
 XMLscene.prototype.resetTab = function()
 {
 	this.processing = true;
-	this.board = null;
-	this.board = new Tab(this);
 
 	var scene = this;
 	this.initTab(function(matrix){
 		scene.board.init(matrix);
-	});
-
-	
-
-	console.log(this.board.tab);
-
-	
+	});	
 }
 
 
@@ -128,7 +130,7 @@ XMLscene.prototype.initTab = function(request, reqObj)
 
 XMLscene.prototype.getJogadas = function(request, reqObj)
 {
-	getRequest("getJogadas("+matrixToList(this.board.tab)+","+this.picked.j+","+this.picked.i+","+this.modeP1+")",function(data) {
+	getRequest("getJogadas("+matrixToList(this.board.tab)+","+this.picked.i+","+this.picked.j+","+this.modeP1+")",function(data) {
 	
 	var temp = JSON.parse(data.target.response);
 	console.log(temp.message);
@@ -142,13 +144,27 @@ XMLscene.prototype.getJogadas = function(request, reqObj)
 	},true);
 }
 
-XMLscene.prototype.getValidaty = function(request, reqObj)
+XMLscene.prototype.playHNeutron = function(request, reqObj)
 {
 
-	getRequest("playHumano("+matrixToList(this.board.tab)+","+this.neutron.j+","+this.neutron.i+","+this.picked.j+
-		","+this.picked.i+","+this.pickedDestine.j+","+this.pickedDestine.i+","+this.modeP1+")",function(data) {
+	getRequest("playHNeutrao("+matrixToList(this.board.tab)+","+this.picked.i+
+		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = data.target.response;
+	var temp = JSON.parse(data.target.response);
+	
+	if (typeof request === "function") {
+              request.apply(reqObj,[temp]);
+        }
+	},true);
+}
+
+XMLscene.prototype.playHuman = function(request, reqObj)
+{
+
+	getRequest("playHumano("+matrixToList(this.board.tab)+","+this.neutron.i+","+this.neutron.j+","+this.picked.i+
+		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.playerPlaying+")",function(data) {
+	
+	var temp = JSON.parse(data.target.response);
 	
 	console.log(temp);
 	
@@ -158,13 +174,11 @@ XMLscene.prototype.getValidaty = function(request, reqObj)
 	},true);
 }
 
-XMLscene.prototype.playNeutron = function(request, reqObj)
+XMLscene.prototype.playComputador = function(request, reqObj)
 {
-
-	getRequest("playHNeutrao("+matrixToList(this.board.tab)+","+this.picked.i+
-		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.modeP1+")",function(data) {
+	getRequest("playComputador("+matrixToList(this.board.tab)+","+this.neutron.i+","+this.neutron.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = data.target.response;
+	var temp = JSON.parse(data.target.response);
 	
 	console.log(temp);
 	
@@ -284,7 +298,7 @@ XMLscene.prototype.logPicking = function ()
 				var obj = this.pickResults[i][0];
 				var customId = this.pickResults[i][1];	
 				console.log(obj);
-				if (obj instanceof Piece && this.picked == null)
+				if (obj instanceof Piece && this.picked == null && obj.type!=3)
 				{			
 					console.log("Picked object: " + obj + ", with pick id " + customId);
 					var ind = obj.objPiece.transformations.length;
@@ -295,21 +309,17 @@ XMLscene.prototype.logPicking = function ()
 					obj.objPiece.transformations[ind].z = 0;
 
 					this.picked = obj;
-
-					console.log("x:" + this.picked.j);
-					console.log("y:" + this.picked.i);
-
-						this.getJogadas(function(matrix){
-							console.log(matrix);
-						});
-
-
 				}
-				else if(obj instanceof Piece && obj.type==3)
+				else if(obj instanceof Piece && obj.type==3 && this.picked == null)
 				{
 					console.log("Neutron object: " + obj + ", with pick id " + customId);
+					var ind = obj.objPiece.transformations.length;
+					obj.objPiece.transformations[ind] = {};
+					obj.objPiece.transformations[ind].type = "translation";
+					obj.objPiece.transformations[ind].x = 0;
+					obj.objPiece.transformations[ind].y = 2;
+					obj.objPiece.transformations[ind].z = 0;
 					this.picked = obj;
-
 				}
 				else if(obj instanceof Piece && this.picked == obj)
 				{
@@ -317,28 +327,116 @@ XMLscene.prototype.logPicking = function ()
 					obj.objPiece.transformations[ind].y = 0;
 					this.picked = null;
 					this.pickedDestine = null;
-				}
-				else if(obj instanceof Cell && this.picked.type ==3)
-				{
-					console.log("Neutron object: " + obj + ", with pick id " + customId);
-					this.pickedDestine = obj;
-					this.playNeutron(function(matrix){
-							console.log(matrix);
-						});
-					
+
 
 				}
-				
 				else if(obj instanceof Cell && this.picked != null){
 
 					console.log("Destine object: " + obj + ", with pick id " + customId);
 					this.pickedDestine = obj;
-					console.log("x:" + this.pickedDestine.j);
-					console.log("y:" + this.pickedDestine.i);
-						this.getValidaty(function(matrix){
-						console.log(matrix);
+
+
+					var scene = this;
+					if(this.picked.type !=3){
+						this.playHuman(function(matrix)
+						{
+							
+							scene.message = matrix[3];
+							if(scene.message == 1){
+								if(scene.firstPlay == true)
+								{
+									console.log("First Play!");
+									scene.firstPlay = false;
+								}
+									
+								scene.setPickEnabled(false);
+								scene.x = scene.pickedDestine.j;
+								scene.z = scene.pickedDestine.i;
+								console.log("Good Move!");
+
+								
+								//ANIMATION
+								scene.board.init(matrix[2]);
+
+								console.log("Player Playing: "+ scene.playerPlaying);
+								scene.playerPlaying = matrix[0];
+								console.log("Player at next: " + scene.playerPlaying);
+
+								console.log("New Play: " + matrix[1])
+								scene.nextPlay = matrix[1];
+
+								console.log("NX "+ matrix[3]);
+								console.log("NY "+ matrix[4]);
+
+								scene.setPickEnabled(true);
+								scene.nextPlay = 2;
+								scene.picked = null;
+								scene.pickedDestine = null;
+
+							}
+							else if(scene.message == 2)
+							{
+								console.log("Game Finished!");
+							}
+							else
+							{
+								console.log("Invalid Move!");
+							}
+					});
+					}
+					else{
+						this.playHNeutron(function(matrix)
+						{
+							scene.message = matrix[3];
+
+							if(scene.message == 1){	
+
+								console.log(matrix);
+								
+
+								scene.setPickEnabled(false);
+								scene.x = scene.pickedDestine.j;
+								scene.z = scene.pickedDestine.i;
+								console.log("Good Move!");
+
+								
+								//ANIMATION
+								scene.board.init(matrix[2]);
+
+								console.log("Player Playing: "+ scene.playerPlaying);
+								scene.playerPlaying = matrix[0];
+								console.log("Player at next: " + scene.playerPlaying);
+
+								console.log("New Play: " + matrix[1])
+								scene.nextPlay = matrix[1];
+
+								console.log("NX "+ matrix[3]);
+								console.log("NY "+ matrix[4]);
+
+								scene.setPickEnabled(true);
+								scene.nextPlay = 1;
+								scene.picked = null;
+								scene.pickedDestine = null;
+
+							}
+							else if(scene.message == 2)
+							{
+								scene.setPickEnabled(false);
+								scene.board.init(matrix[2]);
+								console.log("Game Finished!");
+								console.log("Player "+ scene.playerPlaying +" WON!");
+							}
+							else
+							{
+								console.log("Invalid Move!");
+							}
 						});
-						
+
+					}				
+				}
+				else if(obj instanceof Cell){
+					console.log("Destine object: " + obj + ", with pick id " + customId);
+					
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -525,6 +623,7 @@ XMLscene.prototype.onGraphLoaded = function ()
 	this.processLeaves();
 	//console.log(this.graph.nodesInfo);
 
+	if(this.firstPlay == true)
 	this.resetTab();
 
 	//Textures
@@ -772,27 +871,28 @@ XMLscene.prototype.displayPiecesAndCells = function()
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
 					}
-					else if(this.playerPlaying == 1 && this.firstPlay == false && (this.board.allTab[i][j][0].type == 1 || this.board.allTab[i][j][0].type == 3))
+					else if(this.playerPlaying == 1 && this.firstPlay == false && this.board.allTab[i][j][0].type == 1 && this.nextPlay == 1)
 					{
 						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
 					}
-					else if(this.playerPlaying == 2 && this.firstPlay == false && (this.board.allTab[i][j][0].type == 2 || this.board.allTab[i][j][0].type == 3))
+					else if(this.playerPlaying == 2 && this.firstPlay == false && this.board.allTab[i][j][0].type == 2 && this.nextPlay == 1)
 					{
 						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
-					}else
-					{
+					}else if(this.firstPlay == false && this.nextPlay == 2 && this.board.allTab[i][j][0].type == 3){
+						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
 					}
-					
-						
+					else
+					{
+						this.board.allTab[i][j][0].display();
+						this.board.allTab[i][j][1].display();
+					}	
 				}	
-				
-				
 			}
 		}
 }
@@ -901,10 +1001,6 @@ XMLscene.prototype.update = function(curtime){
 /*****
 * TP3 - initialize Board
 ****/
-
-
-
-
 function arraysEqual(a, b) {
   if (a === b) return true;
   if (a == null || b == null) return false;

@@ -36,13 +36,14 @@ function Tab(scene) {
 }
 
  Tab.prototype.init = function(matrix) {
+
+
  	this.tab = matrix;
+    this.cells = [];
+    this.allTab = [];
 
  	this.nR = this.tab.length;
  	this.nC = this.tab[0].length;
-
-    //this.tab[1][1] = 1;
-    //this.tab[0][1] = 0;
 
  	var piece = null;
  	var cell = null;
@@ -52,12 +53,9 @@ function Tab(scene) {
  	{
  		xi=xi+1;
  		var lin = [];
-        console.log(i);
-
 
  		for(var j = 0; j < this.nC; ++j)
  		{
-            console.log(j);
  			zi = zi-1;
  			var pos = new Array(2);
  			if(this.tab[i][j] == 1){

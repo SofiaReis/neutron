@@ -51,13 +51,10 @@ Piece.prototype.display = function() {
 
  	this.scene.pushMatrix();
 
- 	// Set Material e Textura
  	this.scene.materials[this.material].setTexture(this.scene.textures[this.texture]);
 	this.scene.materials[this.material].apply();
 
-
  	this.scene.pushMatrix();
- 	
  	this.scene.translate(this.xi, 0, this.zi);
  	this.processTransformations(this.objPiece);
  	this.processTransformations(this.scene.graph.nodesInfo[this.objPiece.descendants[0]]);

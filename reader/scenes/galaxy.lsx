@@ -8,7 +8,7 @@
         <rotation axis="y" angle="0" />                  <!-- initial rotation 2 -->
         <rotation axis="z" angle="0" />                  <!-- initial rotation 1 -->
         <scale sx="1" sy="1" sz="1" />                  <!-- initial scaling -->
-        <reference length="2" />                          <!-- axis length; "0" means no axis-->
+        <reference length="0" />                          <!-- axis length; "0" means no axis-->
     </INITIALS>
 
 
@@ -20,26 +20,42 @@
     <LIGHTS>
         <LIGHT id="luz_1">                                    <!-- light identifier -->
             <enable value= "1" />                         <!-- enable/disable -->
-            <position x="4.0" y="25.0" z="10.0" w="1.0" />       <!-- light position -->
+            <position x="2.0" y="10.0" z="2.0" w="1.0" />       <!-- light position -->
             <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
             <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
             <specular r="1.0" g="1.0" b="1.0" a="0.5" />
         </LIGHT>
 
-        <LIGHT id="luz_2">                              <!-- light identifier -->
-            <enable value= "0" />                         <!-- enable/disable -->
-            <position x="0.75" y="20" z="10.5" w="1.0" />       <!-- light position -->
-            <ambient r="1" g="1" b="1" a="1.0" />        <!-- ambient component -->
-            <diffuse r="1" g="1" b="1" a="1.0" />        <!-- diffuse component -->
-            <specular r="1" g="1" b="1" a="1.0" />       <!-- specular component -->
+      <LIGHT id="luz_2">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="-2.0" y="10.0" z="-2.0" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
         </LIGHT>
 
-        <LIGHT id="luz_3">                              <!-- light identifier -->
-            <enable value= "0" />                         <!-- enable/disable -->
-            <position x="0" y="6" z="0" w="1.0" />       <!-- light position -->
-            <ambient r="1" g="1" b="1" a="1.0" />        <!-- ambient component -->
-            <diffuse r="1" g="1" b="1" a="1.0" />        <!-- diffuse component -->
-            <specular r="1" g="1" b="1" a="1.0" />       <!-- specular component -->
+        <LIGHT id="luz_3">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="-2" y="10.0" z="2" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
+        </LIGHT>
+
+        <LIGHT id="luz_4">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="2" y="10.0" z="-2" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
+        </LIGHT>
+
+         <LIGHT id="luz_5">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="0" y="10.0" z="0" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="0.2" g="0.2" b="0.2" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
         </LIGHT>
 
     </LIGHTS>
@@ -52,7 +68,7 @@
             <controlpoint xx="5" yy="1" zz="5"/>            
         </ANIMATION>
 
-        <ANIMATION id="circle1" span="30" type="circular" center="10 10 10" radius="0" startang="0" rotang="1440"/>
+        <ANIMATION id="circle1" span="30" type="circular" center="0 0 0" radius="0" startang="0" rotang="600"/>
 
         <ANIMATION id="circle2" span="10" type="circular" center="10 10 10" radius="5" startang="40" rotang="10"/>
         
@@ -160,6 +176,7 @@
         </LEAF>
 
         <LEAF id="tab" type="terrain" texture="galaxy_cell.jpg" heightmap="highmap_cell.jpg"/>
+        <LEAF id="tab2" type="terrain" texture="bring_galaxy.jpg" heightmap=""/>
 
     </LEAVES>
 
@@ -183,94 +200,107 @@
         <NODE id="base">
             <MATERIAL id="brilhante" />
             <TEXTURE id="tabuleiro_galaxy_border" />
-
+ 
             <DESCENDANTS>
                 <DESCENDANT id="base_bt" />      
-                <DESCENDANT id="base_sides" />       
+                <DESCENDANT id="base_sides" />      
             </DESCENDANTS>
         </NODE>
 
-        <NODE id="base_bt">
+         <NODE id="base_bt">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
+ 
             <TRANSLATION x="0" y="-0.5" z="0" />
             <ROTATION axis="x" angle="90" />
-            <SCALE sx="6.5" sy="6.5" sz="6.5" />
-
+            <SCALE sx="6.5" sy="5" sz="6.5" />
+ 
             <DESCENDANTS>
                 <DESCENDANT id="rect" />            
             </DESCENDANTS>
         </NODE>
 
-        <NODE id="base_sides">
+         <NODE id="base_sides">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
+ 
             <DESCENDANTS>
                 <DESCENDANT id="sides_1" />
                 <DESCENDANT id="sides_2" />
                 <DESCENDANT id="sides_3" />  
-                <DESCENDANT id="sides_4" />             
+                <DESCENDANT id="sides_4" />            
             </DESCENDANTS>
         </NODE>
 
-        <NODE id="sides">
+         <NODE id="sides">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-            
+           
             <TRANSLATION x="0" y="-0.45" z="0" />
             <ROTATION axis="x" angle="0" />
             <SCALE sx="6.5" sy="0.60" sz="0.1" />
-
+ 
             <DESCENDANTS>
                 <DESCENDANT id="rect" />  
             </DESCENDANTS>
         </NODE>
 
+        <NODE id="sides2">
+            <MATERIAL id="null" />
+            <TEXTURE id="null" />
+           
+            <TRANSLATION x="0" y="-0.45" z="0" />
+            <ROTATION axis="x" angle="0" />
+            <SCALE sx="5" sy="0.60" sz="0.1" />
+ 
+            <DESCENDANTS>
+                <DESCENDANT id="rect" />  
+            </DESCENDANTS>
+        </NODE>
+ 
         <NODE id="sides_1">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="0" y="0.25" z="3.25" />
+ 
+            <TRANSLATION x="0" y="0.2" z="2.5" />
             <ROTATION axis="x" angle="0" />
-            
+           
             <DESCENDANTS>
                 <DESCENDANT id="sides" />  
             </DESCENDANTS>
         </NODE>
-
+ 
         <NODE id="sides_2">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="-3.25" y="0.25" z="0" />
+ 
+            <TRANSLATION x="-3.25" y="0.2" z="0" />
             <ROTATION axis="y" angle="-90" />
-            
+           
             <DESCENDANTS>
-                <DESCENDANT id="sides" />  
+                <DESCENDANT id="sides2" />  
             </DESCENDANTS>
         </NODE>
-
+ 
         <NODE id="sides_3">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="3.25" y="0.25" z="0" />
+ 
+            <TRANSLATION x="3.25" y="0.2" z="0" />
             <ROTATION axis="y" angle="90" />
-            
+           
             <DESCENDANTS>
-                <DESCENDANT id="sides" />  
+                <DESCENDANT id="sides2" />  
             </DESCENDANTS>
         </NODE>
-
+ 
         <NODE id="sides_4">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="0" y="-0.65" z="-3.25" />
+ 
+            <TRANSLATION x="0" y="-0.75" z="-2.5" />
             <ROTATION axis="x" angle="180" />
-            
+           
             <DESCENDANTS>
                 <DESCENDANT id="sides" />  
             </DESCENDANTS>
@@ -279,6 +309,7 @@
         <NODE id="peça_neutron">
             <MATERIAL id="brilhante" />
             <TEXTURE id="pattern_peca_neutron" />
+            <ANIMATIONREF id="circle1"/>
 
             <!--<TRANSLATION x="0" y="-0.05" z="0" />-->
             <ROTATION axis="y" angle="90" />
@@ -313,17 +344,6 @@
             <DESCENDANTS>
                 <DESCENDANT id="peça_top" /> 
                 <DESCENDANT id="peça_bottom" />        
-            </DESCENDANTS>
-        </NODE>
-
-          <NODE id="empty_space">
-            <MATERIAL id="brilhante" />
-            <TEXTURE id="pattern_peca_black" />
-
-            <!--<TRANSLATION x="-2" y="-0.05" z="0" />-->
-            <SCALE sx="0.30" sy="0.30" sz="0.30" />
-
-            <DESCENDANTS>
             </DESCENDANTS>
         </NODE>
 
@@ -389,6 +409,31 @@
             </DESCENDANTS>
         </NODE>
 
+        <NODE id="tabuleiro_bottom">
+            <MATERIAL id="brilhante" />
+
+            <TRANSLATION x="-2.9" y="0" z="0" />
+            <ROTATION axis="y" angle="90" />
+            <SCALE sx="2.5" sy="0.1" sz="0.4" />
+
+
+            <DESCENDANTS>
+                <DESCENDANT id="tab2" />            
+            </DESCENDANTS>
+        </NODE>
+
+        <NODE id="tabuleiro_bottom2">
+            <MATERIAL id="brilhante" />
+
+            <TRANSLATION x="0" y="0" z="0" />
+            <ROTATION axis="y" angle="90" />
+            <ROTATION axis="y" angle="90" />
+
+            <DESCENDANTS>
+                <DESCENDANT id="tabuleiro_bottom" />            
+            </DESCENDANTS>
+        </NODE>
+
 
         <NODE id="cena">
             <MATERIAL id="null" />
@@ -400,6 +445,8 @@
                 <DESCENDANT id="peça_black" />
                 <DESCENDANT id="cell" />
                 <DESCENDANT id="base" />
+                <DESCENDANT id="tabuleiro_bottom" />
+                <DESCENDANT id="tabuleiro_bottom2" />
             </DESCENDANTS>
         </NODE>
     </NODES>

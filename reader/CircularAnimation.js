@@ -64,7 +64,6 @@ CircularAnimation.prototype.update = function (curtime) {
 
 		this.currentang = this.startang + (this.speed * (this.currtime - this.time));
 
-		//TRANSFORMATIONS
 		mat4.identity(this.matrix);
 		mat4.translate(this.matrix, this.matrix,[parseFloat(this.center[0]),
 			parseFloat(this.center[1]),
