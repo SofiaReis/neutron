@@ -1,4 +1,4 @@
-function Piece(scene, posX, posY, obj,type) {
+function Piece(scene, posX, posY, i,j,obj,type) {
  	CGFobject.call(this,scene);
 
 	this.scene = scene;
@@ -7,6 +7,9 @@ function Piece(scene, posX, posY, obj,type) {
 
 	this.material = this.objPiece.material;
 	this.texture = this.objPiece.texture;
+
+	this.i = i;
+	this.j = j;
 
 	this.type = type;
 
@@ -48,13 +51,10 @@ Piece.prototype.display = function() {
 
  	this.scene.pushMatrix();
 
- 	// Set Material e Textura
  	this.scene.materials[this.material].setTexture(this.scene.textures[this.texture]);
 	this.scene.materials[this.material].apply();
 
-
  	this.scene.pushMatrix();
- 	
  	this.scene.translate(this.xi, 0, this.zi);
  	this.processTransformations(this.objPiece);
  	this.processTransformations(this.scene.graph.nodesInfo[this.objPiece.descendants[0]]);

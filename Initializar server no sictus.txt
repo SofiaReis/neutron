@@ -1,4 +1,0 @@
-Abrir sictus e por na consola:
-ensure_loaded(['/Users/Fifaz/Neutron/server.pl']).
-e depois
-server.

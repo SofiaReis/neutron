@@ -36,7 +36,7 @@ Interface.prototype.update = function(){
 	{
 		this.loaded = 1;
 		
-		this.lightsInterface.open();
+		//this.lightsInterface.open();
 
 		for(var i in this.scene.lights){
 

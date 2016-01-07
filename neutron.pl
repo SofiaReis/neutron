@@ -1,11 +1,12 @@
-%---------------------------------------------
-%
-% New play is 1 for neutron, 2 for jogada, 3 for end (when end NewPlayer is the player that won)
-% New player is 1 or 2
-% New board returns -1 on error
-%
+:-use_module(library(random)).
 
-jogada(Board, NXi, NYi, Xi, Yi, Xf, Yf, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-    
+estado_inicial([[1,1,1,1,1],
+                [0,0,0,0,0],
+                [0,0,3,0,0],
+                [0,0,0,0,0],
+                [2,2,2,2,2]]).
+
+jogada_humano(Board, NXi, NYi, Xi, Yi, Xf, Yf, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-    
   
   valida_jogada(Board,Xi, Yi, Xf, Yf, Player),
   atualiza_jogada(Board,Xi, Yi, Xf, Yf, NewBoard),
@@ -13,8 +14,8 @@ jogada(Board, NXi, NYi, Xi, Yi, Xf, Yf, Player, NewPlayer, NewPlay, NewBoard, Me
   (
     verifica_fim(NXi, NYi, NewBoard, Player, NewPlayer),
     
-    NewPlay is 3,
-    Message = "The End"
+    NewPlay is 0,
+    Message is 2 %the end
     ;
     (
       Player == 1,
@@ -24,7 +25,7 @@ jogada(Board, NXi, NYi, Xi, Yi, Xf, Yf, Player, NewPlayer, NewPlay, NewBoard, Me
     ),
     NX is -1, NY is -1,
     NewPlay is 1,
-    Message = "Move Valid"
+    Message is 1
   );
   NewPlay is 2,
   (
@@ -35,9 +36,9 @@ jogada(Board, NXi, NYi, Xi, Yi, Xf, Yf, Player, NewPlayer, NewPlay, NewBoard, Me
   ),
   NX is -1, NY is -1,
   NewBoard is -1,
-  Message = "Move Invalid".             
+  Message is 0.             
 
-jogada_neutrao(Board, NXi, NYi, NXf, NYf, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
+jogada_neutrao_humano(Board, NXi, NYi, NXf, NYf, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
 
   valida_jogada(Board, NXi, NYi, NXf, NYf,3),
   atualiza_jogada(Board,NXi, NYi, NXf, NYf, NewBoard),
@@ -46,7 +47,7 @@ jogada_neutrao(Board, NXi, NYi, NXf, NYf, Player, NewPlayer, NewPlay, NewBoard, 
   (
     verifica_fim(NXf , NYf , NewBoard, Player, NewPlayer),
     NewPlay is 3,
-    Message = "The End"
+    Message is 2
     ;
     ( 
       Player == 1,
@@ -55,7 +56,7 @@ jogada_neutrao(Board, NXi, NYi, NXf, NYf, Player, NewPlayer, NewPlay, NewBoard, 
       NewPlayer is 2
     ),
     NewPlay is 2,
-    Message = "Move Valid"
+    Message is 1
   );
   NewPlay is 1,
   (
@@ -66,11 +67,11 @@ jogada_neutrao(Board, NXi, NYi, NXf, NYf, Player, NewPlayer, NewPlay, NewBoard, 
   ),
   NX is -1, NY is -1,
   NewBoard is -1,
-  Message = "Move Invalid". 
+  Message is 0. 
 
-jog_poss(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
+jog_poss(Board, Xi, Yi, Player, NewBoard, Message):-
   jogadas_possiveis(Board, Xi, Yi, 0, Player, NewBoard),
-  Message = "Success!".
+  Message is 1.
 
 jogada_ale(Board, NXr, NYr, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
   jogada_aleatoria(Board, Xi, Yi, Xf, Yf, Player),
@@ -80,7 +81,7 @@ jogada_ale(Board, NXr, NYr, Player, NewPlayer, NewPlay, NewBoard, Message, NX, N
     verifica_fim(NXr, NYr, NewBoard, Player, NewPlayer),
     
     NewPlay is 3,
-    Message = "The End"
+    Message is 2
     ;
     (
       Player == 1,
@@ -89,10 +90,10 @@ jogada_ale(Board, NXr, NYr, Player, NewPlayer, NewPlay, NewBoard, Message, NX, N
       NewPlayer is 1
     ),
     NewPlay is 1,
-    Message = "Made a Random Move"
+    Message is 1
   ).
 
-jogada_ale_neutron(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
+jogada_neutron_computador(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
   jogada_aleatoria(Board, Xi, Yi, Xf, Yf, 3),
   atualiza_jogada(Board, Xi, Yi, Xf, Yf, NewBoard),
   NX is Xf,
@@ -100,7 +101,7 @@ jogada_ale_neutron(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message,
   (
     verifica_fim(Xf , Yf , NewBoard, Player, NewPlayer),
     NewPlay is 3,
-    Message = "The End"
+    Message is 2
     ; 
     (
     Player == 1,
@@ -109,10 +110,10 @@ jogada_ale_neutron(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message,
     NewPlayer is 2
     ),
     NewPlay is 2,
-    Message = "Made a Random Neutron Move"
+    Message is 1
   ).
 
-jogada_int(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
+jogada_computador(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
   jogada_inteligente_neutron(Board,NXi, NYi, NXf, NYf, Player),
   atualiza_jogada(Board, NXi, NYi, NXf, NYf, NewBoard),
   NX is NXf,
@@ -121,7 +122,7 @@ jogada_int(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, N
   (
     verifica_fim(NXf , NYf , NewBoard, Player, NewPlayer),
     NewPlay is 3,
-    Message = "The End"
+    Message is 2
     ; 
     (
       Player == 1,
@@ -130,7 +131,7 @@ jogada_int(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, N
       NewPlayer is 2
     ),
     NewPlay is 2,
-    Message = "Made an Inteligent Neutron Move"
+    Message is 1
   ).
   
 
@@ -172,7 +173,6 @@ valida_jogada(Tab, Xi, Yi, Xf, Yf, N):-
         ),
         verifica_maximo(Tab, Xi, Yi, Xm, Ym, M,N),
         !,
-        %write('\nValores '),write(Xm),nl,write(Ym),nl,nl,
         Xm = Xf,
         Ym = Yf.
 

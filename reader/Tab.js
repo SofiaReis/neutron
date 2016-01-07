@@ -36,7 +36,11 @@ function Tab(scene) {
 }
 
  Tab.prototype.init = function(matrix) {
+
+
  	this.tab = matrix;
+    this.cells = [];
+    this.allTab = [];
 
  	this.nR = this.tab.length;
  	this.nC = this.tab[0].length;
@@ -45,20 +49,19 @@ function Tab(scene) {
  	var cell = null;
  	var xi = -3;
  	var zi = 3; 	
- 	for(var i = 0; i < this.nC; ++i)
+ 	for(var i = 0; i < this.nR; ++i)
  	{
  		xi=xi+1;
  		var lin = [];
 
-
- 		for(var j = 0; j < this.nR; ++j)
+ 		for(var j = 0; j < this.nC; ++j)
  		{
  			zi = zi-1;
  			var pos = new Array(2);
  			if(this.tab[i][j] == 1){
- 				piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_white']),1);
+ 				piece = new Piece(this.scene, xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_white']),1);
 
- 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),1);
+ 				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
 
  				pos[0] = piece;
  				pos[1] = cell;
@@ -66,9 +69,9 @@ function Tab(scene) {
  				lin.push(pos);
  			}
  			else if(this.tab[i][j] == 2){
- 				piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_black']),2);
+ 				piece = new Piece(this.scene, xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_black']),2);
 
- 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),1);
+ 				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
  				
  				pos[0] = piece;
  				pos[1] = cell;
@@ -77,9 +80,9 @@ function Tab(scene) {
  			}
  			else if(this.tab[i][j] == 3)
  			{
- 				piece = new Piece(this.scene, xi,zi,cloneObject(this.scene.graph.pieces['peça_neutron']),3);
+ 				piece = new Piece(this.scene, xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_neutron']),3);
 
- 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),1);
+ 				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
  				
  				pos[0] = piece;
  				pos[1] = cell;
@@ -88,7 +91,7 @@ function Tab(scene) {
  			}
  			else if(this.tab[i][j] == 0)
  			{
- 				cell = new Cell(this.scene,xi,zi, cloneObject(this.scene.graph.pieces['cell']),0);
+ 				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),0);
  				
  				pos[0] = 0;
  				pos[1] = cell;

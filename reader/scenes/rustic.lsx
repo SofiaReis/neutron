@@ -17,33 +17,50 @@
         <background r="0.0" g="0.0" b="0.0" a="0.9" />         <!-- background color -->
     </ILLUMINATION>
 
-    <LIGHTS>
+   <LIGHTS>
         <LIGHT id="luz_1">                                    <!-- light identifier -->
             <enable value= "1" />                         <!-- enable/disable -->
-            <position x="4.0" y="25.0" z="10.0" w="1.0" />       <!-- light position -->
+            <position x="2.0" y="10.0" z="2.0" w="1.0" />       <!-- light position -->
             <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
             <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
             <specular r="1.0" g="1.0" b="1.0" a="0.5" />
         </LIGHT>
 
-        <LIGHT id="luz_2">                              <!-- light identifier -->
-            <enable value= "0" />                         <!-- enable/disable -->
-            <position x="0.75" y="20" z="10.5" w="1.0" />       <!-- light position -->
-            <ambient r="1" g="1" b="1" a="1.0" />        <!-- ambient component -->
-            <diffuse r="1" g="1" b="1" a="1.0" />        <!-- diffuse component -->
-            <specular r="1" g="1" b="1" a="1.0" />       <!-- specular component -->
+      <LIGHT id="luz_2">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="-2.0" y="10.0" z="-2.0" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
         </LIGHT>
 
-        <LIGHT id="luz_3">                              <!-- light identifier -->
-            <enable value= "0" />                         <!-- enable/disable -->
-            <position x="0" y="6" z="0" w="1.0" />       <!-- light position -->
-            <ambient r="1" g="1" b="1" a="1.0" />        <!-- ambient component -->
-            <diffuse r="1" g="1" b="1" a="1.0" />        <!-- diffuse component -->
-            <specular r="1" g="1" b="1" a="1.0" />       <!-- specular component -->
+        <LIGHT id="luz_3">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="-2" y="10.0" z="2" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
+        </LIGHT>
+
+        <LIGHT id="luz_4">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="2" y="10.0" z="-2" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
+        </LIGHT>
+
+         <LIGHT id="luz_5">                                    <!-- light identifier -->
+            <enable value= "1" />                         <!-- enable/disable -->
+            <position x="0" y="10.0" z="0" w="1.0" />       <!-- light position -->
+            <ambient r="0" g="0" b="0" a="1.0" />        <!-- ambient component -->
+            <diffuse r="0.2" g="0.2" b="0.2" a="0.5" />        
+            <specular r="1.0" g="1.0" b="1.0" a="0.5" />
         </LIGHT>
 
     </LIGHTS>
 
+   
     <ANIMATIONS>
         <ANIMATION id="line1" span="10" type="linear">
             <controlpoint xx="1" yy="1" zz="1"/>            
@@ -52,11 +69,12 @@
             <controlpoint xx="5" yy="1" zz="5"/>            
         </ANIMATION>
 
-        <ANIMATION id="circle1" span="30" type="circular" center="10 10 10" radius="0" startang="0" rotang="1440"/>
+        <ANIMATION id="circle1" span="30" type="circular" center="0 0 0" radius="0" startang="0" rotang="600"/>
 
         <ANIMATION id="circle2" span="10" type="circular" center="10 10 10" radius="5" startang="40" rotang="10"/>
         
     </ANIMATIONS>
+
 
     <TEXTURES>
 
@@ -75,7 +93,7 @@
             <amplif_factor s="1" t="1" />
         </TEXTURE>
 
-        <TEXTURE id="pattern_peca_neutron_top">
+        <TEXTURE id="pattern_peca_neutron">
             <file path="textures/pattern_peca_neutron_top-rustic.jpg" />
             <amplif_factor s="1" t="1" />
         </TEXTURE>
@@ -92,7 +110,7 @@
     </TEXTURES>
 
 
-    <MATERIALS>
+   <MATERIALS>
         <MATERIAL id="brilhante">
             <shininess value="30" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />        <!-- specular reflection -->
@@ -121,8 +139,8 @@
 
     <LEAVES>
         <LEAF id="rect" type="rectangle" args="-0.5 0.5 0.5 -0.5" />
+        <LEAF id="circ" type="cylinder" args="0.1 1.0 1.0 30.0 30.0" />
         <LEAF id="cyl" type="cylinder" args="1.0 1.0 1.0 30.0 30.0" />
-        <LEAF id="circ" type="cylinder" args="0 0.1 0 30.0 30.0" />
         <LEAF id="sph" type="sphere" args="1 16 16" />
         <LEAF id="plan" type="plane" parts="20"/>
 
@@ -164,7 +182,9 @@
             <controlpoint x="0.700"  y="-0.650" z="-0.250" />
         </LEAF>
 
-        <LEAF id="tab" type="terrain" texture="tabuleiro_rustic.jpg" heightmap="rustic_map.jpg"/>
+        <LEAF id="tab" type="terrain" texture="rustic_cell.jpg" heightmap="highmap_cell.jpg"/>
+        <LEAF id="tab2" type="terrain" texture="bring_rustic.jpg" heightmap=""/>
+
     </LEAVES>
 
 
@@ -172,12 +192,10 @@
 
         <ROOT id="cena" />
 
-        <NODE id="tabuleiro">
+        <NODE id="cell">
             <MATERIAL id="brilhante" />
-
-            <TRANSLATION x="0" y="0" z="0" />
-            <ROTATION axis="y" angle="90" />
-            <SCALE sx="3.25" sy="0.1" sz="3.25" />
+            <TEXTURE id="null" />
+            <SCALE sx="0.5" sy="0.1" sz="0.5" />
 
             <DESCENDANTS>
                 <DESCENDANT id="tab" />            
@@ -186,22 +204,22 @@
 
         <NODE id="base">
             <MATERIAL id="brilhante" />
-            <TEXTURE id="pattern_peca_neutron" />
-
+            <TEXTURE id="tabuleiro_rustic_border" />
+ 
             <DESCENDANTS>
                 <DESCENDANT id="base_bt" />      
-                <DESCENDANT id="base_sides" />       
+                <DESCENDANT id="base_sides" />      
             </DESCENDANTS>
         </NODE>
 
-        <NODE id="base_bt">
+         <NODE id="base_bt">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
+ 
             <TRANSLATION x="0" y="-0.5" z="0" />
             <ROTATION axis="x" angle="90" />
-            <SCALE sx="6.5" sy="6.5" sz="6.5" />
-
+            <SCALE sx="6.5" sy="5" sz="6.5" />
+ 
             <DESCENDANTS>
                 <DESCENDANT id="rect" />            
             </DESCENDANTS>
@@ -222,59 +240,72 @@
         <NODE id="sides">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-            
+           
             <TRANSLATION x="0" y="-0.45" z="0" />
             <ROTATION axis="x" angle="0" />
             <SCALE sx="6.5" sy="0.60" sz="0.1" />
-
+ 
             <DESCENDANTS>
                 <DESCENDANT id="rect" />  
             </DESCENDANTS>
         </NODE>
 
+        <NODE id="sides2">
+            <MATERIAL id="null" />
+            <TEXTURE id="null" />
+           
+            <TRANSLATION x="0" y="-0.45" z="0" />
+            <ROTATION axis="x" angle="0" />
+            <SCALE sx="5" sy="0.60" sz="0.1" />
+ 
+            <DESCENDANTS>
+                <DESCENDANT id="rect" />  
+            </DESCENDANTS>
+        </NODE>
+ 
         <NODE id="sides_1">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="0" y="0.25" z="3.25" />
+ 
+            <TRANSLATION x="0" y="0.2" z="2.5" />
             <ROTATION axis="x" angle="0" />
-            
+           
             <DESCENDANTS>
                 <DESCENDANT id="sides" />  
             </DESCENDANTS>
         </NODE>
-
+ 
         <NODE id="sides_2">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="-3.25" y="0.25" z="0" />
+ 
+            <TRANSLATION x="-3.25" y="0.2" z="0" />
             <ROTATION axis="y" angle="-90" />
-            
+           
             <DESCENDANTS>
-                <DESCENDANT id="sides" />  
+                <DESCENDANT id="sides2" />  
             </DESCENDANTS>
         </NODE>
-
+ 
         <NODE id="sides_3">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-             <TRANSLATION x="3.25" y="0.25" z="0" />
+ 
+            <TRANSLATION x="3.25" y="0.2" z="0" />
             <ROTATION axis="y" angle="90" />
-            
+           
             <DESCENDANTS>
-                <DESCENDANT id="sides" />  
+                <DESCENDANT id="sides2" />  
             </DESCENDANTS>
         </NODE>
-
+ 
         <NODE id="sides_4">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
-
-            <TRANSLATION x="0" y="-0.65" z="-3.25" />
+ 
+            <TRANSLATION x="0" y="-0.75" z="-2.5" />
             <ROTATION axis="x" angle="180" />
-            
+           
             <DESCENDANTS>
                 <DESCENDANT id="sides" />  
             </DESCENDANTS>
@@ -282,15 +313,14 @@
 
         <NODE id="peça_neutron">
             <MATERIAL id="brilhante" />
-            <TEXTURE id="null" />
+            <TEXTURE id="pattern_peca_neutron" />
+            <ANIMATIONREF id="circle1"/>
 
-            <TRANSLATION x="0" y="-0.05" z="0" />
             <ROTATION axis="y" angle="90" />
             <SCALE sx="0.30" sy="0.30" sz="0.30" />
-
             <DESCENDANTS>
-                <DESCENDANT id="peça_body_neutron" />  
-                <DESCENDANT id="peça_top_neutron" />   
+                <DESCENDANT id="peça_top" />  
+                <DESCENDANT id="peça_bottom" />   
             </DESCENDANTS>
         </NODE>
 
@@ -298,48 +328,45 @@
             <MATERIAL id="brilhante" />
             <TEXTURE id="pattern_peca_white" />
 
-            <TRANSLATION x="2" y="-0.05" z="0" />
             <SCALE sx="0.30" sy="0.30" sz="0.30" />
 
             <DESCENDANTS>
-                <DESCENDANT id="peça_body" /> 
-                <DESCENDANT id="peça_top" />      
+                <DESCENDANT id="peça_top" /> 
+                <DESCENDANT id="peça_bottom" />      
             </DESCENDANTS>
         </NODE>
 
         <NODE id="peça_black">
             <MATERIAL id="brilhante" />
             <TEXTURE id="pattern_peca_black" />
-
-            <TRANSLATION x="-2" y="-0.05" z="0" />
+            
             <SCALE sx="0.30" sy="0.30" sz="0.30" />
 
             <DESCENDANTS>
-                <DESCENDANT id="peça_body" /> 
-                <DESCENDANT id="peça_top" />        
-            </DESCENDANTS>
-        </NODE>
-
-        <NODE id="peça_body">
-            <MATERIAL id="null" />
-            <TEXTURE id="null" />
-
-            <TRANSLATION x="0" y="0.65" z="0" />
-            <ROTATION axis="x" angle="-90" />
-            <SCALE sx="1" sy="1" sz="1" />
-
-            <DESCENDANTS>
-                <DESCENDANT id="cyl" />            
+                <DESCENDANT id="peça_top" /> 
+                <DESCENDANT id="peça_bottom" />        
             </DESCENDANTS>
         </NODE>
 
         <NODE id="peça_top">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
+            <TRANSLATION x="0" y="0.65" z="0" />
+            <ROTATION axis="x" angle="-90" />
+            <SCALE sx="1" sy="1" sz="1" />
+            <DESCENDANTS>
+                <DESCENDANT id="cyl" />            
+            </DESCENDANTS>
+        </NODE>
+
+        <NODE id="peça_bottom">
+            <MATERIAL id="null" />
+            <TEXTURE id="null" />
+
 
             <TRANSLATION x="0" y="1.15" z="0" />
             <ROTATION axis="x" angle="-90" />
-            <SCALE sx="10" sy="10" sz="10" />
+            <SCALE sx="1" sy="0.1" sz="1" />
 
             <DESCENDANTS>
                 <DESCENDANT id="circ" />            
@@ -362,7 +389,6 @@
         <NODE id="peça_top_neutron">
             <MATERIAL id="null" />
             <TEXTURE id="pattern_peca_neutron_top" />
-
             <TRANSLATION x="0" y="1.15" z="0" />
             <ROTATION axis="x" angle="-90" />
             <SCALE sx="1.15" sy="1.15" sz="1.15" />
@@ -408,6 +434,31 @@
             </DESCENDANTS>
         </NODE>
 
+         <NODE id="tabuleiro_bottom">
+            <MATERIAL id="brilhante" />
+
+            <TRANSLATION x="-2.9" y="0" z="0" />
+            <ROTATION axis="y" angle="90" />
+            <SCALE sx="2.5" sy="0.1" sz="0.4" />
+
+
+            <DESCENDANTS>
+                <DESCENDANT id="tab2" />            
+            </DESCENDANTS>
+        </NODE>
+
+        <NODE id="tabuleiro_bottom2">
+            <MATERIAL id="brilhante" />
+
+            <TRANSLATION x="0" y="0" z="0" />
+            <ROTATION axis="y" angle="90" />
+            <ROTATION axis="y" angle="90" />
+
+            <DESCENDANTS>
+                <DESCENDANT id="tabuleiro_bottom" />            
+            </DESCENDANTS>
+        </NODE>
+
         <NODE id="cena">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
@@ -416,8 +467,10 @@
                 <DESCENDANT id="peça_white" />
                 <DESCENDANT id="peça_neutron" />
                 <DESCENDANT id="peça_black" />
-                <DESCENDANT id="tabuleiro" />
+                <DESCENDANT id="cell" />
                 <DESCENDANT id="base" />
+                <DESCENDANT id="tabuleiro_bottom" />
+                <DESCENDANT id="tabuleiro_bottom2" />
             </DESCENDANTS>
         </NODE>
     </NODES>

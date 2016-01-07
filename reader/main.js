@@ -31,7 +31,7 @@ serialInclude(['../lib/CGF.js',
     'Cell.js',
 
 
-main=function()
+main=function(filename)
 {
     var app = new CGFapplication(document.body);
     var myScene = new XMLscene();
@@ -44,9 +44,10 @@ main=function()
 
     myInterface.setActiveCamera(myScene.camera);
 	
-	var filename=getUrlVars()['file'] || "galaxy.lsx";
+    var filename1=getUrlVars()['file'] || "galaxy.lsx";
+	var filename2=getUrlVars()['file'] || "rustic.lsx";
 
-	var myGraph = new MySceneGraph(filename, myScene);
+	var myGraph = new MySceneGraph(filename1, myScene);
 
     app.run();
 }
