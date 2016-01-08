@@ -1,9 +1,3 @@
-#teste{
-    width: 400px;
-    height: 300px;
-    
-}
-
 body, html {
     border: 0;
     padding: 0;
@@ -17,6 +11,27 @@ canvas {
 }
 
 
-.jumbotron h1{
+h1{
 	text-align: center;
+}
+
+body{
+	width: auto;
+	height: 100%;
+}
+
+.title{
+	padding-top: 100px;
+	padding-bottom: 75px;
+}
+
+.button{
+	float: right;
+	padding-bottom: 100px;
+}
+
+.middleCont
+{
+	text-align: center;
+	padding-bottom: 100px;
 }

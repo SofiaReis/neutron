@@ -11,10 +11,7 @@ function XMLscene() {
     this.modeP1 = 0;
     this.modeP2 = 2;
 
-    this.dificulties = ["H", "M", "E"];
-    this.processing = true;
-
-  
+    this.dificulties = ["H", "M", "E"];  
      this.boardPieces = [];
      this.playerPlaying = 1;
   
@@ -58,8 +55,11 @@ XMLscene.prototype.init = function (application) {
 
     this.nextPlay = 1;
 
-       this.firstPlay = true;
-         this.board = new Tab(this);
+    this.pickingAnimation = null;
+    this.processing = false;
+
+    this.firstPlay = true;
+    this.board = new Tab(this);
 
     this.defaultApp = new CGFappearance(this);
     this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
@@ -103,7 +103,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 
 XMLscene.prototype.resetTab = function()
 {
-	this.processing = true;
+	//this.processing = true;
 
 	var scene = this;
 	this.initTab(function(matrix){
@@ -338,7 +338,14 @@ XMLscene.prototype.gameHumano = function() {
 								console.log("Good Move!");
 
 								
-								//ANIMATION
+							//	scene.pickingAnimation = new PickingAnimation(scene,5,scene.picked.xi,scene.picked.zi, scene.pickedDestine.xi,scene.pickedDestine.yi);
+							//	console.log(scene.pickingAnimation);
+							//	console.log(scene.processing);
+
+							//	scene.processing = true;
+
+								
+
 								scene.board.init(matrix[2]);
 
 								console.log("Player Playing: "+ scene.playerPlaying);
@@ -393,9 +400,6 @@ XMLscene.prototype.gameHumano = function() {
 								scene.board.init(matrix[2]);
 
 								console.log("Player Playing: "+ scene.playerPlaying);
-								//scene.playerPlaying = matrix[0];
-								console.log("Player at next: " + scene.playerPlaying);
-
 								console.log("New Play: " + matrix[1])
 								scene.nextPlay = matrix[1];
 
@@ -425,6 +429,11 @@ XMLscene.prototype.gameHumano = function() {
 
 };
 
+XMLscene.prototype.updateGame = function()
+{
+	this.board.init(this.newBoard);
+}
+
 XMLscene.prototype.gameComputador = function() {
 
 	var scene = this;
@@ -439,25 +448,12 @@ XMLscene.prototype.gameComputador = function() {
 			if(scene.message == 1)
 			{
 				console.log(matrix);
-								
-
-								//scene.setPickEnabled(false);
-								//scene.x = scene.pickedDestine.j;
-								//scene.z = scene.pickedDestine.i;
-								console.log("Good Move!");
-
-								
-								//ANIMATION
-								scene.board.init(matrix[2]);
-
-								console.log("Player Playing: "+ scene.playerPlaying);
-								//scene.playerPlaying = matrix[0];
-								//console.log("Player at next: " + scene.playerPlaying);
-
-								console.log("New Play: " + matrix[1])
-
-								
-								scene.nextPlay = matrix[1];
+				console.log("Good Move!");
+				scene.newBoard=matrix[2];
+				scene.board.init(matrix[2]);
+				console.log("Player Playing: "+ scene.playerPlaying);
+				console.log("New Play: " + matrix[1]);
+				scene.nextPlay = matrix[1];
 			}
 			else if(scene.message == 2)
 			{
@@ -1074,16 +1070,23 @@ XMLscene.prototype.display = function () {
 
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 
-		if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2))
+
+		
+		if(this.processing == true)
+		{
+			this.setPickEnabled(false);
+		}else{
+			if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2) && this.processing == true)
 		{
 			this.setPickEnabled(false);
 			this.gameComputador();
 			this.setPickEnabled(true);
 		}
+		}
 
-		this.displayPiecesAndCells();
+		
 
-	
+		this.displayPiecesAndCells();	
 
 	};	
 };
@@ -1100,16 +1103,13 @@ XMLscene.prototype.update = function(curtime){
 	if(!this.timer.timeBeg) this.timer.timeBeg = curtime;
     this.timer.updateTime(curtime);
 
-	for(node in this.animations){
-		
-		var animationsNode = this.animations[node];
-		
-		for(anim in animationsNode){
-			if(animationsNode[anim].current)
-				animationsNode[anim].update(curtime);
+    if(this.processing)
+    {
+    	console.log("entra aqui");
+    	this.pickingAnimation.update(curtime);
+    }
 
-		}
-	}
+    	
 
 	 if(this.camMoving) {
         if(!this.camTransBeg) this.camTransBeg = curtime;  //BEGINNING

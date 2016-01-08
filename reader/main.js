@@ -29,6 +29,7 @@ serialInclude(['../lib/CGF.js',
     'Timer.js',
     'Piece.js',
     'Cell.js',
+    'PickingAnimation.js',
 
 
 main=function(filename)
