@@ -14,8 +14,8 @@ jogada_humano(Board, NXi, NYi, Xi, Yi, Xf, Yf, Player, NewPlayer, NewPlay, NewBo
   (
     verifica_fim(NXi, NYi, NewBoard, Player, NewPlayer),
     
-    NewPlay is 0,
-    Message is 2 %the end
+    NewPlay is 3,
+    Message is 2
     ;
     (
       Player == 1,
@@ -73,7 +73,7 @@ jog_poss(Board, Xi, Yi, Player, NewBoard, Message):-
   jogadas_possiveis(Board, Xi, Yi, 0, Player, NewBoard),
   Message is 1.
 
-jogada_ale(Board, NXr, NYr, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
+jogada_computador(Board, NXr, NYr, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
   jogada_aleatoria(Board, Xi, Yi, Xf, Yf, Player),
   atualiza_jogada(Board, Xi, Yi, Xf, Yf, NewBoard),
   NX is -1, NY is -1,
@@ -93,27 +93,7 @@ jogada_ale(Board, NXr, NYr, Player, NewPlayer, NewPlay, NewBoard, Message, NX, N
     Message is 1
   ).
 
-jogada_neutron_computador(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
-  jogada_aleatoria(Board, Xi, Yi, Xf, Yf, 3),
-  atualiza_jogada(Board, Xi, Yi, Xf, Yf, NewBoard),
-  NX is Xf,
-  NY is Yf,
-  (
-    verifica_fim(Xf , Yf , NewBoard, Player, NewPlayer),
-    NewPlay is 3,
-    Message is 2
-    ; 
-    (
-    Player == 1,
-    NewPlayer is 1;
-    Player == 2,
-    NewPlayer is 2
-    ),
-    NewPlay is 2,
-    Message is 1
-  ).
-
-jogada_computador(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
+jogada_neutrao_computador(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY):-
   jogada_inteligente_neutron(Board,NXi, NYi, NXf, NYf, Player),
   atualiza_jogada(Board, NXi, NYi, NXf, NYf, NewBoard),
   NX is NXf,

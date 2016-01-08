@@ -9,7 +9,7 @@ function XMLscene() {
    	
    	//0 ou 2 
     this.modeP1 = 0;
-    this.modeP2 = 0;
+    this.modeP2 = 2;
 
     this.dificulties = ["H", "M", "E"];
     this.processing = true;
@@ -20,10 +20,7 @@ function XMLscene() {
   
      this.nextPlay = 0;
      this.x = 0;
-     this.z = 0;
-
-    // this.LinearAnimation = new LinearAnimation();
-     
+     this.z = 0;     
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
@@ -151,6 +148,41 @@ XMLscene.prototype.playHNeutron = function(request, reqObj)
 		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.playerPlaying+")",function(data) {
 	
 	var temp = JSON.parse(data.target.response);
+	
+	if (typeof request === "function") {
+              request.apply(reqObj,[temp]);
+        }
+	},true);
+}
+
+XMLscene.prototype.playCNeutron = function(request, reqObj)
+{
+
+
+	console.log(matrixToList(this.board.tab));
+	console.log("NEUTRON i: " + i);
+	console.log("NEUTRON j: " + j);
+	console.log("Player Playing: " + this.playerPlaying);
+
+	getRequest("playCNeutrao("+matrixToList(this.board.tab)+","+this.neutron.i+
+		","+this.neutron.j+","+this.playerPlaying+")",function(data) {
+	
+	var temp = JSON.parse(data.target.response);
+	
+	if (typeof request === "function") {
+              request.apply(reqObj,[temp]);
+        }
+	},true);
+}
+
+XMLscene.prototype.playComputador = function(request, reqObj)
+{
+
+	getRequest("playComputador("+matrixToList(this.board.tab)+","+this.neutron.i+","+this.neutron.j+","+this.playerPlaying+")",function(data) {
+	
+	var temp = JSON.parse(data.target.response);
+	
+	console.log(temp);
 	
 	if (typeof request === "function") {
               request.apply(reqObj,[temp]);
@@ -289,6 +321,200 @@ XMLscene.prototype.PlayerWhite = function() {
 
 
 
+XMLscene.prototype.gameHumano = function() {
+
+	var scene = this;
+					if(this.picked.type !=3){
+						this.playHuman(function(matrix)
+						{
+							
+							scene.message = matrix[3];
+							if(scene.message == 1){
+								
+									
+								scene.setPickEnabled(false);
+								scene.x = scene.pickedDestine.j;
+								scene.z = scene.pickedDestine.i;
+								console.log("Good Move!");
+
+								
+								//ANIMATION
+								scene.board.init(matrix[2]);
+
+								console.log("Player Playing: "+ scene.playerPlaying);
+								scene.playerPlaying = matrix[0];
+								console.log("Player at next: " + scene.playerPlaying);
+
+								console.log("New Play: " + matrix[1])
+								scene.nextPlay = matrix[1];
+
+								console.log("NX "+ matrix[3]);
+								console.log("NY "+ matrix[4]);
+
+								if(scene.firstPlay == true)
+								{
+									console.log("First Play!");
+									scene.firstPlay = false;
+									scene.nextPlay = 1;
+								}
+
+								scene.setPickEnabled(true);
+								scene.picked = null;
+								scene.pickedDestine = null;
+
+							}
+							else if(scene.message == 2)
+							{
+								console.log("Game Finished!");
+							}
+							else
+							{
+								console.log("Invalid Move!");
+							}
+					});
+					}
+					else{
+						this.playHNeutron(function(matrix)
+						{
+							scene.message = matrix[3];
+
+							if(scene.message == 1){	
+
+								console.log(matrix);
+								
+
+								scene.setPickEnabled(false);
+								scene.x = scene.pickedDestine.j;
+								scene.z = scene.pickedDestine.i;
+								console.log("Good Move!");
+
+								
+								//ANIMATION
+								scene.board.init(matrix[2]);
+
+								console.log("Player Playing: "+ scene.playerPlaying);
+								//scene.playerPlaying = matrix[0];
+								console.log("Player at next: " + scene.playerPlaying);
+
+								console.log("New Play: " + matrix[1])
+								scene.nextPlay = matrix[1];
+
+								console.log("NX "+ matrix[3]);
+								console.log("NY "+ matrix[4]);
+
+								scene.setPickEnabled(true);
+							
+								scene.picked = null;
+								scene.pickedDestine = null;
+
+							}
+							else if(scene.message == 2)
+							{
+								scene.setPickEnabled(false);
+								scene.board.init(matrix[2]);
+								console.log("Game Finished!");
+								console.log("Player "+ scene.playerPlaying +" WON!");
+							}
+							else
+							{
+								console.log("Invalid Move!");
+							}
+						});
+
+						}
+
+};
+
+XMLscene.prototype.gameComputador = function() {
+
+	var scene = this;
+
+	if(this.nextPlay == 1)
+	{
+		this.playCNeutron(function(matrix)
+		{
+			scene.message = matrix[3];
+			console.log(matrix);
+
+			if(scene.message == 1)
+			{
+				console.log(matrix);
+								
+
+								//scene.setPickEnabled(false);
+								//scene.x = scene.pickedDestine.j;
+								//scene.z = scene.pickedDestine.i;
+								console.log("Good Move!");
+
+								
+								//ANIMATION
+								scene.board.init(matrix[2]);
+
+								console.log("Player Playing: "+ scene.playerPlaying);
+								//scene.playerPlaying = matrix[0];
+								//console.log("Player at next: " + scene.playerPlaying);
+
+								console.log("New Play: " + matrix[1])
+
+								
+								scene.nextPlay = matrix[1];
+			}
+			else if(scene.message == 2)
+			{
+				scene.board.init(matrix[2]);
+				console.log("Game Finished!");
+				console.log("Player "+ scene.playerPlaying +" WON!");
+
+			}
+			else{
+				console.log("Invalid Move!");
+			}
+
+
+
+		});
+
+	}
+	else if(this.nextPlay == 2)
+	{
+		this.playComputador(function(matrix)
+		{
+			scene.message = matrix[3];
+			if(scene.message == 1){
+				if(scene.firstPlay == true)
+				{
+					console.log("First Play!");
+					scene.firstPlay = false;
+				}
+
+				console.log("Good Move!");
+
+								
+								//ANIMATION
+				scene.board.init(matrix[2]);
+
+								console.log("Player Playing: "+ scene.playerPlaying);
+								scene.playerPlaying = matrix[0];
+								console.log("Player at next: " + scene.playerPlaying);
+
+								console.log("New Play: " + matrix[1])
+								scene.nextPlay = matrix[1];
+
+							}
+							else if(scene.message == 2)
+							{
+								console.log("Game Finished!");
+							}
+							else
+							{
+								console.log("Invalid Move!");
+							}
+		});
+	}
+
+	
+
+}
 
 XMLscene.prototype.logPicking = function ()
 {
@@ -327,112 +553,12 @@ XMLscene.prototype.logPicking = function ()
 					obj.objPiece.transformations[ind].y = 0;
 					this.picked = null;
 					this.pickedDestine = null;
-
-
 				}
 				else if(obj instanceof Cell && this.picked != null){
 
 					console.log("Destine object: " + obj + ", with pick id " + customId);
 					this.pickedDestine = obj;
-
-
-					var scene = this;
-					if(this.picked.type !=3){
-						this.playHuman(function(matrix)
-						{
-							
-							scene.message = matrix[3];
-							if(scene.message == 1){
-								if(scene.firstPlay == true)
-								{
-									console.log("First Play!");
-									scene.firstPlay = false;
-								}
-									
-								scene.setPickEnabled(false);
-								scene.x = scene.pickedDestine.j;
-								scene.z = scene.pickedDestine.i;
-								console.log("Good Move!");
-
-								
-								//ANIMATION
-								scene.board.init(matrix[2]);
-
-								console.log("Player Playing: "+ scene.playerPlaying);
-								scene.playerPlaying = matrix[0];
-								console.log("Player at next: " + scene.playerPlaying);
-
-								console.log("New Play: " + matrix[1])
-								scene.nextPlay = matrix[1];
-
-								console.log("NX "+ matrix[3]);
-								console.log("NY "+ matrix[4]);
-
-								scene.setPickEnabled(true);
-								scene.nextPlay = 2;
-								scene.picked = null;
-								scene.pickedDestine = null;
-
-							}
-							else if(scene.message == 2)
-							{
-								console.log("Game Finished!");
-							}
-							else
-							{
-								console.log("Invalid Move!");
-							}
-					});
-					}
-					else{
-						this.playHNeutron(function(matrix)
-						{
-							scene.message = matrix[3];
-
-							if(scene.message == 1){	
-
-								console.log(matrix);
-								
-
-								scene.setPickEnabled(false);
-								scene.x = scene.pickedDestine.j;
-								scene.z = scene.pickedDestine.i;
-								console.log("Good Move!");
-
-								
-								//ANIMATION
-								scene.board.init(matrix[2]);
-
-								console.log("Player Playing: "+ scene.playerPlaying);
-								scene.playerPlaying = matrix[0];
-								console.log("Player at next: " + scene.playerPlaying);
-
-								console.log("New Play: " + matrix[1])
-								scene.nextPlay = matrix[1];
-
-								console.log("NX "+ matrix[3]);
-								console.log("NY "+ matrix[4]);
-
-								scene.setPickEnabled(true);
-								scene.nextPlay = 1;
-								scene.picked = null;
-								scene.pickedDestine = null;
-
-							}
-							else if(scene.message == 2)
-							{
-								scene.setPickEnabled(false);
-								scene.board.init(matrix[2]);
-								console.log("Game Finished!");
-								console.log("Player "+ scene.playerPlaying +" WON!");
-							}
-							else
-							{
-								console.log("Invalid Move!");
-							}
-						});
-
-					}				
+					this.gameHumano();										
 				}
 				else if(obj instanceof Cell){
 					console.log("Destine object: " + obj + ", with pick id " + customId);
@@ -865,24 +991,24 @@ XMLscene.prototype.displayPiecesAndCells = function()
 				{
 					//cells não livres
 					if(this.playerPlaying == 1 && this.firstPlay == true &&
-						this.board.allTab[i][j][0].type == 1)
+						this.board.allTab[i][j][0].type == 1 )
 					{
 						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
 					}
-					else if(this.playerPlaying == 1 && this.firstPlay == false && this.board.allTab[i][j][0].type == 1 && this.nextPlay == 1)
+					else if(this.playerPlaying == 1 && this.firstPlay == false && this.board.allTab[i][j][0].type == 1 && this.nextPlay == 2)
 					{
 						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
 					}
-					else if(this.playerPlaying == 2 && this.firstPlay == false && this.board.allTab[i][j][0].type == 2 && this.nextPlay == 1)
+					else if(this.playerPlaying == 2 && this.firstPlay == false && this.board.allTab[i][j][0].type == 2 && this.nextPlay == 2)
 					{
 						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
-					}else if(this.firstPlay == false && this.nextPlay == 2 && this.board.allTab[i][j][0].type == 3){
+					}else if(this.firstPlay == false && this.nextPlay == 1 && this.board.allTab[i][j][0].type == 3){
 						this.registPiece(this.board.allTab[i][j][0]);
 						this.board.allTab[i][j][0].display();
 						this.board.allTab[i][j][1].display();
@@ -948,7 +1074,16 @@ XMLscene.prototype.display = function () {
 
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 
+		if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2))
+		{
+			this.setPickEnabled(false);
+			this.gameComputador();
+			this.setPickEnabled(true);
+		}
+
 		this.displayPiecesAndCells();
+
+	
 
 	};	
 };

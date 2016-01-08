@@ -123,8 +123,10 @@ jogada_neutrao_humano(Board, NXi, NYi, NXf, NYf, Player, NewPlayer, NewPlay, New
 parse_input(getJogadas(Board, Xi, Yi, Player),[NewBoard, Message]):- 
 jog_poss(Board, Xi, Yi, Player, NewBoard, Message).
 
-parse_input(playCNeutrao(Board, Xi, Yi, Player), [NewPlayer, NewPlay, NewBoard, Message, NX, NY]):- 
-jogada_neutrao_computador(Board, Xi, Yi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY).
+
+parse_input(playCNeutrao(Board, NXi, NYi, Player), [NewPlayer, NewPlay, NewBoard, Message, NX, NY]):- 
+jogada_neutrao_computador(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY).
+
 
 parse_input(playComputador(Board, NXi, NYi, Player), [NewPlayer, NewPlay, NewBoard, Message, NX, NY]):- 
 jogada_computador(Board, NXi, NYi, Player, NewPlayer, NewPlay, NewBoard, Message, NX, NY).
