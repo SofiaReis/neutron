@@ -23,11 +23,6 @@ function matrixToList(matrix) {
         list += "[" + matrix[mat] + "],";
     list = list.substring(0, list.length - 1);
     list += "]";   
-    console.log(list);   
     return list;
 
-}
-
-function listToMatrix(list) {
-    return JSON.parse(list);
 }

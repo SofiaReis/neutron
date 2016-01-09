@@ -75,6 +75,8 @@ XMLscene.prototype.init = function (application) {
 
     this.timer = new Timer(this,this.font);
 
+    this.gameFinished = false;
+
    	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(1000/60);
 };
@@ -92,7 +94,7 @@ XMLscene.prototype.Undo = function(){
 
 	console.log(this.matches.length);
 
-	if(this.matches.length != 0)
+	if(this.matches.length != 0 && this.gameFinished==false)
 	{
 		console.log("UNDO");
 		this.matches.pop();
@@ -102,7 +104,10 @@ XMLscene.prototype.Undo = function(){
 		this.playerPlaying = matrix[0];
 		this.nextPlay = matrix[1];
 	}
-	console.log("NO MATCHES!");
+	else if(this.gameFinished==true)
+	{
+		console.log("The game is finished, you can't undo!");
+	}
 
 }
 
@@ -124,9 +129,6 @@ XMLscene.prototype.resetTab = function()
 {
 	var scene = this;
 	this.initTab(function(matrix){
-		//console.log(this.playerPlaying);
-		//console.log(this.nextPlay);
-
 		scene.board.init(matrix);
 		scene.matches.push([scene.playerPlaying,scene.nextPlay,matrix,1,2,2]);
 	});	
@@ -137,8 +139,7 @@ XMLscene.prototype.initTab = function(request, reqObj)
 {
 	getRequest("initTab", function(data){
 		console.log(data.target.response);
-		var board = listToMatrix(data.target.response);
-		console.log(board);
+		var board = JSON.parse(data.target.response);
 		if(typeof request === "function")
 		{
 			request.apply(reqObj,[board]);
@@ -150,14 +151,10 @@ XMLscene.prototype.getJogadas = function(request, reqObj)
 {
 	getRequest("getJogadas("+matrixToList(this.board.tab)+","+this.picked.i+","+this.picked.j+","+this.modeP1+")",function(data) {
 	
-	var temp = JSON.parse(data.target.response);
-	console.log(temp.message);
-	
-	console.log(temp.newBoard);
+	var response = JSON.parse(data.target.response);
 
-	
 	if (typeof request === "function") {
-             request.apply(reqObj,[temp]);
+             request.apply(reqObj,[response]);
         }
 	},true);
 }
@@ -168,30 +165,23 @@ XMLscene.prototype.playHNeutron = function(request, reqObj)
 	getRequest("playHNeutrao("+matrixToList(this.board.tab)+","+this.picked.i+
 		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = JSON.parse(data.target.response);
+	var response = JSON.parse(data.target.response);
 	
 	if (typeof request === "function") {
-              request.apply(reqObj,[temp]);
+              request.apply(reqObj,[response]);
         }
 	},true);
 }
 
 XMLscene.prototype.playCNeutron = function(request, reqObj)
 {
-
-
-	console.log(matrixToList(this.board.tab));
-	console.log("NEUTRON i: " + i);
-	console.log("NEUTRON j: " + j);
-	console.log("Player Playing: " + this.playerPlaying);
-
 	getRequest("playCNeutrao("+matrixToList(this.board.tab)+","+this.neutron.i+
 		","+this.neutron.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = JSON.parse(data.target.response);
+	var response = JSON.parse(data.target.response);
 	
 	if (typeof request === "function") {
-              request.apply(reqObj,[temp]);
+              request.apply(reqObj,[response]);
         }
 	},true);
 }
@@ -201,12 +191,9 @@ XMLscene.prototype.playComputador = function(request, reqObj)
 
 	getRequest("playComputador("+matrixToList(this.board.tab)+","+this.neutron.i+","+this.neutron.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = JSON.parse(data.target.response);
-	
-	console.log(temp);
-	
+	var response = JSON.parse(data.target.response);	
 	if (typeof request === "function") {
-              request.apply(reqObj,[temp]);
+              request.apply(reqObj,[response]);
         }
 	},true);
 }
@@ -217,12 +204,9 @@ XMLscene.prototype.playHuman = function(request, reqObj)
 	getRequest("playHumano("+matrixToList(this.board.tab)+","+this.neutron.i+","+this.neutron.j+","+this.picked.i+
 		","+this.picked.j+","+this.pickedDestine.i+","+this.pickedDestine.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = JSON.parse(data.target.response);
-	
-	console.log(temp);
-	
+	var response = JSON.parse(data.target.response);	
 	if (typeof request === "function") {
-              request.apply(reqObj,[temp]);
+              request.apply(reqObj,[response]);
         }
 	},true);
 }
@@ -231,12 +215,10 @@ XMLscene.prototype.playComputador = function(request, reqObj)
 {
 	getRequest("playComputador("+matrixToList(this.board.tab)+","+this.neutron.i+","+this.neutron.j+","+this.playerPlaying+")",function(data) {
 	
-	var temp = JSON.parse(data.target.response);
-	
-	console.log(temp);
+	var response = JSON.parse(data.target.response);
 	
 	if (typeof request === "function") {
-              request.apply(reqObj,[temp]);
+              request.apply(reqObj,[response]);
         }
 	},true);
 }
@@ -387,6 +369,7 @@ XMLscene.prototype.gameHumano = function() {
 							else if(scene.message == 2)
 							{
 								console.log("Game Finished!");
+								this.gameFinished = true;
 							}
 							else
 							{
@@ -431,6 +414,7 @@ XMLscene.prototype.gameHumano = function() {
 							{
 								scene.setPickEnabled(false);
 								scene.board.init(matrix[2]);
+								this.gameFinished = true;
 								console.log("Game Finished!");
 								console.log("Player "+ scene.playerPlaying +" WON!");
 							}
@@ -475,6 +459,7 @@ XMLscene.prototype.gameComputador = function() {
 			{
 				scene.board.init(matrix[2]);
 				console.log("Game Finished!");
+				this.gameFinished = true;
 				console.log("Player "+ scene.playerPlaying +" WON!");
 
 			}
@@ -517,6 +502,7 @@ XMLscene.prototype.gameComputador = function() {
 							else if(scene.message == 2)
 							{
 								console.log("Game Finished!");
+								this.gameFinished = true;
 							}
 							else
 							{
