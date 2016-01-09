@@ -1,15 +1,23 @@
  
 
-function XMLscene() {
+function XMLscene(mode) {
     CGFscene.call(this);
+
+    console.log(mode);
+
+    this.mode = getModes(mode);
+    console.log(this.mode);
+
 
     this.curTime = 0;
 
     this.gameDiff = "H";
    	
    	//0 ou 2 
-    this.modeP1 = 0;
-    this.modeP2 = 2;
+    this.modeP1 = this.mode[0];
+    console.log("MODE1:"+ this.modeP1);
+    this.modeP2 = this.mode[1];
+     console.log("MODE2:" +this.modeP2);
 
     this.dificulties = ["H", "M", "E"];  
      this.boardPieces = [];
@@ -80,6 +88,27 @@ XMLscene.prototype.init = function (application) {
    	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(1000/60);
 };
+
+function getModes(mode)
+{
+	console.log("MODE GETMODES:" + mode);
+	var playersModes = null;
+	if(mode == 1)
+	{ 
+		playersModes=[0,0];
+	}
+	else if(mode == 2)
+	{
+
+		playersModes=[0,2];
+		console.log(playersModes);
+	}
+	else if(mode == 3)
+	{
+		playersModes=[2,2];
+	}
+	return playersModes;
+}
 
 /**
  * convertDegtoRad
@@ -1081,7 +1110,7 @@ XMLscene.prototype.display = function () {
 		{
 			this.setPickEnabled(false);
 		}else{
-			if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2) && this.processing == true)
+			if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2))
 		{
 			this.setPickEnabled(false);
 			this.gameComputador();

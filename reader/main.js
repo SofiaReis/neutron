@@ -8,6 +8,18 @@ function getUrlVars() {
       vars[decodeURIComponent(key)] = decodeURIComponent(value);
     });
     return vars;
+}
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       //console.log(query);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
 }	 
 
 serialInclude(['../lib/CGF.js', 
@@ -32,12 +44,15 @@ serialInclude(['../lib/CGF.js',
     'PickingAnimation.js',
 
 
-main=function(filename)
+main=function()
 {
     var app = new CGFapplication(document.body);
-    var myScene = new XMLscene();
+    var mode = getQueryVariable('mode');
+console.log(mode);
+    var myScene = new XMLscene(mode);
     var myInterface = new Interface();
 
+    
 
     app.init();
     app.setScene(myScene);
@@ -52,5 +67,7 @@ main=function(filename)
 
     app.run();
 }
+
+
 
 ]);

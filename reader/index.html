@@ -28,14 +28,14 @@
 </div>
 <div class="middleCont">
 <div class="btn-group">
-  <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Mode <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a href="#">Player1 - Player2</a></li>
-    <li><a href="#">Player1 - Computer</a></li>
-    <li><a href="#">Computer - Computer</a></li>
-  </ul>
+
+  <select id="mode" class="btn btn-default btn-lg dropdown-toggle"  data-toggle="dropdown">
+  <option value="0" selected="selected">Mode</option>
+  <option value="1">Player1 - Player2</option>
+  <option value="2" >Player1 - Computer</option>
+  <option value="3">Computer - Computer</option>
+</select>
+
 </div>
 
 <div class="btn-group">
@@ -51,14 +51,8 @@
 </div>
 
 <div class="button">
-<button type="button" class="btn btn-success" onclick="location.href='../reader/scene.html'">Start Game</button>
+<button type="button" class="btn btn-success" onclick="send()">Start Game</button>
 </div>
-
-<form>
-  a: <input type="number" name="a" id="a"><br>
-  b: <input type="number" name="b" id="b"><br>
-  <button onclick="add()">Add</button>
-</form>
 
 
 
@@ -69,15 +63,28 @@
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-    <script>
-    
-    
-  function add() {
-    var a = document.getElementById('a').value;
-           var b = document.getElementById('b').value;
-           var sum = a + b;
-           return sum;
-  }
+    <script type="text/javascript">
+
+     function send() {
+
+      this.val = $("#mode option:selected").val();
+
+      if(this.val == 0)
+      {
+        alert("You need to select a mode!");
+      }else
+      {
+        window.location.href = "../reader/scene.html?mode="+this.val+"";
+      }
+  
+      }
+
+      $('#mode').change(function() {
+    this.val = $("#mode option:selected").val();
+    console.log(this.val);
+});
+
 </script>
+
 </body>
 </html>
