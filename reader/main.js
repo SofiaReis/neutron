@@ -48,8 +48,9 @@ main=function()
 {
     var app = new CGFapplication(document.body);
     var mode = getQueryVariable('mode');
-console.log(mode);
-    var myScene = new XMLscene(mode);
+    var diff = getQueryVariable('diff');
+    var amb = getQueryVariable('amb');
+    var myScene = new XMLscene(mode,diff);
     var myInterface = new Interface();
 
     
@@ -60,8 +61,7 @@ console.log(mode);
 
     myInterface.setActiveCamera(myScene.camera);
 	
-    var filename1=getUrlVars()['file'] || "galaxy.lsx";
-	var filename2=getUrlVars()['file'] || "rustic.lsx";
+    var filename1=getUrlVars()['file'] || amb;
 
 	var myGraph = new MySceneGraph(filename1, myScene);
 

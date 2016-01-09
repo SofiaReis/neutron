@@ -1,25 +1,13 @@
  
 
-function XMLscene(mode) {
+function XMLscene(mode,diff) {
     CGFscene.call(this);
-
-    console.log(mode);
-
-    this.mode = getModes(mode);
-    console.log(this.mode);
-
-
+    this.mode = setSettings(mode,diff);
+    this.gameDiff = this.mode[2];
+    console.log(this.gameDiff);
     this.curTime = 0;
-
-    this.gameDiff = "H";
-   	
-   	//0 ou 2 
     this.modeP1 = this.mode[0];
-    console.log("MODE1:"+ this.modeP1);
     this.modeP2 = this.mode[1];
-     console.log("MODE2:" +this.modeP2);
-
-    this.dificulties = ["H", "M", "E"];  
      this.boardPieces = [];
      this.playerPlaying = 1;
  
@@ -89,27 +77,35 @@ XMLscene.prototype.init = function (application) {
 	this.setUpdatePeriod(1000/60);
 };
 
-function getModes(mode)
+function setSettings(mode,diff)
 {
-	console.log("MODE GETMODES:" + mode);
+	console.log("MODE :" + mode);
+	console.log("DIFF :" + diff);
 	var playersModes = null;
 	if(mode == 1)
 	{ 
-		playersModes=[0,0];
+		playersModes=[0,0,timeMatch(diff)];
 	}
 	else if(mode == 2)
 	{
 
-		playersModes=[0,2];
-		console.log(playersModes);
+		playersModes=[0,2,timeMatch(diff)];
 	}
 	else if(mode == 3)
 	{
-		playersModes=[2,2];
+		playersModes=[2,2,timeMatch(diff)];
 	}
 	return playersModes;
 }
 
+function timeMatch(diff)
+{
+	var time = 0;
+	if(diff==1) time = 9; //9sec 
+	else if(diff==2) time = 6; //6sec
+	else time = 9;
+	return time;
+}
 /**
  * convertDegtoRad
  * Method to convert degrees to radians

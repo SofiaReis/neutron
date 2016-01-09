@@ -13,13 +13,9 @@ function Timer(scene, fontText) {
 	this.paused=false;
 
 	this.rec = new Plane(scene, 16);
-	//this.rec.updateAmpl(1,1);
 
 	this.appearance = scene.defaultApp;
-	console.log(this.appearance);
 	this.fontText = fontText;
-
-	//console.log("TIMER STARTED!");
 };
 
 Timer.prototype = Object.create(CGFobject.prototype);
