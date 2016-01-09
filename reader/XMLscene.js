@@ -14,8 +14,7 @@ function XMLscene() {
     this.dificulties = ["H", "M", "E"];  
      this.boardPieces = [];
      this.playerPlaying = 1;
-  
-     this.nextPlay = 0;
+ 
      this.x = 0;
      this.z = 0;     
 }
@@ -58,6 +57,8 @@ XMLscene.prototype.init = function (application) {
     this.pickingAnimation = null;
     this.processing = false;
 
+    this.matches = [];
+
     this.firstPlay = true;
     this.board = new Tab(this);
 
@@ -87,6 +88,24 @@ XMLscene.prototype.convertDegtoRad = function(deg){
 	return (deg*Math.PI/180.0);
 }
 
+XMLscene.prototype.Undo = function(){
+
+	console.log(this.matches.length);
+
+	if(this.matches.length != 0)
+	{
+		console.log("UNDO");
+		this.matches.pop();
+		var matrix = this.matches[this.matches.length-1];
+		if(this.matches.length ==1) this.firstPlay = true;
+		this.board.init(matrix[2]);
+		this.playerPlaying = matrix[0];
+		this.nextPlay = matrix[1];
+	}
+	console.log("NO MATCHES!");
+
+}
+
 XMLscene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     this.camDestine = [15,15,15];
@@ -103,11 +122,13 @@ XMLscene.prototype.setDefaultAppearance = function () {
 
 XMLscene.prototype.resetTab = function()
 {
-	//this.processing = true;
-
 	var scene = this;
 	this.initTab(function(matrix){
+		//console.log(this.playerPlaying);
+		//console.log(this.nextPlay);
+
 		scene.board.init(matrix);
+		scene.matches.push([scene.playerPlaying,scene.nextPlay,matrix,1,2,2]);
 	});	
 }
 
@@ -330,21 +351,14 @@ XMLscene.prototype.gameHumano = function() {
 							
 							scene.message = matrix[3];
 							if(scene.message == 1){
+								scene.matches.push(matrix);
+								console.log(scene.matches);
 								
 									
 								scene.setPickEnabled(false);
 								scene.x = scene.pickedDestine.j;
 								scene.z = scene.pickedDestine.i;
-								console.log("Good Move!");
-
-								
-							//	scene.pickingAnimation = new PickingAnimation(scene,5,scene.picked.xi,scene.picked.zi, scene.pickedDestine.xi,scene.pickedDestine.yi);
-							//	console.log(scene.pickingAnimation);
-							//	console.log(scene.processing);
-
-							//	scene.processing = true;
-
-								
+								console.log("Good Move!");								
 
 								scene.board.init(matrix[2]);
 
@@ -388,6 +402,7 @@ XMLscene.prototype.gameHumano = function() {
 							if(scene.message == 1){	
 
 								console.log(matrix);
+								scene.matches.push(matrix);
 								
 
 								scene.setPickEnabled(false);
@@ -442,6 +457,7 @@ XMLscene.prototype.gameComputador = function() {
 	{
 		this.playCNeutron(function(matrix)
 		{
+			scene.matches.push(matrix);
 			scene.message = matrix[3];
 			console.log(matrix);
 
@@ -477,6 +493,7 @@ XMLscene.prototype.gameComputador = function() {
 		{
 			scene.message = matrix[3];
 			if(scene.message == 1){
+				scene.matches.push(matrix);
 				if(scene.firstPlay == true)
 				{
 					console.log("First Play!");
@@ -1038,6 +1055,8 @@ XMLscene.prototype.display = function () {
 
     this.applyViewMatrix();
     this.setDefaultAppearance();
+
+    
 	
 	if(this.graph.loadedOk)
 	{

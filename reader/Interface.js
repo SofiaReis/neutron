@@ -24,6 +24,8 @@ Interface.prototype.init = function(app){
 	this.cameras.add(this.scene,"Topo");
 	this.cameras.add(this.scene,"PlayerWhite");
 	this.cameras.add(this.scene,"PlayerBlack");
+	this.cameras = this.gui.addFolder("REVERT MATCH");
+	this.cameras.add(this.scene,"Undo");
 	return true;
 }
 
@@ -35,8 +37,6 @@ Interface.prototype.update = function(){
 	if(this.loaded == 0 && this.scene.lightsLoad)
 	{
 		this.loaded = 1;
-		
-		//this.lightsInterface.open();
 
 		for(var i in this.scene.lights){
 
