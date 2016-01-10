@@ -23,9 +23,6 @@ Score.prototype.display = function () {
 
 
 		this.scene.rotate(this.scene.convertDegtoRad(90),1,0,0);
-
-
-
  		//TEXT
  		this.appearance.setTexture(this.fontText);
  		this.displayScore();

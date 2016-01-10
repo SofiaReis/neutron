@@ -917,6 +917,8 @@ XMLscene.prototype.processGraph = function(node){
 
 	this.pushMatrix();
 
+	console.log(node);
+
 	var material = node.material;
 	var texture = node.texture;
 	var animation = node.animation;
