@@ -9,7 +9,7 @@ function XMLscene(mode,diff) {
     this.modeP1 = this.mode[0];
     this.modeP2 = this.mode[1];
      this.boardPieces = [];
-     this.playerPlaying = 1;
+    
  
      this.x = 0;
      this.z = 0;     
@@ -64,12 +64,14 @@ XMLscene.prototype.init = function (application) {
     this.defaultApp.setSpecular(0.0, 0.0, 0.0, 1);  
     this.defaultApp.setShininess(120);
 
-    this.textShader=new CGFshader(this.gl, "shaders/font.vert", "shaders/font.frag");
-    this.textShader.setUniformsValues({'dims': [16, 16]});
+    
+    
+    this.timerPlayer2 = new Timer(this);
+    this.timerPlayer1 = new Timer(this);
 
-    this.font = new CGFtexture(this, "textures/cells.png");
+     this.playerPlaying = 1;
 
-    this.timer = new Timer(this,this.font);
+    this.score = new Score(this);
 
     this.gameFinished = false;
 
@@ -101,9 +103,9 @@ function setSettings(mode,diff)
 function timeMatch(diff)
 {
 	var time = 0;
-	if(diff==1) time = 9; //9sec 
-	else if(diff==2) time = 6; //6sec
-	else time = 9;
+	if(diff==1) time = 12; //9sec 
+	else if(diff==2) time = 9; //6sec
+	else time = 7;
 	return time;
 }
 /**
@@ -117,9 +119,11 @@ XMLscene.prototype.convertDegtoRad = function(deg){
 
 XMLscene.prototype.Undo = function(){
 
-	console.log(this.matches.length);
-
-	if(this.matches.length != 0 && this.gameFinished==false)
+	if((this.playerPlaying == 2 && this.modeP1 == 2) || (this.playerPlaying == 1 && this.modeP2 == 2 ))
+	{
+		console.log("You can't undo for the computer.");
+	}
+	else if(this.matches.length != 0 && this.gameFinished==false)
 	{
 		console.log("UNDO");
 		this.matches.pop();
@@ -133,6 +137,7 @@ XMLscene.prototype.Undo = function(){
 	{
 		console.log("The game is finished, you can't undo!");
 	}
+
 
 }
 
@@ -355,9 +360,29 @@ XMLscene.prototype.gameHumano = function() {
 					if(this.picked.type !=3){
 						this.playHuman(function(matrix)
 						{
+
+
 							
 							scene.message = matrix[3];
 							if(scene.message == 1){
+
+								console.log(this.playerPlaying);
+
+								if(scene.playerPlaying == 1)
+								{
+									console.log("HERE");
+									scene.timerPlayer1.timeBeg = null;
+									console.log(scene.timerPlayer1.seconds);
+									 scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+
+								} 
+								else if(scene.playerPlaying == 2)
+								{
+									scene.timerPlayer2.timeBeg = null;
+									 scene.score.setCounters(0, scene.timerPlayer2.seconds);
+
+								} 
+
 								scene.matches.push(matrix);
 								console.log(scene.matches);
 								
@@ -408,6 +433,21 @@ XMLscene.prototype.gameHumano = function() {
 							scene.message = matrix[3];
 
 							if(scene.message == 1){	
+								
+								if(scene.playerPlaying == 1)
+								{
+									console.log("HERE");
+									scene.timerPlayer1.timeBeg = null;
+									console.log(scene.timerPlayer1.seconds);
+									 scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+
+								} 
+								else if(scene.playerPlaying == 2)
+								{
+									scene.timerPlayer2.timeBeg = null;
+									 scene.score.setCounters(0, scene.timerPlayer2.seconds);
+
+								} 
 
 								console.log(matrix);
 								scene.matches.push(matrix);
@@ -471,8 +511,21 @@ XMLscene.prototype.gameComputador = function() {
 			console.log(matrix);
 
 			if(scene.message == 1)
-			{
-				console.log(matrix);
+			{	if(scene.playerPlaying == 1)
+								{
+									console.log("HERE");
+									scene.timerPlayer1.timeBeg = null;
+									console.log(scene.timerPlayer1.seconds);
+									 scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+
+								} 
+								else if(scene.playerPlaying == 2)
+								{
+									scene.timerPlayer2.timeBeg = null;
+									 scene.score.setCounters(0, scene.timerPlayer2.seconds);
+
+								} 
+				
 				console.log("Good Move!");
 				scene.newBoard=matrix[2];
 				scene.board.init(matrix[2]);
@@ -503,6 +556,21 @@ XMLscene.prototype.gameComputador = function() {
 		{
 			scene.message = matrix[3];
 			if(scene.message == 1){
+				if(scene.playerPlaying == 1)
+								{
+									console.log("HERE");
+									scene.timerPlayer1.timeBeg = null;
+									console.log(scene.timerPlayer1.seconds);
+									 scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+
+								} 
+								else if(scene.playerPlaying == 2)
+								{
+									scene.timerPlayer2.timeBeg = null;
+									 scene.score.setCounters(0, scene.timerPlayer2.seconds);
+
+								} 
+				
 				scene.matches.push(matrix);
 				if(scene.firstPlay == true)
 				{
@@ -1067,6 +1135,27 @@ XMLscene.prototype.display = function () {
     this.applyViewMatrix();
     this.setDefaultAppearance();
 
+   		 this.pushMatrix();
+		this.translate(0,1,-3);
+		this.scale(0.5,0.5,0.5);
+		 this.timerPlayer2.display();
+        
+    	this.popMatrix();
+
+    	this.pushMatrix();
+		this.translate(-3,1,-3);
+		this.scale(0.5,0.5,0.5);
+      	 this.timerPlayer1.display();
+    	this.popMatrix();
+
+    	this.pushMatrix();
+    	this.translate(0,2.25,-3);
+    	this.scale(0.5,0.5,0.5);
+       this.score.display();
+    	this.popMatrix();
+
+
+
     
 	
 	if(this.graph.loadedOk)
@@ -1090,36 +1179,55 @@ XMLscene.prototype.display = function () {
 
 		this.count = 1;
 
-		this.pushMatrix();
-		this.translate(0,1,-3);
-		this.scale(0.5,0.5,0.5);
-        this.timer.display();
-    	this.popMatrix();
+		
 
 		this.processInitialsTransformations();
 
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 
-
-		
 		if(this.processing == true)
 		{
 			this.setPickEnabled(false);
 		}else{
 			if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2))
-		{
-			this.setPickEnabled(false);
-			this.gameComputador();
-			this.setPickEnabled(true);
+			{
+				this.setPickEnabled(false);
+				this.gameComputador();
+				this.setPickEnabled(true);
+			}
 		}
-		}
-
-		
-
 		this.displayPiecesAndCells();	
-
 	};	
 };
+
+XMLscene.prototype.timeOut = function(){
+	if(this.firstPlay == true)
+	{
+		console.log("Player " + this.playerPlaying + " lost your chance to play!");
+		console.log("Match played " + this.nextPlay);
+		this.nextPlay = 1;
+		console.log("Match to play " + this.nextPlay);
+		this.playerPlaying = 2;
+		console.log("Player " + this.playerPlaying + " it's your turn!");
+		this.firstPlay = false;
+	}
+	else{
+		console.log("Match played " + this.nextPlay);
+		if(this.nextPlay == 1){
+			console.log("Match to play " + this.nextPlay);
+			this.nextPlay = 2;
+		} 
+		else if(this.nextPlay == 2)
+		{
+			console.log("Match to play " + this.nextPlay);
+			this.nextPlay = 1;
+			console.log("Player " + this.playerPlaying + " lost your chance to play!");
+			if(this.playerPlaying == 1) this.playerPlaying = 2;
+			else this.playerPlaying = 1;
+			console.log("Player " + this.playerPlaying + " it's your turn!");
+		} 
+	}
+}
 
 
 
@@ -1130,23 +1238,47 @@ XMLscene.prototype.display = function () {
 */
 XMLscene.prototype.update = function(curtime){
 
-	if(!this.timer.timeBeg) this.timer.timeBeg = curtime;
-    this.timer.updateTime(curtime);
-
-    if(this.processing)
+	if(!this.timerPlayer1.timeBeg && this.playerPlaying == 1) this.timerPlayer1.timeBeg = curtime;
+   if(this.playerPlaying == 1 && this.modeP1 != 2) this.timerPlayer1.updateTime(curtime);
+    if(this.timerPlayer1.seconds == this.gameDiff  && this.playerPlaying == 1)
     {
-    	console.log("entra aqui");
-    	this.pickingAnimation.update(curtime);
+    	 this.timeOut();
+    	 this.score.setCounters(this.timerPlayer1.seconds,0);
+    	 this.timerPlayer1.timeBeg = null;
+    	 if(this.picked != null)
+    	 {
+    	 	console.log(this.picked);
+    	 	var ind = this.picked.objPiece.transformations.length-1;
+			this.picked.objPiece.transformations[ind].y = 0;
+			this.picked = null;
+    	 } 	 
     }
 
-    	
+
+
+   if(!this.timerPlayer2.timeBeg && this.playerPlaying ==2) this.timerPlayer2.timeBeg = curtime;
+     if(this.playerPlaying == 2 && this.modeP2 != 2) this.timerPlayer2.updateTime(curtime);
+      if(this.timerPlayer2.seconds == this.gameDiff && this.playerPlaying == 2)
+    {
+    	 this.timeOut();
+    	 this.score.setCounters(0, this.timerPlayer2.seconds);
+    	  this.timerPlayer2.timeBeg = null;	 
+    	  if(this.picked != null)
+    	 {
+    	 	console.log(this.picked);
+    	 	var ind = this.picked.objPiece.transformations.length-1;
+			this.picked.objPiece.transformations[ind].y = 0;
+			this.picked = null;
+
+    	 }
+    }
 
 	 if(this.camMoving) {
-        if(!this.camTransBeg) this.camTransBeg = curtime;  //BEGINNING
+        if(!this.camTransBeg) this.camTransBeg = curtime;
         else
         {
             var time_since_start = curtime - this.camTransBeg;
-            if(time_since_start>=this.camTime) { //END
+            if(time_since_start>=this.camTime) { 
                 this.camera.setPosition(this.camDestine);
                 this.camTransBeg=null;
                 this.camMoving=false;

@@ -3,10 +3,10 @@ function PickingAnimation(scene, time, xi, zi, xf, zf){
 	Animation.call(this, scene, time);
 
 	
- 	this.x0 = xi * 2.5 + 5;
- 	this.z0 = zi * 2.5 + 5;
- 	this.xf = xf * 2.5 + 5;
- 	this.zf = zf * 2.5 + 5;
+ 	this.x0 = xi;
+ 	this.z0 = zi;
+ 	this.xf = xf;
+ 	this.zf = zf;
 
  	this.currX = 0;
  	this.currZ = 0;
@@ -23,11 +23,11 @@ function PickingAnimation(scene, time, xi, zi, xf, zf){
 PickingAnimation.prototype = Object.create(Animation.prototype);
 PickingAnimation.prototype.constructor = PickingAnimation;
 
-PickingAnimation.prototype.update = function (deltaTime) {
+PickingAnimation.prototype.update = function (curtime) {
 
-	this.dx = (this.xf - this.x0) * deltaTime / this.time;
-	this.dz = (this.zf - this.z0) * deltaTime / this.time;
-	var angle = this.angle * deltaTime / this.time;
+	this.dx = (this.xf - this.x0) * curtime / this.time;
+	this.dz = (this.zf - this.z0) * curtime / this.time;
+	var angle = this.angle * curtime / this.time;
 
 	this.currX += this.dx;
 	this.currZ += this.dz;
