@@ -1,125 +1,222 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
-    <title>Neutron</title>
-    <link href = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel = "stylesheet">
-    <link rel="shortcut icon" href="../reader/style/neutron_favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="../reader/style/style.css">
+  <meta charset="UTF-8">
+  <title>Neutron</title>
+  <link href = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel = "stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700,300italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="shortcut icon" href="../reader/style/neutron_favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="../reader/style/style.css">
 
+  <!--<script src="scroll.js"></script>-->
 </head>
 <body>
-		<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">
-      	<a class="navbar-brand" href="#">NEUTRON</a>
-      </a>
+  <a href="" id="return-to-top"><i class="fa fa-arrow-up"></i></i></a>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+       <a class="navbar-brand">NEUTRON</a>
+     </div>
+     <p class="navbar-text navbar-right"><a href="#howto" class="navbar-link">How to play <i class="fa fa-question-circle"></i></a></p>
+   </div>
+ </nav>
+
+ <div class="container">
+  <div class="title">
+    <h1>Neutron</h1>
+    <hr>
+    <div class="row text-center">
+      <p>Are you ready to bring the neutron to your homerank?</p>
     </div>
+
   </div>
-</nav>
+  <div class="middleCont">
 
-<div class="container">
-<div class="title">
-  <h1>Neutron</h1>
-  <hr>
-  <p>Are you ready to bring the neutron to your homerank?</p>
+    <form class="form-horizontal well" role="form">
+      <div class="row mode">
+          <div class="col-xs-4">
+            <img src="textures/playerVSplayer.jpg" class="img-radio">
+            <button type="button" class="btn btn-primary btn-radio raised sharp">Player 1 VS Player 2</button>
+            <input type="checkbox" id="left-item" class="hidden" value="1">
+          </div>
+          <div class="col-xs-4">
+            <img src="textures/playerVSpc.jpg" class="img-radio">
+            <button type="button" class="btn btn-primary btn-radio raised sharp">Player VS PC</button>
+            <input type="checkbox" id="middle-item" class="hidden" value="2">
+          </div>
+          <div class="col-xs-4">
+            <img src="textures/pcVSpc.jpg" class="img-radio">
+            <button type="button" class="btn btn-primary btn-radio raised sharp">PC VS PC</button>
+            <input type="checkbox" id="right-item" class="hidden" value="3">
+          </div>
+      </div>
+    </form>
 
-</div>
-<div class="middleCont">
-<div class="btn-group">
+    <form class="form-horizontal well" role="form">
+      <div class="row level">
+        <div class="col-xs-4">
+          <img src="textures/easy.jpg" class="img-radio">
+          <button type="button" class="btn btn-primary btn-radio raised sharp">Easy Level</button>
+          <input type="checkbox" id="left-item" class="hidden" value="1">
+        </div>
+        <div class="col-xs-4">
+          <img src="textures/medium.jpg" class="img-radio">
+          <button type="button" class="btn btn-primary btn-radio raised sharp">Medium Level</button>
+          <input type="checkbox" id="middle-item" class="hidden" value="2">
+        </div>
+        <div class="col-xs-4">
+          <img src="textures/hard.jpg" class="img-radio">
+          <button type="button" class="btn btn-primary btn-radio raised sharp">Hard Level</button>
+          <input type="checkbox" id="right-item" class="hidden" value="3">
+        </div>
+      </div>
+    </form>
 
-  <select id="mode" class="btn btn-default btn-lg dropdown-toggle"  data-toggle="dropdown">
-  <option value="0" selected="selected">Mode</option>
-  <option value="1">Player1 - Player2</option>
-  <option value="2" >Player1 - Computer</option>
-  <option value="3">Computer - Computer</option>
-</select>
+    <form class="form-horizontal well" role="form">
+      <div class="row ambient">
+        <div class="col-xs-4">
+          <img src="textures/galaxy_thumb.jpg" class="img-radio">
+          <button type="button" class="btn btn-primary btn-radio raised sharp">Galaxy Theme</button>
+          <input type="checkbox" id="left-item" class="hidden" value="galaxy.lsx">
+        </div>
+        <div class="col-xs-4">
+          <img src="textures/rustic_thumb.jpg" class="img-radio">
+          <button type="button" class="btn btn-primary btn-radio raised sharp">Rustic Theme</button>
+          <input type="checkbox" id="middle-item" class="hidden" value="rustic.lsx">
+        </div>
+        <div class="col-xs-4">
+          <img src="textures/artdeco_thumb.jpg" class="img-radio">
+          <button type="button" class="btn btn-primary btn-radio raised sharp">Art Deco Theme</button>
+          <input type="checkbox" id="right-item" class="hidden" value="artdeco.lsx">
+        </div>
+      </div>
+    </form>
 
-</div>
+    <div>
+      <button type="button" class="btn btn-lg btn-success" onclick="send()">Start Game <i class="fa fa-play-circle"></i></button>
+    </div>
 
-<div class="btn-group">
+  </div>
 
-  <select id="diff" class="btn btn-default btn-lg dropdown-toggle"  data-toggle="dropdown">
-  <option value="0" selected="selected">Difficulty</option>
-  <option value="1">Easy</option>
-  <option value="2" >Medium</option>
-  <option value="3">Hard</option>
-</select>
+  <div class="row" id="howto">
+    <div class="col-md-6 col-centered text-center"> 
+      <h2>How to play</h2>
+      <hr>
+    </div>
+    <div class="col-md-8 col-centered">
+      <ul>
+        <li><b>BOARD:</b> 5x5 board;</li>
+        <li><b>SOLDIERS:</b> A soldier moves in a straight line (orthogonal or      diagonal).      
+          It must move as far as it can; so it continues until it finds an edge.      Each      player has 5 soldiers (white VS black);
+          There is no capturing.</b></li>
+          <li><b>NEUTRON:</b> The neutral piece moves like the soldier;</li>
+          <li><b>TURNS:</b> Each player first moves the neutron, then one of his soldiers;
+            On the first turn, the first player does not move the neutron.</li>
+            <li><b>GOAL:</b> Wins the player that gets the neutron on his first row (or homerank, where his soldiers start the game) or stalemate the opponent, so that he cannot finish his turn.</li>
+          </ul>
+        </div>
+        <div class="col-md-12 text-center neutron-imgs">
+          <div class="row">
+            <img src="textures/neutron1.jpg">
+            <img src="textures/neutron2.jpg">
+          </div>
+          <div class="row">
+           <img src="textures/neutron3.jpg">
+           <img src="textures/neutron4.jpg">
+         </div>
+       </div>
 
-</div>
+     </div>
+   </div>
 
-<div class="btn-group">
+   <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+   <script src = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-  <select id="amb" class="btn btn-default btn-lg dropdown-toggle"  data-toggle="dropdown">
-  <option value="0" selected="selected">Ambiente</option>
-  <option value="galaxy.lsx">Galaxy</option>
-  <option value="rustic.lsx">Rustic</option>
-</select>
+   <script type="text/javascript">
+   $(function () {
+     $('.ambient .btn-radio').click(function(e) {
+       $('.ambient .btn-radio').not(this).removeClass('active')
+       .siblings('input').prop('checked',false)
+       .siblings('.img-radio').css('opacity','0.5');
+       $(this).addClass('active')
+       .siblings('input').prop('checked',true)
+       .siblings('.img-radio').css('opacity','1');
+     });
+   });
 
-</div>
+   $(function () {
+     $('.level .btn-radio').click(function(e) {
+       $('.level .btn-radio').not(this).removeClass('active')
+       .siblings('input').prop('checked',false)
+       .siblings('.img-radio').css('opacity','0.5');
+       $(this).addClass('active')
+       .siblings('input').prop('checked',true)
+       .siblings('.img-radio').css('opacity','1');
+     });
+   });
 
-</div>
+   $(function () {
+    $('.mode .btn-radio').click(function(e) {
+     $('.mode .btn-radio').not(this).removeClass('active')
+     .siblings('input').prop('checked',false)
+     .siblings('.img-radio').css('opacity','0.5');
+     $(this).addClass('active')
+     .siblings('input').prop('checked',true)
+     .siblings('.img-radio').css('opacity','1');
+   });
+  });
 
-<div class="button">
-<button type="button" class="btn btn-success" onclick="send()">Start Game</button>
-</div>
-
-
-
-
-
-</div>
-
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
-    <script type="text/javascript">
-
-     function send() {
-
-      this.mode = $("#mode option:selected").val();
-      this.diff = $("#diff option:selected").val();
-       this.amb = $("#amb option:selected").val();
-
-      if(this.diff == 0 && this.mode==0 && this.amb == 0)
-      {
-          alert("You need to select a difficulty, mode and ambiente!");
+   $(window).scroll(function() {
+    if ($(this).scrollTop() >= 50) {        // If page is scrolled more than 50px
+        $('#return-to-top').fadeIn(200);    // Fade in the arrow
+      } else {
+        $('#return-to-top').fadeOut(200);   // Else fade out the arrow
       }
-      else if(this.mode == 0)
-      {
-        alert("You need to select a mode!");
-      }
-      else if(this.diff == 0)
-      {
-          alert("You need to select a difficulty!");
-      }
-      else if(this.amb == 0)
-      {
-          alert("You need to select a ambiente!");
-      }
-      else
-      {
-        window.location.href = "../reader/scene.html?mode="+this.mode+"&diff="+this.diff+"&amb="+this.amb+"";
-      }
-  
-      }
-
-      $('#mode').change(function() {
-    this.mode = $("#mode option:selected").val();
-    console.log(this.mode);
+    });
+$('#return-to-top').click(function() {      // When arrow is clicked
+  $('body,html').animate({
+        scrollTop : 0                       // Scroll to top of body
+      }, 500);
 });
+</script>
 
-      $('#diff').change(function() {
-    this.diff = $("#diff option:selected").val();
-    console.log(this.diff);
-});
+<script type="text/javascript">
+$('#alertMe').change(function(e) {
+    e.preventDefault();// prevent the default anchor functionality
+    alert('alerted');
+  });
+</script>
 
-      $('#amb').change(function() {
-    this.amb = $("#amb option:selected").val();
-    console.log(this.amb);
-});
+<script type="text/javascript">
+function send() {
 
+  this.mode = $(".mode input:checked").val();
+  this.diff = $(".level input:checked").val();
+  this.amb = $('.ambient input:checked').val();
+
+  if(this.diff == 0 && this.mode==0 && this.amb == 0)
+  {
+    alert("You need to select a difficulty, mode and ambiente!");
+  }
+  else if(this.mode == 0)
+  {
+    alert("You need to select a mode!");
+  }
+  else if(this.diff == 0)
+  {
+    alert("You need to select a difficulty!");
+  }
+  else if(this.amb == 0)
+  {
+    alert("You need to select an environment!");
+  }
+  else
+  {
+    window.location.href = "../reader/scene.html?mode="+this.mode+"&diff="+this.diff+"&amb="+this.amb+"";
+  }
+
+}
 </script>
 
 </body>
