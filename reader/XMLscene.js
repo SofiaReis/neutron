@@ -230,12 +230,6 @@ function timeMatch(diff)
 
  XMLscene.prototype.playCNeutron = function(request, reqObj)
  {
- 	console.log("i:" + this.neutron.i);
- 	console.log("j:" + this.neutron.j);
- 	console.log("x:" + this.neutron.xi);
- 	console.log("z:" + this.neutron.zi);
- 	console.log(this.board.tab);
-
  	getRequest("playCNeutrao("+matrixToList(this.board.tab)+","+this.neutron.i+
  		","+this.neutron.j+","+this.playerPlaying+")",function(data) {
 
@@ -372,6 +366,15 @@ function timeMatch(diff)
  	}
  };
 
+ XMLscene.prototype.PlayerWin = function() {
+
+     if(!this.camMoving) {
+        this.camOrg=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.camDestine = [0,10,20];
+        if(!arraysEqual(this.camDestine, this.camOrg)) this.calcTransition();
+    }
+};
+
  function convertPos(x,y)
  {
  	var xi = 3;
@@ -396,7 +399,17 @@ function timeMatch(diff)
 
  XMLscene.prototype.processAnimation = function(){
 
- 	if(this.nextPlay == 2)
+ 	console.log(this.firstPlay);
+ 	console.log(this.nextPlay);
+
+ 	if(this.firstPlay == true)
+ 	{
+
+ 		this.pickingAnimation = new LinearAnimation(this, 1,[[0,0,0],[(this.newPos[1]-this.oldPos[1])/2, 1, (this.newPos[0]-this.oldPos[0])/2],[(this.newPos[1]-this.oldPos[1])/2, -1, (this.newPos[0]-this.oldPos[0])/2]]);
+ 		console.log(this.pickingAnimation);
+ 		this.processing = true;
+ 	}
+ 	else if(this.nextPlay == 2)
  	{
  		if((this.modeP1 == 2 && this.playerPlaying ==1) || (this.modeP2 == 2 && this.playerPlaying == 2))
  		{
@@ -470,7 +483,7 @@ function timeMatch(diff)
  				scene.setPickEnabled(false);
  				console.log("Game Finished!");
  				scene.processAnimation();		
- 				this.gameFinished = true;
+ 				scene.gameFinished = true;
  			}
  			else
  			{
@@ -511,7 +524,7 @@ function timeMatch(diff)
 							{
 								scene.setPickEnabled(false);
 								scene.processAnimation();		
-								this.gameFinished = true;
+								scene.gameFinished = true;
 								console.log("Game Finished!");
 								console.log("Player "+ scene.playerPlaying +" WON!");
 							}
@@ -558,7 +571,9 @@ XMLscene.prototype.gameComputador = function() {
 						scene.timerPlayer1.restart = true;
 
 					} 
+					scene.calculateNewPos(matrix[2]);
 					scene.board.tab = matrix[2];
+
 
 					console.log("Good Move!");
 
@@ -569,7 +584,7 @@ XMLscene.prototype.gameComputador = function() {
 				scene.setPickEnabled(false);
 				scene.processAnimation();		
 				console.log("Game Finished!");
-				this.gameFinished = true;
+				scene.gameFinished = true;
 				console.log("Player "+ scene.playerPlaying +" WON!");
 
 			}
@@ -622,7 +637,7 @@ XMLscene.prototype.gameComputador = function() {
 				scene.setPickEnabled(false);
 				scene.processAnimation();		
 				console.log("Game Finished!");
-				this.gameFinished = true;
+				scene.gameFinished = true;
 			}
 			else
 			{
@@ -1140,15 +1155,6 @@ XMLscene.prototype.pecaHumAnim = function(piece){
 	}
 }
 
-XMLscene.prototype.neutronCompAnim = function(piece){
-	
-	if(this.processing == true)
-	{
-		this.pickingAnimation.display();
-		piece.display();
-	}
-	
-}
 
 XMLscene.prototype.pecaCompAnim = function(piece){
 
@@ -1166,20 +1172,12 @@ XMLscene.prototype.pecaCompAnim = function(piece){
 
 XMLscene.prototype.neutronCompAnim = function(piece){
 
-	
-	if(this.processing == true && piece == this.picked)
+	console.log(piece);
+	console.log(this.picked);
+	if(this.processing == true && piece == this.neutron)
 	{
+		console.log("ENTREI AQUI");
 		this.pickingAnimation.display();
-		piece.display();
-	}
-	else if(this.pieceAnimStatus == 1 && this.picked == piece)
-	{
-		this.up.display();
-		piece.display();
-	}
-	else if(this.pieceAnimStatus == 2 && this.picked == piece)
-	{
-		this.down.display();
 		piece.display();
 	}
 	else
@@ -1299,7 +1297,7 @@ XMLscene.prototype.displayPiecesAndCells = function()
 							this.neutronCompAnim(this.board.allTab[i][j][0]);
 						}else if((this.modeP1 == 0 && this.playerPlaying == 1)||(this.modeP2 == 0 && this.playerPlaying == 2))
 						{
-							this.neutronCompAnim(this.board.allTab[i][j][0]);
+							this.pecaHumAnim(this.board.allTab[i][j][0]);
 						}
 						
 						this.popMatrix();
@@ -1356,8 +1354,9 @@ XMLscene.prototype.display = function () {
 
 	this.applyViewMatrix();
 	this.setDefaultAppearance();
-
-	this.pushMatrix();
+	if(this.gameFinished != true)
+	{
+		this.pushMatrix();
 	this.translate(0,1,-3);
 	this.scale(0.5,0.5,0.5);
 	this.timerPlayer2.display();
@@ -1375,6 +1374,22 @@ XMLscene.prototype.display = function () {
 	this.scale(0.5,0.5,0.5);
 	this.score.display();
 	this.popMatrix();
+	
+
+	}
+	else
+	{
+		this.PlayerWin();
+		this.pushMatrix();
+		this.translate(-3,1,-3);
+		this.scale(0.5,0.5,0.5);
+		this.timerPlayer1.displayWin(this.playerPlaying);
+		this.popMatrix();
+
+
+	}
+	
+
 	
 	if(this.graph.loadedOk)
 	{
@@ -1401,9 +1416,9 @@ XMLscene.prototype.display = function () {
 
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 
-		if(this.playerPlaying == 1)
+		if(this.playerPlaying == 1 && this.gameFinished != true && this.modeP1 !=2)
 			this.PlayerWhite();
-		else if(this.playerPlaying == 2)
+		else if(this.playerPlaying == 2 && this.gameFinished != true && this.modeP2 !=2)
 			this.PlayerBlack();
 
 		
@@ -1424,9 +1439,6 @@ XMLscene.prototype.display = function () {
 			}
 			
 		}
-
-
-		
 		
 		this.displayPiecesAndCells();
 
@@ -1505,32 +1517,30 @@ XMLscene.prototype.update = function(curtime){
 
 
 	for(node in this.animations){
-		console.log(this.animations);
 		
 		var animationsNode = this.animations[node];
-		console.log(animationsNode);
 		
 		for(anim in animationsNode){
-			console.log(anim);
 			if(animationsNode[anim].current)
 			{
-				console.log(animationsNode[anim]);
 				animationsNode[anim].update(curtime);
 			}
 		}
-
-
 	}
 
 	if(this.pieceAnimStatus == 1)
 	{
 		this.up.update(curtime);
 	}
+	else if(this.pieceAnimStatus == 2)
+	{
+		this.down.update(curtime);
+	}
 
 	if(this.processing == true)
 	{
 		this.pickingAnimation.update(curtime);
-		if(this.pickingAnimation.ended == true)
+		if(this.pickingAnimation.ended == true && this.gameFinished != true)
 		{
 			this.updatePiecePos();
 
@@ -1569,6 +1579,8 @@ XMLscene.prototype.update = function(curtime){
 				console.log("New Play: " + this.response[1]);
 				this.nextPlay = this.response[1];
 				this.setPickEnabled(true);
+				this.picked = null;
+				this.pickedDestine = null;
 				this.processing = false;
 				this.neutronPlaying = false;
 				this.compPlaying = false;
@@ -1583,8 +1595,6 @@ XMLscene.prototype.update = function(curtime){
 
 				console.log("NX "+ this.response[4]);
 				console.log("NY "+ this.response[5]);
-
-
 
 				this.setPickEnabled(true);
 				this.processing = false;
@@ -1602,8 +1612,6 @@ XMLscene.prototype.update = function(curtime){
 				console.log("NX "+ this.response[4]);
 				console.log("NY "+ this.response[5]);
 
-
-
 				this.setPickEnabled(true);
 				this.picked = null;
 				this.pickedDestine = null;
@@ -1613,10 +1621,10 @@ XMLscene.prototype.update = function(curtime){
 		} 	
 	}
 
-
-
-	if(!this.timerPlayer1.timeBeg && this.playerPlaying == 1) this.timerPlayer1.timeBeg = curtime;
-	if(this.playerPlaying == 1 && this.gameFinished != true) this.timerPlayer1.updateTime(curtime);
+	if(this.gameFinished != true)
+	{
+		if(!this.timerPlayer1.timeBeg && this.playerPlaying == 1) this.timerPlayer1.timeBeg = curtime;
+	if(this.playerPlaying == 1) this.timerPlayer1.updateTime(curtime);
 	if(this.timerPlayer1.seconds == this.gameDiff  && this.playerPlaying == 1)
 	{
 		this.timeOut();
@@ -1624,15 +1632,13 @@ XMLscene.prototype.update = function(curtime){
 		this.timerPlayer1.timeBeg = null;
 		if(this.picked != null)
 		{
-			console.log(this.picked);
-			var ind = this.picked.objPiece.transformations.length-1;
-			this.picked.objPiece.transformations[ind].y = 0;
+			this.down.update(curtime);
 			this.picked = null;
 		} 	 
 	}
 
 	if(!this.timerPlayer2.timeBeg && this.playerPlaying ==2) this.timerPlayer2.timeBeg = curtime;
-	if(this.playerPlaying == 2 && this.gameFinished != true) this.timerPlayer2.updateTime(curtime);
+	if(this.playerPlaying == 2) this.timerPlayer2.updateTime(curtime);
 	if(this.timerPlayer2.seconds == this.gameDiff && this.playerPlaying == 2)
 	{
 		this.timeOut();
@@ -1640,12 +1646,12 @@ XMLscene.prototype.update = function(curtime){
 		this.timerPlayer2.timeBeg = null;	 
 		if(this.picked != null)
 		{
-			console.log(this.picked);
-			var ind = this.picked.objPiece.transformations.length-1;
-			this.picked.objPiece.transformations[ind].y = 0;
+			this.down.update(curtime);
 			this.picked = null;
 
 		}
+	}
+
 	}
 
 	if(this.camMoving) {

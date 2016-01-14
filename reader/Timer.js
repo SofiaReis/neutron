@@ -37,6 +37,122 @@ Timer.prototype.display = function () {
  	this.scene.popMatrix();
 };
 
+Timer.prototype.displayWin = function (player){
+
+	this.scene.pushMatrix();
+
+		this.appearance.setTexture(this.fontText);
+
+		this.scene.setActiveShaderSimple(this.scene.textShader);
+		this.appearance.apply();
+
+		this.scene.rotate(this.scene.convertDegtoRad(90),1,0,0);
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [15,5]});
+		this.scene.pushMatrix();
+			this.scene.translate(2,-2,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [3,4]});
+		this.scene.pushMatrix();
+			this.scene.translate(4,-2,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [14,4]});
+		this.scene.pushMatrix();
+			this.scene.translate(6,-2,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+			this.scene.activeShader.setUniformsValues({'charCoords': [6,5]});
+		this.scene.pushMatrix();
+			this.scene.translate(8,-2,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [10,4]});
+		this.scene.pushMatrix();
+			this.scene.translate(10,-2,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [13,5]});
+		this.scene.pushMatrix();
+			this.scene.translate(12,-2,0);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		if(player == 1)
+		{
+			this.scene.activeShader.setUniformsValues({'charCoords': [14,3]});
+			this.scene.pushMatrix();
+			this.scene.translate(2,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+			this.scene.popMatrix();
+		}
+		else{
+			this.scene.activeShader.setUniformsValues({'charCoords': [13,3]});
+			this.scene.pushMatrix();
+			this.scene.translate(2,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+			this.scene.popMatrix();
+
+		}
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [1,1]});
+			this.scene.pushMatrix();
+			this.scene.translate(4,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+			this.scene.popMatrix();
+
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [8,5]});
+		this.scene.pushMatrix();
+			this.scene.translate(6,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [6,4]});
+		this.scene.pushMatrix();
+			this.scene.translate(8,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [1,4]});
+		this.scene.pushMatrix();
+			this.scene.translate(10,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+		this.scene.activeShader.setUniformsValues({'charCoords': [14,2]});
+		this.scene.pushMatrix();
+			this.scene.translate(12,-2,2);
+			this.scene.rotate(this.scene.convertDegtoRad(180),0,1,0);
+			this.rec.display();
+		this.scene.popMatrix();
+
+
+		this.scene.setActiveShaderSimple(this.scene.defaultShader);
+		this.scene.popMatrix();
+
+
+
+}
+
 Timer.prototype.displayTime = function () {
 	
 		
