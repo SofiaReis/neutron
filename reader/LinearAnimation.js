@@ -64,11 +64,8 @@
 		 			remainder = (curTime-this.points[i])/(this.points[i+1]-this.points[i]) ;
 
 		 			this.tx += this.controlPoints[i+1][0] * remainder;
-		 			console.log(this.tx);
 	 				this.ty += this.controlPoints[i+1][1] * remainder;
-	 				console.log(this.ty);
 	 				this.tz += this.controlPoints[i+1][2] * remainder;
-	 				console.log(this.tz);
 
 	 				return;
 
@@ -110,8 +107,6 @@
  * Applies linear animation to scene/object
  */
  LinearAnimation.prototype.display = function(){
-
- 	console.log("updating...");
  	this.scene.translate(this.tx, this.ty, this.tz);
  	if(this.angNow != 361){
  		this.scene.rotate(this.angNow,0,1,0);

@@ -442,14 +442,16 @@ function timeMatch(diff)
 
  				if(scene.playerPlaying == 1)
  				{
- 					scene.timerPlayer1.timeBeg = null;
  					scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+ 					scene.timerPlayer1.restart = true;
+ 					scene.timerPlayer2.restart = true;
 
  				} 
  				else if(scene.playerPlaying == 2)
  				{
- 					scene.timerPlayer2.timeBeg = null;
  					scene.score.setCounters(0, scene.timerPlayer2.seconds);
+ 					scene.timerPlayer2.restart = true;
+ 					scene.timerPlayer1.restart = true;
 
  				} 
 
@@ -486,15 +488,16 @@ function timeMatch(diff)
 
  				if(scene.playerPlaying == 1)
  				{
- 					scene.timerPlayer1.timeBeg = null;
  					scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+ 					scene.timerPlayer1.restart = true;
+ 					scene.timerPlayer2.restart = true;
 
  				} 
  				else if(scene.playerPlaying == 2)
  				{
- 					scene.timerPlayer2.timeBeg = null;
  					scene.score.setCounters(0, scene.timerPlayer2.seconds);
-
+ 					scene.timerPlayer2.restart = true;
+ 					scene.timerPlayer1.restart = true;
  				} 
 
  				scene.board.tab = matrix[2];
@@ -538,25 +541,23 @@ XMLscene.prototype.gameComputador = function() {
 			scene.matches.push(matrix);
 			scene.message = matrix[3];
 			scene.response = matrix;
-			console.log(matrix);
 
 			if(scene.message == 1)
 				{	
 					if(scene.playerPlaying == 1)
 					{
-
-						scene.timerPlayer1.timeBeg = null;
-						
 						scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+						scene.timerPlayer1.restart = true;
+						scene.timerPlayer2.restart = true;
 
 					} 
 					else if(scene.playerPlaying == 2)
 					{
-						scene.timerPlayer2.timeBeg = null;
 						scene.score.setCounters(0, scene.timerPlayer2.seconds);
+						scene.timerPlayer2.restart = true;
+						scene.timerPlayer1.restart = true;
 
 					} 
-					console.log(matrix[2]);
 					scene.board.tab = matrix[2];
 
 					console.log("Good Move!");
@@ -590,30 +591,29 @@ XMLscene.prototype.gameComputador = function() {
 			if(scene.message == 1){
 				if(scene.playerPlaying == 1)
 				{
-					scene.timerPlayer1.timeBeg = null;
 					scene.score.setCounters(scene.timerPlayer1.seconds, 0);
+					scene.timerPlayer1.restart = true;
+					scene.timerPlayer2.restart = true;
 
 				} 
 				else if(scene.playerPlaying == 2)
 				{
-					scene.timerPlayer2.timeBeg = null;
 					scene.score.setCounters(0, scene.timerPlayer2.seconds);
+					scene.timerPlayer2.restart = true;
+					scene.timerPlayer1.restart = true;
 
 				} 
-				console.log(matrix[2]);
 				scene.calculateNewPos(matrix[2]);
 				scene.board.tab = matrix[2];
 
 				scene.matches.push(matrix);
 				if(scene.firstPlay == true)
 				{
-
 					console.log("First Play!");
 					scene.firstPlay = false;
 				}
 
 				console.log("Good Move!");
-
 				scene.processAnimation();
 
 			}
@@ -649,8 +649,6 @@ XMLscene.prototype.calculateNewPos = function(board)
 					this.newPos = convertPos(i,j);
 					this.newPos.i = i;
 					this.newPos.j = j;
-
-					console.log(this.newPos);
 				}
 				else if(this.board.tab[i][j] == 2 && board[i][j] == 0)
 				{
@@ -658,8 +656,6 @@ XMLscene.prototype.calculateNewPos = function(board)
 					this.newPiece = this.board.allTab[i][j][0];
 					this.oldPos.i = i;
 					this.oldPos.j = j;
-					console.log(this.newPiece);
-					console.log(this.oldPos);
 				}
 			}
 				
@@ -1120,37 +1116,8 @@ XMLscene.prototype.adjustPos = function(piece, i, j, xi, zi){
 	piece.zi = zi;
 }
 
-XMLscene.prototype.gameAnimation = function(piece){
-	
-	if(this.processing == true && this.picked == piece)
-	{
-		this.pickingAnimation.display();
-		piece.display();
-	}
-	else if(this.pieceAnimStatus == 1 && this.picked == piece)
-	{
-		this.up.display();
-		piece.display();
-	}
-	else if(this.pieceAnimStatus == 2 && this.picked == piece)
-	{
-		this.down.display();
-		piece.display();
-	}
-/*	else if(this.processing == true)
-	{
-		this.pickingAnimation.display();
-		piece.display();
-	}*/
-	else
-	{
-		piece.display();
-	}
-}
-
 XMLscene.prototype.pecaHumAnim = function(piece){
 
-	//console.log(piece);
 	
 	if(this.processing == true && this.picked == piece)
 	{
@@ -1648,8 +1615,8 @@ XMLscene.prototype.update = function(curtime){
 
 
 
-	/*if(!this.timerPlayer1.timeBeg && this.playerPlaying == 1) this.timerPlayer1.timeBeg = curtime;
-	if(this.playerPlaying == 1) this.timerPlayer1.updateTime(curtime);
+	if(!this.timerPlayer1.timeBeg && this.playerPlaying == 1) this.timerPlayer1.timeBeg = curtime;
+	if(this.playerPlaying == 1 && this.gameFinished != true) this.timerPlayer1.updateTime(curtime);
 	if(this.timerPlayer1.seconds == this.gameDiff  && this.playerPlaying == 1)
 	{
 		this.timeOut();
@@ -1665,7 +1632,7 @@ XMLscene.prototype.update = function(curtime){
 	}
 
 	if(!this.timerPlayer2.timeBeg && this.playerPlaying ==2) this.timerPlayer2.timeBeg = curtime;
-	if(this.playerPlaying == 2) this.timerPlayer2.updateTime(curtime);
+	if(this.playerPlaying == 2 && this.gameFinished != true) this.timerPlayer2.updateTime(curtime);
 	if(this.timerPlayer2.seconds == this.gameDiff && this.playerPlaying == 2)
 	{
 		this.timeOut();
@@ -1679,7 +1646,7 @@ XMLscene.prototype.update = function(curtime){
 			this.picked = null;
 
 		}
-	}*/
+	}
 
 	if(this.camMoving) {
 		if(!this.camTransBeg) this.camTransBeg = curtime;
