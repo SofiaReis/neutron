@@ -399,17 +399,8 @@ function timeMatch(diff)
 
  XMLscene.prototype.processAnimation = function(){
 
- 	console.log(this.firstPlay);
- 	console.log(this.nextPlay);
 
- 	if(this.firstPlay == true)
- 	{
-
- 		this.pickingAnimation = new LinearAnimation(this, 1,[[0,0,0],[(this.newPos[1]-this.oldPos[1])/2, 1, (this.newPos[0]-this.oldPos[0])/2],[(this.newPos[1]-this.oldPos[1])/2, -1, (this.newPos[0]-this.oldPos[0])/2]]);
- 		console.log(this.pickingAnimation);
- 		this.processing = true;
- 	}
- 	else if(this.nextPlay == 2)
+ 	if(this.nextPlay == 2)
  	{
  		if((this.modeP1 == 2 && this.playerPlaying ==1) || (this.modeP2 == 2 && this.playerPlaying == 2))
  		{
