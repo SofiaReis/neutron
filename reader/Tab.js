@@ -3,12 +3,6 @@ function Tab(scene) {
         CGFobject.call(this,scene);
 
         this.scene = scene;
-        
-        this.player1 = "Player 1";
-        this.player2 = "Player 2";
- 
-        this.p1Points = 0;
-        this.p2Points = 0;
 
         this.pieces = [];
         this.cells = [];
@@ -59,7 +53,7 @@ function Tab(scene) {
  			zi = zi-1;
  			var pos = new Array(2);
  			if(this.tab[i][j] == 1){
- 				piece = new Piece(this.scene, xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_white']),1);
+ 				piece = new Piece(this.scene,xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_white']),1);
 
  				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
 
@@ -69,7 +63,7 @@ function Tab(scene) {
  				lin.push(pos);
  			}
  			else if(this.tab[i][j] == 2){
- 				piece = new Piece(this.scene, xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_black']),2);
+ 				piece = new Piece(this.scene,xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_black']),2);
 
  				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
  				
@@ -80,7 +74,7 @@ function Tab(scene) {
  			}
  			else if(this.tab[i][j] == 3)
  			{
- 				piece = new Piece(this.scene, xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_neutron']),3);
+ 				piece = new Piece(this.scene,xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_neutron']),3);
 
  				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
  				

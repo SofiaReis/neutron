@@ -140,7 +140,7 @@ Timer.prototype.updateTime = function (currTime) {
 
 	var time_since_start = currTime - this.timeBeg;
 	var total_seconds = Math.floor(time_since_start/1000);
-	console.log(total_seconds);
+	//console.log(total_seconds);
 	this.seconds=Math.floor(total_seconds%60);
 };
 

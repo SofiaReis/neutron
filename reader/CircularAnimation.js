@@ -51,6 +51,8 @@ CircularAnimation.prototype.init = function () {
 */
 CircularAnimation.prototype.update = function (curtime) {
 
+	console.log("CIRCULAR ANIM");
+
 	if(this.currentang <= this.finalAng){
 
 		if(this.initial){

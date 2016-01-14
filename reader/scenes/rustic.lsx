@@ -210,6 +210,7 @@
          <NODE id="base_bt">
             <MATERIAL id="null" />
             <TEXTURE id="null" />
+            <!--<ANIMATIONREF id="circle1"/>-->
  
             <TRANSLATION x="0" y="-0.5" z="0" />
             <ROTATION axis="x" angle="90" />
@@ -309,7 +310,7 @@
         <NODE id="peça_neutron">
             <MATERIAL id="brilhante" />
             <TEXTURE id="pattern_peca_neutron" />
-            <ANIMATIONREF id="circle1"/>
+            <!--<ANIMATIONREF id="circle1"/>-->
 
             <ROTATION axis="y" angle="90" />
             <SCALE sx="0.30" sy="0.30" sz="0.30" />
@@ -407,6 +408,7 @@
 
          <NODE id="tabuleiro_bottom">
             <MATERIAL id="brilhante" />
+             <!--<ANIMATIONREF id="circle1"/>-->
 
             <TRANSLATION x="-2.9" y="0" z="0" />
             <ROTATION axis="y" angle="90" />

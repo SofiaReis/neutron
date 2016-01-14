@@ -13,7 +13,6 @@ function getUrlVars() {
 function getQueryVariable(variable)
 {
        var query = window.location.search.substring(1);
-       //console.log(query);
        var vars = query.split("&");
        for (var i=0;i<vars.length;i++) {
                var pair = vars[i].split("=");
@@ -41,7 +40,6 @@ serialInclude(['../lib/CGF.js',
     'Timer.js',
     'Piece.js',
     'Cell.js',
-    'PickingAnimation.js',
     'Score.js',
 
 

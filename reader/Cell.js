@@ -1,13 +1,13 @@
-function Cell(scene,xi,zi,i,j,obj,type) {
+function Cell(scene,xi, zi,i,j,obj,type) {
  	CGFobject.call(this,scene);
 
  	this.scene = scene;
  	this.i = i;
  	this.j = j;
- 	this.xi = xi;
- 	this.zi = zi;
  	this.objPiece = obj;
  	this.type = type;
+ 	this.xi = xi;
+ 	this.zi = zi;
  	this.material = this.objPiece.material;
 };
 
@@ -17,7 +17,6 @@ Cell.prototype.constructor = Cell;
 Cell.prototype.display = function() {
 
 	this.scene.pushMatrix();	
-	this.scene.translate(this.xi, 0, this.zi);
 	this.processTransformations(this.objPiece);
 	this.scene.leaves[this.objPiece.descendants[0]].display();
 	this.scene.popMatrix();

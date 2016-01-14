@@ -20,8 +20,6 @@ Score.prototype.constructor = Score;
 Score.prototype.display = function () {
 
 	this.scene.pushMatrix();
-
-
 		this.scene.rotate(this.scene.convertDegtoRad(90),1,0,0);
  		//TEXT
  		this.appearance.setTexture(this.fontText);
@@ -35,9 +33,6 @@ Score.prototype.displayScore = function () {
 	this.scene.pushMatrix();
 		this.scene.setActiveShaderSimple(this.scene.textShader);
 		this.appearance.apply();
-
-
-			console.log("ESTOU AQUI");
 
 		var decW = 15-Math.floor(this.counter1/10);
 		var uniW = 15-this.counter1%10;

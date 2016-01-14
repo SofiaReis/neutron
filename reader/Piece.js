@@ -1,4 +1,4 @@
-function Piece(scene, posX, posY, i,j,obj,type) {
+function Piece(scene,xi, zi, i,j,obj,type) {
  	CGFobject.call(this,scene);
 
 	this.scene = scene;
@@ -11,10 +11,10 @@ function Piece(scene, posX, posY, i,j,obj,type) {
 	this.i = i;
 	this.j = j;
 
-	this.type = type;
+	this.xi = xi;
+	this.zi = zi;
 
-	this.xi = posX;
-	this.zi = posY;
+	this.type = type;
 	this.height = 0;
 };
 
@@ -55,7 +55,6 @@ Piece.prototype.display = function() {
 	this.scene.materials[this.material].apply();
 
  	this.scene.pushMatrix();
- 	this.scene.translate(this.xi, 0, this.zi);
  	this.processTransformations(this.objPiece);
  	this.processTransformations(this.scene.graph.nodesInfo[this.objPiece.descendants[0]]);
  	this.scene.leaves[this.scene.graph.nodesInfo[this.objPiece.descendants[0]].descendants[0]].display();
@@ -63,7 +62,6 @@ Piece.prototype.display = function() {
 
  	
  	this.scene.pushMatrix();
- 	this.scene.translate(this.xi, 0, this.zi);
  	this.processTransformations(this.objPiece);
  	this.processTransformations(this.scene.graph.nodesInfo[this.objPiece.descendants[1]]);
  	this.scene.leaves[this.scene.graph.nodesInfo[this.objPiece.descendants[1]].descendants[0]].display();

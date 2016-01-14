@@ -1,139 +1,184 @@
-/**
-* Class LinearAnimation
-* Representes Linear Animation and it's a subclasse of Animation
-*/
+ function LinearAnimation(scene, time, controlPoints) {
+
+ 	this.scene = scene;
+ 	this.time = time;
+ 	this.controlPoints = controlPoints;
+ 	this.initTime = Date.now();
+ 	this.tx = 0;
+ 	this.ty = 0;
+ 	this.tz = 0;
+ 	this.firstTime = true;
+ 	this.angCP = [];
+ 	this.angNow = 0;
+ 	this.points = [];
+ 	this.ended = false;
+ 	this.current = false;
+ 	this.calculateAngles();
+
+};
+
+ LinearAnimation.prototype.constructor = LinearAnimation;
 
 /**
-* Constructor
-* Creates object LinearAnimation
-* @param scene Class CGFScene
-* @param time Animation time
-* @param c_points Array with Animation Control points
-*/
-function LinearAnimation(scene, time, c_points){
-	
-	Animation.call(this, scene, time);
+ * Updates the current position of the transformation
+ * @param {int} curTime - Current time in milliseconds 
+ */
+ LinearAnimation.prototype.update = function(curTime){
 
-	this.id = 1;
+ 	var remainder = 0;
 
-	this.c_points = c_points;
-	this.span = time;
-	this.dist = 0;
-	this.startTime = 0;
-	this.currtime = 0;
-	this.initial = true;
-	this.current = false;
-	this.rotAng = 0;
-	this.finished = false;
+ 	if(this.firstTime){
+ 		this.firstTime = false;
+ 		this.initTime = curTime;
+ 		this.setVelocityAndTime();
+ 	}
 
-	this.init();
-}
-LinearAnimation.prototype = Object.create(Animation.prototype);
-LinearAnimation.prototype.constructor = LinearAnimation;
+ 	if(curTime <= (this.initTime + this.time * 1000)){
+
+ 		this.tx = 0;
+ 		this.ty = 0;
+ 		this.tz = 0;
+ 		
+	 	for(i = 0; i < (this.points.length - 1); i++){
+
+	 		if(curTime > this.points[i] && curTime <= this.points[i+1]){
+	 			this.angNow = this.angCP[i+1];
+	 			break;
+	 		}
+
+	 	}
+	 	for(i = 0; i < (this.controlPoints.length - 1); i++){
+	 		
+	 		
+	 			if(this.points[i+1] == curTime){
+
+	 				this.tx += this.controlPoints[i+1][0];
+		 			this.ty += this.controlPoints[i+1][1];
+		 			this.tz += this.controlPoints[i+1][2];
+
+	 				return;
+
+		 		}
+		 		else if(this.points[i] < curTime && this.points[i+1] > curTime){
+
+		 			remainder = (curTime-this.points[i])/(this.points[i+1]-this.points[i]) ;
+
+		 			this.tx += this.controlPoints[i+1][0] * remainder;
+		 			console.log(this.tx);
+	 				this.ty += this.controlPoints[i+1][1] * remainder;
+	 				console.log(this.ty);
+	 				this.tz += this.controlPoints[i+1][2] * remainder;
+	 				console.log(this.tz);
+
+	 				return;
+
+				}
+
+		 	this.tx += this.controlPoints[i+1][0];
+	 		this.ty += this.controlPoints[i+1][1];
+	 		this.tz += this.controlPoints[i+1][2];
+
+
+	 		
+	 	}
+	 		
+	 }
+
+	 else{
+	 	this.ended = true;
+	 	this.current = false;
+	 	this.tx = 0;
+	 	this.ty = 0;
+	 	this.tz = 0;
+
+	 	for(i = 0; i < (this.controlPoints.length - 1); i++){
+			this.tx += this.controlPoints[i+1][0];
+	 		this.ty += this.controlPoints[i+1][1];
+	 		this.tz += this.controlPoints[i+1][2];
+	 		
+	 	}
+	 }
+	 if(!this.ended){
+		 this.tx = 0;
+		 this.ty = 0;
+		 this.tz = 0;
+	}
+
+ };
 
 /**
-* init
-* Initializes variables that are used in the calculus on Animation update.
-*/
-LinearAnimation.prototype.init = function () {
+ * Applies linear animation to scene/object
+ */
+ LinearAnimation.prototype.display = function(){
 
-	this.directions = [];
-	this.index=0;
+ 	console.log("updating...");
+ 	this.scene.translate(this.tx, this.ty, this.tz);
+ 	if(this.angNow != 361){
+ 		this.scene.rotate(this.angNow,0,1,0);
+ 	}
 
-
-	for(var i = 0; i < (this.c_points.length-1); i++){
-		var v = vec3.fromValues(
-			this.c_points[i+1].xx - this.c_points[i].xx,
-			this.c_points[i+1].yy - this.c_points[i].yy,
-			this.c_points[i+1].zz - this.c_points[i].zz);
-
-		var distVec = Math.sqrt(Math.pow(v[0],2)+
-			Math.pow(v[1],2)+
-			Math.pow(v[2],2));
-		this.dist += distVec;
-		this.directions[i] = v;
-	}
-
-	this.tranX = this.c_points[0].xx;
-	this.tranY = this.c_points[0].yy;
-	this.tranZ = this.c_points[0].zz;
-
-	this.speed = this.dist/this.span;	
-}
+ };
 
 /**
-* update
-* Function that updates the animatition during the time.
-*/
-LinearAnimation.prototype.update = function (curtime){
+ * Calculates angles to be used by the animation
+ */
+ LinearAnimation.prototype.calculateAngles = function(){
 
-	if(this.index<(this.c_points.length-1) &&
-		this.tranX==this.c_points[this.index+1].xx &&
-		this.tranY==this.c_points[this.index+1].yy &&
-		this.tranZ==this.c_points[this.index+1].zz)
-	{
-		this.index++;
-	}
-	if(this.index == (this.c_points.length-1))
-	{
-		this.finished = true;
-	}
+ 	this.angCP[0] = 0;
+ 	for(i = 0; i < (this.controlPoints.length - 1); i++){
 
-	if(this.initial)
-	{
-		this.initial = false;
-		this.startTime = 0;
-		this.currtime = curtime;
-	}
-	else
-	{
-		this.currtime = curtime;
-	}
+ 		difx = this.controlPoints[i+1][0];
+ 		difz = this.controlPoints[i+1][2];
+ 		if(difx != 0 || difz != 0){
+ 			this.angCP[i+1] = Math.asin(difx/Math.sqrt(Math.pow(difx,2)+Math.pow(difz,2)));
+ 		}
+ 		else this.angCP[i+1] = 361*Math.PI/180;
 
-	if(!this.finished)
-	{
-		var delta = (this.currtime - this.startTime)*0.001;
-		this.startTime = this.currtime;
-		var vel = (this.dist/this.span)*delta;
+ 	}
 
-			var d_norm = Math.sqrt(Math.pow(this.directions[this.index][0],2)
-				+Math.pow(this.directions[this.index][1],2)
-				+Math.pow(this.directions[this.index][2],2));
-			if(d_norm != 0){
-				this.directions[this.index][0] /= d_norm;
-				this.directions[this.index][1] /= d_norm;
-				this.directions[this.index][2] /= d_norm;
-			}
+ };
 
-		this.directions[this.index][0] *= vel;
-		this.directions[this.index][1] *= vel;
-		this.directions[this.index][2] *= vel;
+/**
+ * Calculates velocity and time at which the animation will pass in each control point
+ */
+ LinearAnimation.prototype.setVelocityAndTime = function(){
 
-		this.tranX +=this.directions[this.index][0];
-		this.tranY +=this.directions[this.index][1];
-		this.tranZ +=this.directions[this.index][2];
+ 	var dist = 0;
+ 	var curDist = 0;
+ 	var difx = 0;
+ 	var difz = 0;
+ 	var dify = 0;
+ 	var difxz = 0;
 
-		if((this.directions[this.index][0] > 0 && this.tranX > this.c_points[this.index+1].xx) || (this.directions[this.index][0] < 0 && this.tranX < this.c_points[this.index+1].xx))
-			this.tranX = this.c_points[this.index+1].xx;
-		if((this.directions[this.index][1] > 0 && this.tranY > this.c_points[this.index+1].yy) || (this.directions[this.index][1] < 0 && this.tranY < this.c_points[this.index+1].yy))
-			this.tranY = this.c_points[this.index+1].yy;
-		if((this.directions[this.index][2] > 0 && this.tranZ > this.c_points[this.index+1].zz) || (this.directions[this.index][2] < 0 && this.tranZ < this.c_points[this.index+1].zz))
-			this.tranZ = this.c_points[this.index+1].zz;
+ 	for(i = 0; i < (this.controlPoints.length - 1); i++){
 
-		//ANGLE CALCULUS
-		var AB = vec2.fromValues(this.c_points[this.index+1].xx-this.c_points[this.index].xx,
-			this.c_points[this.index+1].zz-this.c_points[this.index].zz);
+ 		difx = this.controlPoints[i+1][0];
+ 		difz = this.controlPoints[i+1][2];
+ 		dify = this.controlPoints[i+1][1];
 
-		var BC = vec2.fromValues(0,1);
+ 		difxz = Math.sqrt(Math.pow(difx,2)+Math.pow(difz,2));
+ 		
+ 		dist += Math.sqrt(Math.pow(difxz,2)+Math.pow(dify,2));
 
-		this.rotAng = Math.acos(((AB[0]*BC[0])+(AB[1]*BC[1]))/
-				(Math.sqrt(Math.pow(AB[0],2)+Math.pow(AB[1],2))+
-				Math.sqrt(Math.pow(BC[0],2)+Math.pow(BC[1],2))))*(180/Math.PI);
+ 	}
 
-		// TRANSFORMATIONS
-		mat4.identity(this.matrix);
-		mat4.translate(this.matrix, this.matrix,[this.tranX, this.tranY, this.tranZ]);
-		mat4.rotate(this.matrix, this.matrix,this.rotAng, [0, 1, 0]);
-	
-	}
-}
+ 	this.velocity = dist / (this.time * 10);
+ 	this.points[0] = this.initTime;
+
+ 	for(i = 0; i < (this.controlPoints.length - 1); i++){
+ 		
+ 		difx = this.controlPoints[i+1][0];
+ 		difz = this.controlPoints[i+1][2];
+ 		dify = this.controlPoints[i+1][1];
+
+ 		difxz = Math.sqrt(Math.pow(difx,2)+Math.pow(difz,2));
+ 		
+ 		curDist += Math.sqrt(Math.pow(difxz,2)+Math.pow(dify,2));
+
+ 		var x = curDist/dist;
+ 		
+ 		this.points[i+1] = this.initTime + this.time * 1000 * x;
+
+  	}
+
+ };
