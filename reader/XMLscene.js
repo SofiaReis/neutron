@@ -409,12 +409,21 @@ function timeMatch(diff)
  		}
  		
  	}
- 	else if(this.nextPlay == 1 && ((this.modeP1 == 2 && this.playerPlaying ==1) || (this.modeP2 == 2 && this.playerPlaying == 2))){
- 		var pos = convertPos(this.response[4], this.response[5]);
+ 	else if(this.nextPlay == 1){
+ 		
 
- 		this.pickingAnimation = new LinearAnimation(this, 1,[[0,0,0],[(pos[1]-this.neutron.xi)/2,1,(pos[0]-this.neutron.zi)/2],[(pos[1]-this.neutron.xi)/2,-1,(pos[0]-this.neutron.zi)/2]]);
- 		console.log(this.pickingAnimation);
- 		this.processing = true;
+ 		if((this.modeP1 == 2 && this.playerPlaying ==1) || (this.modeP2 == 2 && this.playerPlaying == 2))
+ 		{
+ 			var pos = convertPos(this.response[4], this.response[5]);
+ 			this.pickingAnimation = new LinearAnimation(this, 1,[[0,0,0],[(pos[1]-this.neutron.xi)/2,1,(pos[0]-this.neutron.zi)/2],[(pos[1]-this.neutron.xi)/2,-1,(pos[0]-this.neutron.zi)/2]]);
+ 			this.processing = true;
+ 		}
+ 		else
+ 		{
+ 			this.pickingAnimation = new LinearAnimation(this, 1,[[0,0,0],[(this.pickedDestine.xi-this.picked.xi)/2, 1, (this.pickedDestine.zi-this.picked.zi)/2],[(this.pickedDestine.xi-this.picked.xi)/2, -1, (this.pickedDestine.zi-this.picked.zi)/2]]);
+ 			this.processing = true;
+ 		}
+ 		
  	}
  	
  }
@@ -457,6 +466,7 @@ function timeMatch(diff)
  			else if(scene.message == 2)
  			{
  				console.log("Game Finished!");
+ 				scene.processAnimation();		
  				this.gameFinished = true;
  			}
  			else
@@ -469,6 +479,7 @@ function timeMatch(diff)
  		this.playHNeutron(function(matrix)
  		{
  			scene.message = matrix[3];
+ 			scene.response = matrix;
 
  			if(scene.message == 1){	
 
@@ -488,28 +499,14 @@ function timeMatch(diff)
  				scene.board.tab = matrix[2];
 
  				scene.matches.push(matrix);
+ 				scene.processAnimation();
 
-
-								/*scene.setPickEnabled(false);    
-								console.log("Good Move!");
-								scene.processAnimation();		
-
-								console.log("Player Playing: "+ scene.playerPlaying);
-								console.log("New Play: " + matrix[1])
-								scene.nextPlay = matrix[1];
-
-								console.log("NX "+ matrix[3]);
-								console.log("NY "+ matrix[4]);
-
-								scene.setPickEnabled(true);
-							
-								scene.picked = null;
-								scene.pickedDestine = null;*/
 
 							}
 							else if(scene.message == 2)
 							{
 								scene.setPickEnabled(false);
+								scene.processAnimation();		
 								this.gameFinished = true;
 								console.log("Game Finished!");
 								console.log("Player "+ scene.playerPlaying +" WON!");
@@ -568,6 +565,7 @@ XMLscene.prototype.gameComputador = function() {
 			else if(scene.message == 2)
 			{
 				//scene.board.init(matrix[2]);
+				scene.processAnimation();		
 				console.log("Game Finished!");
 				this.gameFinished = true;
 				console.log("Player "+ scene.playerPlaying +" WON!");
@@ -587,6 +585,7 @@ XMLscene.prototype.gameComputador = function() {
 		this.playComputador(function(matrix)
 		{
 			scene.message = matrix[3];
+			scene.response = matrix;
 			if(scene.message == 1){
 				if(scene.playerPlaying == 1)
 				{
@@ -615,17 +614,10 @@ XMLscene.prototype.gameComputador = function() {
 
 				scene.processAnimation();
 
-
-				/*console.log("Player Playing: "+ scene.playerPlaying);
-				scene.playerPlaying = matrix[0];
-				console.log("Player at next: " + scene.playerPlaying);
-
-				console.log("New Play: " + matrix[1])
-				scene.nextPlay = matrix[1];*/
-
 			}
 			else if(scene.message == 2)
 			{
+				scene.processAnimation();		
 				console.log("Game Finished!");
 				this.gameFinished = true;
 			}
@@ -652,6 +644,8 @@ XMLscene.prototype.calculateNewPos = function(board)
 				if(this.board.tab[i][j] == 0 && board[i][j] == 2)
 				{
 					this.newPos = convertPos(i,j);
+					this.newPos.i = i;
+					this.newPos.j = j;
 
 					console.log(this.newPos);
 				}
@@ -659,6 +653,8 @@ XMLscene.prototype.calculateNewPos = function(board)
 				{
 					this.oldPos = convertPos(i,j);
 					this.newPiece = this.board.allTab[i][j][0];
+					this.oldPos.i = i;
+					this.oldPos.j = j;
 					console.log(this.newPiece);
 					console.log(this.oldPos);
 				}
@@ -676,6 +672,7 @@ XMLscene.prototype.logPicking = function ()
 				var obj = this.pickResults[i][0];
 				var customId = this.pickResults[i][1];	
 				console.log(obj);
+				console.log(this.picked);
 				if (obj instanceof Piece && this.picked == null && obj.type!=3)
 				{			
 					console.log("Picked object: " + obj + ", with pick id " + customId);
@@ -1197,6 +1194,32 @@ XMLscene.prototype.pecaCompAnim = function(piece){
 	
 }
 
+XMLscene.prototype.neutronCompAnim = function(piece){
+
+	
+	if(this.processing == true && piece == this.picked)
+	{
+		this.pickingAnimation.display();
+		piece.display();
+	}
+	else if(this.pieceAnimStatus == 1 && this.picked == piece)
+	{
+		this.up.display();
+		piece.display();
+	}
+	else if(this.pieceAnimStatus == 2 && this.picked == piece)
+	{
+		this.down.display();
+		piece.display();
+	}
+	else
+	{
+		piece.display();
+	}
+	
+	
+}
+
 
 
 
@@ -1246,8 +1269,6 @@ XMLscene.prototype.displayPiecesAndCells = function()
 						{
 							this.pecaHumAnim(this.board.allTab[i][j][0]);
 						}
-
-						//this.gameAnimation(this.board.allTab[i][j][0]);
 						this.popMatrix();
 
 						if(!this.processing) this.adjustPos(this.board.allTab[i][j][1],i,j,xi,zi);
@@ -1270,7 +1291,6 @@ XMLscene.prototype.displayPiecesAndCells = function()
 						{
 							this.pecaHumAnim(this.board.allTab[i][j][0]);
 						}
-						//this.gameAnimation(this.board.allTab[i][j][0]);
 						this.popMatrix();
 
 						if(!this.processing) this.adjustPos(this.board.allTab[i][j][1],i,j,xi,zi);
@@ -1291,7 +1311,6 @@ XMLscene.prototype.displayPiecesAndCells = function()
 						{
 							this.pecaHumAnim(this.board.allTab[i][j][0]);
 						}
-						//this.gameAnimation(this.board.allTab[i][j][0]);
 						this.popMatrix();
 
 						if(!this.processing) this.adjustPos(this.board.allTab[i][j][1],i,j,xi,zi);
@@ -1310,7 +1329,7 @@ XMLscene.prototype.displayPiecesAndCells = function()
 							this.neutronCompAnim(this.board.allTab[i][j][0]);
 						}else if((this.modeP1 == 0 && this.playerPlaying == 1)||(this.modeP2 == 0 && this.playerPlaying == 2))
 						{
-							//this.neutronCompAnim(this.board.allTab[i][j][0]);
+							this.neutronCompAnim(this.board.allTab[i][j][0]);
 						}
 						
 						this.popMatrix();
@@ -1477,7 +1496,14 @@ XMLscene.prototype.updatePiecePos = function()
 
 			this.board.allTab[this.response[4]][this.response[5]][0] = this.neutron;
 			this.board.allTab[this.response[4]][this.response[5]][1].type = 1;
-			console.log(this.board.allTab);
+		}
+		else
+		{
+			this.board.allTab[this.oldPos.i][this.oldPos.j][0] = 0;
+			this.board.allTab[this.oldPos.i][this.oldPos.j][1].type = 0;
+
+			this.board.allTab[this.newPos.i][this.newPos.j][0] = this.newPiece;
+			this.board.allTab[this.newPos.i][this.newPos.j][1].type = 2;
 		}
 		
 
@@ -1536,7 +1562,7 @@ XMLscene.prototype.update = function(curtime){
 				console.log("Player Playing: "+ this.playerPlaying);
 				this.playerPlaying = this.response[0];
 				console.log("Player at next: " + this.playerPlaying);
-				console.log("New Play: " + this.response[1])
+				console.log("New Play: " + this.response[1]);
 				if(this.firstPlay == true)
 				{
 				console.log("First Play!");
@@ -1555,8 +1581,22 @@ XMLscene.prototype.update = function(curtime){
 				this.picked = null;
 				this.pickedDestine = null;
 				this.processing = false;
+				this.neutronPlaying = false;
+				this.compPlaying = false;
 			}
-			else if(this.nextPlay == 1)
+			else if((this.modeP1 == 2 && this.playerPlaying == 1 && this.nextPlay == 2) || (this.modeP2 == 2 && this.playerPlaying ==2 && this.nextPlay == 2))
+			{
+				console.log("Player Playing: "+ this.playerPlaying);
+				this.playerPlaying = this.response[0];
+				console.log("Player at next: " + this.playerPlaying);
+				console.log("New Play: " + this.response[1]);
+				this.nextPlay = this.response[1];
+				this.setPickEnabled(true);
+				this.processing = false;
+				this.neutronPlaying = false;
+				this.compPlaying = false;
+			}
+			else if((this.modeP1 == 2 && this.playerPlaying == 1 && this.nextPlay == 1) || (this.modeP2 == 2 && this.playerPlaying ==2 && this.nextPlay == 1))
 			{
 				console.log(this.response);
 				this.nextPlay = this.response[1];
@@ -1571,7 +1611,26 @@ XMLscene.prototype.update = function(curtime){
 
 				this.setPickEnabled(true);
 				this.processing = false;
+
 							
+			}
+			else if((this.modeP1 == 0 && this.playerPlaying == 1 && this.nextPlay == 1) || (this.modeP2 == 0 && this.playerPlaying ==2 && this.nextPlay == 1))
+			{
+				console.log(this.response);
+				this.nextPlay = this.response[1];
+				console.log("New Play: " + this.response[1])
+
+				console.log("Player Playing: "+ this.playerPlaying);
+
+				console.log("NX "+ this.response[4]);
+				console.log("NY "+ this.response[5]);
+
+
+
+				this.setPickEnabled(true);
+				this.picked = null;
+				this.pickedDestine = null;
+				this.processing = false;
 			}
 			
 		} 	
