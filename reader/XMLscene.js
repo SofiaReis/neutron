@@ -465,6 +465,7 @@ function timeMatch(diff)
  			}
  			else if(scene.message == 2)
  			{
+ 				scene.setPickEnabled(false);
  				console.log("Game Finished!");
  				scene.processAnimation();		
  				this.gameFinished = true;
@@ -564,7 +565,7 @@ XMLscene.prototype.gameComputador = function() {
 			}
 			else if(scene.message == 2)
 			{
-				//scene.board.init(matrix[2]);
+				scene.setPickEnabled(false);
 				scene.processAnimation();		
 				console.log("Game Finished!");
 				this.gameFinished = true;
@@ -606,6 +607,7 @@ XMLscene.prototype.gameComputador = function() {
 				scene.matches.push(matrix);
 				if(scene.firstPlay == true)
 				{
+
 					console.log("First Play!");
 					scene.firstPlay = false;
 				}
@@ -617,6 +619,7 @@ XMLscene.prototype.gameComputador = function() {
 			}
 			else if(scene.message == 2)
 			{
+				scene.setPickEnabled(false);
 				scene.processAnimation();		
 				console.log("Game Finished!");
 				this.gameFinished = true;
@@ -1431,6 +1434,11 @@ XMLscene.prototype.display = function () {
 
 		this.processGraph(this.graph.nodesInfo[this.graph.root_id]);
 
+		if(this.playerPlaying == 1)
+			this.PlayerWhite();
+		else if(this.playerPlaying == 2)
+			this.PlayerBlack();
+
 		
 		if((this.modeP1 == 2 && this.playerPlaying == 1) || (this.modeP2 == 2 && this.playerPlaying == 2))
 		{
@@ -1449,6 +1457,8 @@ XMLscene.prototype.display = function () {
 			}
 			
 		}
+
+
 		
 		
 		this.displayPiecesAndCells();

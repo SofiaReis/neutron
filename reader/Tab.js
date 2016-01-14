@@ -74,7 +74,9 @@ function Tab(scene) {
  			}
  			else if(this.tab[i][j] == 3)
  			{
+
  				piece = new Piece(this.scene,xi,zi,i,j,cloneObject(this.scene.graph.pieces['peça_neutron']),3);
+                  this.scene.neutron = piece;
 
  				cell = new Cell(this.scene,xi,zi,i,j, cloneObject(this.scene.graph.pieces['cell']),1);
  				
